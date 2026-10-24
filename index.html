@@ -1,45 +1,4022 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rosi 62 Krimi</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --papier: #F4F1EA;
-      --anthrazit: #1F1E1B;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --papier: #1F1E1B;
-        --anthrazit: #F4F1EA;
-      }
-    }
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: var(--papier);
-      color: var(--anthrazit);
-    }
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      box-sizing: border-box;
-      font-family: Georgia, "Times New Roman", serif;
-      text-align: center;
-      line-height: 1.5;
-    }
-    p {
-      max-width: 36rem;
-      margin: 0;
-      font-size: 1.25rem;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Rosi 62 Krimi</title>
+<style>
+/* ==========================================================
+   Rosi 62 · Krimi
+   Tokens übernommen aus site/style.css (Branch jonathan/testseite).
+   Keine externen Schriften; Stack wie vorgegeben.
+   ========================================================== */
+
+:root {
+  /* Abstände – 8-pt-Raster */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+
+  /* Linien – Bauhaus-Strichstärken */
+  --rule-hair: 1px;
+  --rule-strong: 2px;
+
+  /* Radien – bewusst eckig, geometrisch */
+  --radius-s: 2px;
+  --radius-m: 4px;
+
+  /* Schriften */
+  --font-display: "Futura", "Century Gothic", system-ui, sans-serif;
+  --font-text: "Futura", "Century Gothic", system-ui, sans-serif;
+
+  /* Typografie-Stufen (rem, Basis 16 px) */
+  --fs-large-title: 2.125rem; /* 34 px */
+  --fs-title: 1.5rem;         /* 24 px */
+  --fs-headline: 1.0625rem;   /* 17 px */
+  --fs-body: 1.0625rem;       /* 17 px */
+  --fs-callout: 1rem;         /* 16 px */
+  --fs-caption: 0.8125rem;    /* 13 px */
+
+  /* Farben – hell: Papier, gebrochenes Weiß, Anthrazit */
+  --color-bg: #F4F1EA;
+  --color-surface: #FBFAF6;
+  --color-label: #1F1E1B;
+  --color-secondary: #5A5750;
+  --color-separator: #D8D2C4;
+  --color-red: #C62828;
+  --color-yellow: #F2B705;
+  --color-blue: #1F4E9A;
+  --color-link: #1F4E9A;
+  --color-on-accent: #FBFAF6;
+  --color-on-yellow: #1F1E1B;
+  --color-raphael-bg: #FFF4C7;
+}
+
+/* Dunkelmodus: folgt dem System, außer die Seite setzt data-theme="light" */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #1C1B19;
+    --color-surface: #262421;
+    --color-label: #EDE9E0;
+    --color-secondary: #B5B0A5;
+    --color-separator: #3E3B35;
+    --color-red: #E5584F;
+    --color-yellow: #F2C94C;
+    --color-blue: #7EA6E8;
+    --color-link: #7EA6E8;
+    --color-on-accent: #1C1B19;
+    --color-on-yellow: #1C1B19;
+    --color-raphael-bg: #34301F;
+  }
+}
+
+/* Dunkelmodus erzwungen */
+:root[data-theme="dark"] {
+  --color-bg: #1C1B19;
+  --color-surface: #262421;
+  --color-label: #EDE9E0;
+  --color-secondary: #B5B0A5;
+  --color-separator: #3E3B35;
+  --color-red: #E5584F;
+  --color-yellow: #F2C94C;
+  --color-blue: #7EA6E8;
+  --color-link: #7EA6E8;
+  --color-on-accent: #1C1B19;
+  --color-on-yellow: #1C1B19;
+  --color-raphael-bg: #34301F;
+}
+
+/* ==========================================================
+   Basis
+   ========================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-label);
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-2) var(--space-6);
+  min-width: 0;
+}
+
+@media (min-width: 48rem) {
+  .wrap {
+    padding: var(--space-6) var(--space-4) var(--space-8);
+  }
+}
+
+p {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: var(--fs-large-title);
+}
+
+h2 {
+  font-size: var(--fs-title);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-label);
+  outline-offset: 3px;
+  border-radius: var(--radius-s);
+}
+
+/* ==========================================================
+   Kopf und Abschnitte
+   ========================================================== */
+
+.site-header {
+  padding-bottom: var(--space-3);
+  border-bottom: var(--rule-strong) solid var(--color-label);
+  margin-bottom: var(--space-2);
+}
+
+.shapes {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.shape {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+
+.shape-circle {
+  border-radius: 50%;
+  background: var(--color-red);
+}
+
+.shape-square {
+  background: var(--color-yellow);
+}
+
+.shape-triangle {
+  width: 26px;
+  background: var(--color-blue);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.subtitle,
+.muted {
+  color: var(--color-secondary);
+  font-size: var(--fs-callout);
+}
+
+.subtitle {
+  margin-top: var(--space-1);
+}
+
+/* Zu zweit ohne Claude-Konto (P2P): Einladungslink und Datenschutzhinweis */
+.invite-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: var(--fs-callout);
+  color: var(--color-label);
+  background: var(--color-surface);
+  border: 2px solid var(--color-label);
+  border-radius: var(--radius-m);
+}
+
+.privacy {
+  margin-top: var(--space-2);
+}
+
+.block {
+  margin-top: var(--space-4);
+  padding-top: var(--space-2);
+  border-top: var(--rule-hair) solid var(--color-label);
+}
+
+.block h2 {
+  margin-bottom: var(--space-2);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.stack > * + * {
+  margin-top: var(--space-1);
+}
+
+/* ==========================================================
+   Knöpfe – mindestens 44 px, sichtbarer Fokus
+   ========================================================== */
+
+.btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: var(--fs-callout);
+  color: var(--color-label);
+  background: var(--color-surface);
+  border: 2px solid var(--color-label);
+  border-radius: var(--radius-m);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn:hover {
+  background: var(--color-bg);
+}
+
+.btn-primary {
+  background: var(--color-red);
+  border-color: var(--color-red);
+  color: var(--color-on-accent);
+}
+
+.btn-primary:hover {
+  background: var(--color-red);
+  filter: brightness(0.92);
+}
+
+.btn[aria-pressed="true"] {
+  background: var(--color-label);
+  color: var(--color-bg);
+}
+
+.btn:disabled {
+  color: var(--color-secondary);
+  border-color: var(--color-separator);
+  background: var(--color-bg);
+  cursor: not-allowed;
+}
+
+/* ==========================================================
+   Story-Karten: Einleitung beim Levelstart, Abschluss beim Ende
+   ========================================================== */
+
+.story {
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: var(--rule-strong) solid var(--color-label);
+  border-top: 4px solid var(--color-yellow);
+  border-radius: var(--radius-m);
+}
+
+.story p + p {
+  margin-top: var(--space-1);
+}
+
+.story .btn {
+  margin-top: var(--space-2);
+}
+
+/* ==========================================================
+   Spielfeld – 9x9 Bauhaus-Raster
+   ========================================================== */
+
+.hint {
+  margin-top: var(--space-1);
+}
+
+.frame {
+  width: 100%;
+  max-width: 440px;
+  margin: var(--space-2) auto 0;
+  padding: 0;
+  border: var(--rule-strong) solid var(--color-label);
+  background: var(--color-surface);
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.cells {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  border: var(--rule-hair) solid var(--color-separator);
+}
+
+.cell.wall {
+  background: var(--color-label);
+  border-color: var(--color-label);
+}
+
+.pieces {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Figuren: ca. 72 % des Feldes, mittig; gleiten 150 ms */
+.piece {
+  position: absolute;
+  width: 8%;
+  height: 8%;
+  transition: left 150ms ease-out, top 150ms ease-out;
+}
+
+.piece.jonathan {
+  background: var(--color-red);
+  border-radius: 50%;
+}
+
+.piece.raphael {
+  background: var(--color-blue);
+}
+
+.piece.mine {
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-label);
+}
+
+.piece.holds::after {
+  content: "";
+  position: absolute;
+  right: -30%;
+  top: -30%;
+  width: 60%;
+  height: 60%;
+  background: var(--color-yellow);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-caption);
+  line-height: 1;
+}
+
+.item.goal {
+  width: 58%;
+  height: 58%;
+  background: var(--color-yellow);
+  color: var(--color-on-yellow);
+  font-size: var(--fs-callout);
+}
+
+.item.key {
+  width: 46%;
+  height: 46%;
+  background: var(--color-yellow);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.item.switch {
+  width: 58%;
+  height: 58%;
+  border: 3px solid var(--color-label);
+  border-radius: 50%;
+  color: var(--color-label);
+}
+
+.item.switch.pressed {
+  background: var(--color-label);
+  color: var(--color-bg);
+}
+
+/* Hinweis: Ring in Blau; gefunden = gefüllt */
+.item.clue {
+  width: 46%;
+  height: 46%;
+  border: 2px solid var(--color-blue);
+  border-radius: 50%;
+  color: var(--color-blue);
+  font-size: var(--fs-callout);
+}
+
+.item.clue.found {
+  background: var(--color-blue);
+  color: var(--color-on-accent);
+}
+
+.item.door {
+  width: 26%;
+  height: 100%;
+  background: var(--color-label);
+}
+
+.item.door.lock {
+  background: var(--color-red);
+}
+
+/* Codetür: blau, offen gestrichelt */
+.item.door.code {
+  background: var(--color-blue);
+}
+
+.item.door.open {
+  background: transparent;
+  border: 2px dashed var(--color-label);
+}
+
+.item.door.code.open {
+  background: transparent;
+  border: 2px dashed var(--color-blue);
+}
+
+/* ==========================================================
+   Steuerung, Befehl, Log, Meldungen
+   ========================================================== */
+
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(3, 56px);
+  gap: var(--space-1);
+  justify-content: start;
+  margin-bottom: var(--space-2);
+}
+
+.dpad .btn {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  font-size: var(--fs-title);
+  line-height: 1;
+}
+
+.dpad [data-dir="hoch"] { grid-column: 2; grid-row: 1; }
+.dpad [data-dir="links"] { grid-column: 1; grid-row: 2; }
+.dpad [data-dir="rechts"] { grid-column: 3; grid-row: 2; }
+.dpad [data-dir="runter"] { grid-column: 2; grid-row: 3; }
+
+.cmd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: stretch;
+  margin-top: var(--space-2);
+}
+
+.cmd label {
+  flex: 1 1 100%;
+  font-size: var(--fs-callout);
+}
+
+.cmd input {
+  flex: 1 1 180px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: var(--fs-callout);
+  color: var(--color-label);
+  background: var(--color-surface);
+  border: 2px solid var(--color-label);
+  border-radius: var(--radius-m);
+}
+
+.piece.absent {
+  opacity: 0.4;
+}
+
+.bubble {
+  position: absolute;
+  max-width: 80%;
+  padding: 4px 8px;
+  font-size: 1rem;
+  background: var(--color-surface);
+  color: var(--color-label);
+  border: var(--rule-strong) solid var(--color-label);
+  border-radius: var(--radius-s);
+  transform: translate(-10%, -130%);
+  pointer-events: none;
+}
+
+.message {
+  min-height: 1.5em;
+  margin-top: var(--space-2);
+  font-weight: 600;
+}
+
+.message.error {
+  color: var(--color-red);
+}
+
+.done {
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: var(--rule-hair) solid var(--color-separator);
+  border-top: 4px solid var(--color-red);
+  border-radius: var(--radius-m);
+}
+
+.done .btn {
+  margin-top: var(--space-1);
+}
+
+.points {
+  font-weight: 600;
+  color: var(--color-label);
+}
+
+.log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.log li {
+  padding: var(--space-1) 0;
+  border-bottom: var(--rule-hair) solid var(--color-separator);
+}
+
+.suspects .btn {
+  flex: 1 1 140px;
+}
+
+.chip {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 4px;
+  border-radius: var(--radius-s);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--color-on-accent);
+  background: var(--color-label);
+}
+
+.chip.jonathan {
+  background: var(--color-red);
+}
+
+.chip.raphael {
+  background: var(--color-blue);
+}
+
+.chip.system {
+  background: var(--color-secondary);
+}
+
+/* Bewegung reduzieren: Figuren springen statt zu gleiten */
+@media (prefers-reduced-motion: reduce) {
+  .piece {
+    transition: none;
+  }
+
+  .btn {
+    transition: none;
+  }
+}
+</style>
 </head>
 <body>
-  <p>Das Spiel kommt gleich. Live-Koop-Krimi von Jonathan &amp; Raphael.</p>
+<div class="wrap">
+  <header class="site-header">
+    <div class="shapes" aria-hidden="true">
+      <span class="shape shape-circle"></span>
+      <span class="shape shape-square"></span>
+      <span class="shape shape-triangle"></span>
+    </div>
+    <h1>Rosi 62 · Krimi</h1>
+    <p class="subtitle">Zwei Figuren, ein Fall. Hinweise finden, Befehle eintippen oder die Knöpfe nutzen.</p>
+  </header>
+
+  <section class="block" aria-labelledby="h-role">
+    <h2 id="h-role">Figur</h2>
+    <p class="muted">Verbindung: <span id="conn">lokal</span> · <span id="peers">Mitspieler unbekannt</span></p>
+    <div id="role-local" class="stack">
+      <button type="button" class="btn" id="switch-figure">Figur wechseln</button>
+    </div>
+    <div id="role-live" class="row" hidden>
+      <button type="button" class="btn" id="pick-jonathan" aria-pressed="false">Ich spiele Jonathan</button>
+      <button type="button" class="btn" id="pick-raphael" aria-pressed="false">Ich spiele Raphael</button>
+      <button type="button" class="btn" id="pick-none" aria-pressed="false">Ich schaue zu</button>
+    </div>
+    <p id="role-status" class="muted" aria-live="polite"></p>
+  </section>
+
+  <section id="p2p" class="block" aria-labelledby="h-p2p" hidden>
+    <h2 id="h-p2p">Zu zweit spielen</h2>
+    <p class="muted">Ein Raum, ein Link. Den Link schickst du deinem Mitspieler, er öffnet ihn im eigenen Browser.</p>
+    <div class="row">
+      <button type="button" class="btn btn-primary" id="p2p-new">Neues Spiel</button>
+      <button type="button" class="btn" id="p2p-reconnect" hidden>Verbindung verloren – neu verbinden</button>
+    </div>
+    <div id="invite" class="stack" hidden>
+      <label for="invite-url">Einladungslink</label>
+      <input id="invite-url" class="invite-input" type="text" readonly spellcheck="false" autocomplete="off">
+      <button type="button" class="btn" id="invite-copy">Link kopieren</button>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-level">
+    <p id="level-info" class="muted"></p>
+    <h2 id="level-title"></h2>
+    <p id="level-hint" class="hint"></p>
+    <p class="muted"><span class="points">Punkte: <span id="points">0</span></span> · Schritte: <span id="steps">0</span></p>
+
+    <section id="story" class="story" aria-labelledby="story-title" hidden>
+      <h2 id="story-title">Der Fall</h2>
+      <p id="story-intro"></p>
+      <button type="button" class="btn btn-primary" id="intro-ok">Los geht’s</button>
+    </section>
+
+    <div class="frame">
+      <div id="board" class="board" role="group" aria-label="Spielfeld">
+        <div id="cells" class="cells"></div>
+        <div id="pieces" class="pieces"></div>
+      </div>
+    </div>
+
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+
+    <section id="finale" class="block" aria-labelledby="h-finale" hidden>
+      <h2 id="h-finale">Beschuldigung</h2>
+      <p id="finale-question"></p>
+      <div id="suspects" class="row suspects"></div>
+    </section>
+
+    <div id="done" class="done" hidden>
+      <p><strong id="done-title">Level geschafft!</strong></p>
+      <p id="outro-text"></p>
+      <p id="done-points" class="muted"></p>
+      <p id="followup" class="muted" hidden>Fortsetzung folgt – Raphaels Agent baut Bad, Balkon und Dachboden.</p>
+      <button type="button" class="btn btn-primary" id="next">Weiter</button>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-notes">
+    <h2 id="h-notes">Notizbuch</h2>
+    <p id="notes-info" class="muted"></p>
+    <ul id="notebook" class="log"></ul>
+  </section>
+
+  <section class="block" aria-labelledby="h-moves">
+    <h2 id="h-moves">Steuerung</h2>
+    <div class="dpad">
+      <button type="button" class="btn" data-dir="hoch" aria-label="hoch">↑</button>
+      <button type="button" class="btn" data-dir="links" aria-label="links">←</button>
+      <button type="button" class="btn" data-dir="rechts" aria-label="rechts">→</button>
+      <button type="button" class="btn" data-dir="runter" aria-label="runter">↓</button>
+    </div>
+    <div class="row">
+      <button type="button" class="btn" data-cmd="nimm">nimm</button>
+      <button type="button" class="btn" data-cmd="gib">gib</button>
+      <button type="button" class="btn" data-cmd="benutze">benutze</button>
+      <button type="button" class="btn" data-cmd="neu">neu</button>
+      <button type="button" class="btn" data-cmd="hilfe">hilfe</button>
+    </div>
+    <form id="cmd-form" class="cmd" autocomplete="off">
+      <label for="cmd">Befehl eingeben</label>
+      <input id="cmd" name="cmd" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="z. B. rechts 3, sag hallo, code 1234">
+      <button type="submit" class="btn btn-primary">Senden</button>
+    </form>
+    <p class="muted">Tasten: Pfeiltasten oder w a s d. Gesteuert wird die aktive Figur.</p>
+  </section>
+
+  <section class="block" aria-labelledby="h-log">
+    <h2 id="h-log">Zug-Log</h2>
+    <ol id="log" class="log"></ol>
+  </section>
+  <p id="privacy" class="muted privacy" hidden>Live-Verbindung direkt zwischen euren Geräten (WebRTC), vermittelt über den öffentlichen PeerJS-Server.</p>
+</div>
+
+<script>
+'use strict';
+// Transport SPIEL-P2P: WebRTC über PeerJS, für statische Seiten (GitHub Pages).
+//
+// Liefert dieselben Einstiegspunkte wie die Artifact-Runtime (claude.use('db'|'room'|'user')),
+// damit net.js unverändert bleibt. Keine Spiellogik. Ohne Netz oder ohne PeerJS
+// meldet der Transport den Zustand, die Seite läuft lokal weiter.
+//
+// Entscheidungen (Auftrag SPIEL-P2P, P-V1 bis P-V5):
+// - P-V1: Die PeerJS-ID des Gastgebers ist „rosi62-“ + 24 Hex-Zeichen von SHA-256(Raumcode).
+//   Der Raumcode selbst verlässt den Browser nie (nur im Einladungslink-Hash).
+// - P-V4: Zuschauer schreibt kein Dokument (das regelt net.js über pickRole).
+// - P-V5: Gastgeberwechsel nur beim Neuladen oder per Knopf „neu verbinden“, kein stiller Wechsel.
+// - Nachrichten vom Peer werden auf Form und Größe (4096 Byte, UTF-8) geprüft. Die Prüfung
+//   der Spielwerte macht net.js (sanitize*).
+//
+// build.py fügt diese Datei inline in src/index.html ein. Im Node-Test wird sie per require geladen.
+
+const NetP2P = (function () {
+  const PEERJS_URL = 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js';
+  const PEERJS_SRI = 'sha384-x0YgkOr/3UOZP2CRDxGW9e0Q+2Qjyr3uJrm4xU32Y7ZCNAo7Cc7bjhrZMi/dwczu';
+  const ID_PREFIX = 'rosi62-';
+  const HOST_HEX = 24;
+  const GUEST_PREFIX = 'g-';
+  const GUEST_HEX = 16;
+  const COLLECTION = 'spieler';
+  const ROOM_NAME = 'rosi62-spiel';
+  const ROOM_CODE = /^[A-Za-z0-9_-]{10,64}$/;
+  const CODE_ALPHABET = 'abcdefghjkmnpqrstuvwxyz23456789';
+  const CODE_LEN = 12;
+  const HEX = '0123456789abcdef';
+  const UID_PATTERN = /^u[0-9a-f]{20}$/;
+  const UID_KEY = 'rosi62.p2p.uid';
+  const SPIEL_KEY = 'rosi62.spiel.';
+  const TOPIC_PATTERN = /^[a-z][a-z0-9_.-]{0,47}$/;
+  const MSG_MAX = 4096;
+  const RETRY_MS = 2000;
+  const RETRY_MAX = 5;
+
+  function noop() {}
+
+  function isPlain(v) {
+    return v !== null && typeof v === 'object' && !Array.isArray(v);
+  }
+
+  function byteLen(v) {
+    return new TextEncoder().encode(JSON.stringify(v)).length;
+  }
+
+  function clone(v) {
+    return v === undefined || v === null ? v : JSON.parse(JSON.stringify(v));
+  }
+
+  function later(fn) {
+    Promise.resolve().then(fn).catch(noop);
+  }
+
+  function closeQuiet(c) {
+    try { if (c) c.close(); } catch (e) { /* schon geschlossen */ }
+  }
+
+  function defaultTimers() {
+    return {
+      setTimeout: function (fn, ms) { return setTimeout(fn, ms); },
+      clearTimeout: function (h) { clearTimeout(h); }
+    };
+  }
+
+  // Zufall nur über die Web-Crypto-Quelle. Ohne sie gibt es keinen Raum.
+  function randomChars(n, alphabet) {
+    const c = typeof crypto !== 'undefined' ? crypto : null;
+    if (!c || typeof c.getRandomValues !== 'function') return null;
+    const bytes = new Uint8Array(n);
+    c.getRandomValues(bytes);
+    // 256 ist durch 32 und 16 teilbar, die Verteilung ist also gleichmäßig.
+    let out = '';
+    for (let i = 0; i < n; i++) out += alphabet[bytes[i] % alphabet.length];
+    return out;
+  }
+
+  function newCode() {
+    return randomChars(CODE_LEN, CODE_ALPHABET);
+  }
+
+  async function hostIdFor(code) {
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code));
+    const hex = Array.from(new Uint8Array(digest), function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+    return ID_PREFIX + hex.slice(0, HOST_HEX);
+  }
+
+  // Raumcode aus dem Hash lesen: '#raum=<code>'. Liefert null bei allem anderen.
+  function parseRoomHash(hash) {
+    const m = /^#raum=([^#&?]*)$/.exec(String(hash || ''));
+    if (!m) return null;
+    return ROOM_CODE.test(m[1]) ? m[1] : null;
+  }
+
+  // localStorage mit try/catch. Scheitert der Zugriff, bleibt alles im Speicher dieser Seite.
+  function makeStore() {
+    const mem = new Map();
+    let ls = null;
+    try {
+      const t = typeof localStorage !== 'undefined' ? localStorage : null;
+      if (t) {
+        t.setItem('rosi62.probe', '1');
+        t.removeItem('rosi62.probe');
+        ls = t;
+      }
+    } catch (e) {
+      ls = null;
+    }
+    return {
+      persistent: !!ls,
+      get: function (k) {
+        if (ls) {
+          try { return ls.getItem(k); } catch (e) { /* Zugriff verweigert */ }
+        }
+        return mem.has(k) ? mem.get(k) : null;
+      },
+      set: function (k, v) {
+        mem.set(k, v);
+        if (!ls) return false;
+        try { ls.setItem(k, v); return true; } catch (e) { return false; }
+      },
+      remove: function (k) {
+        mem.delete(k);
+        if (ls) { try { ls.removeItem(k); } catch (e) { /* ignorieren */ } }
+      }
+    };
+  }
+
+  function loadUid(store) {
+    const old = store.get(UID_KEY);
+    if (typeof old === 'string' && UID_PATTERN.test(old)) return old;
+    const rnd = randomChars(20, HEX);
+    if (!rnd) return null;
+    const fresh = 'u' + rnd;
+    store.set(UID_KEY, fresh);
+    return fresh;
+  }
+
+  function parseDoc(text) {
+    if (typeof text !== 'string') return null;
+    try {
+      const v = JSON.parse(text);
+      return isPlain(v) && byteLen(v) <= MSG_MAX ? v : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function peerCtorOf(opts) {
+    if (opts && typeof opts.Peer === 'function') return opts.Peer;
+    return typeof globalThis.Peer === 'function' ? globalThis.Peer : null;
+  }
+
+  function loadPeerJs(opts) {
+    if (peerCtorOf(opts)) return Promise.resolve();
+    if (typeof document === 'undefined') return Promise.reject(new Error('kein Browser'));
+    return new Promise(function (resolve, reject) {
+      const s = document.createElement('script');
+      s.src = PEERJS_URL;
+      s.integrity = PEERJS_SRI;
+      s.crossOrigin = 'anonymous';
+      s.async = true;
+      s.onload = function () {
+        if (peerCtorOf(opts)) resolve(); else reject(new Error('PeerJS fehlt'));
+      };
+      s.onerror = function () { reject(new Error('PeerJS nicht geladen')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function createTransport(options) {
+    const o = options || {};
+    const code = o.code;
+    if (typeof code !== 'string' || !ROOM_CODE.test(code)) throw new Error('ungültiger Raumcode');
+    const store = o.store || makeStore();
+    const timers = o.timers || defaultTimers();
+    const onLink = o.onLink || noop;
+    const onWarn = o.onWarn || noop;
+    const uid = loadUid(store);
+    const spielKey = SPIEL_KEY + code;
+
+    // Dokumente nach Spieler-ID (Map, damit keine Schlüssel wie __proto__ stören).
+    const docs = new Map();
+    const roomHandlers = new Map();
+    const snapListeners = new Set();
+    const peersListeners = new Set();
+    const connListeners = new Set();
+    let warnedStore = false;
+
+    const st = {
+      peer: null, conn: null, role: null, opened: false, hostId: null,
+      linkState: 'verbinde', greeted: false,
+      remoteUid: null, remoteLinked: false, remotePres: null, ownPres: null,
+      attempts: 0, retryTimer: null, disposed: false
+    };
+
+    if (uid) {
+      const own = parseDoc(store.get(spielKey));
+      if (own) docs.set(uid, own);
+    }
+
+    function warnStore() {
+      if (warnedStore) return;
+      warnedStore = true;
+      onWarn('Speichern nicht möglich. Ein Neuladen verliert den Stand.');
+    }
+
+    function setLink(state) {
+      st.linkState = state;
+      onLink(state);
+    }
+
+    function clearRetry() {
+      if (st.retryTimer !== null) timers.clearTimeout(st.retryTimer);
+      st.retryTimer = null;
+    }
+
+    // ---------- Senden ----------
+
+    function send(msg) {
+      if (!st.conn || !st.conn.open) return false;
+      if (byteLen(msg) > MSG_MAX) return false;
+      try { st.conn.send(msg); return true; } catch (e) { return false; }
+    }
+
+    function greet() {
+      if (st.greeted || !st.conn) return;
+      st.greeted = true;
+      send({ t: 'hello', uid: uid });
+      const own = uid ? docs.get(uid) : null;
+      if (own) send({ t: 'doc', doc: own });
+      if (st.ownPres) send({ t: 'pres', p: st.ownPres });
+    }
+
+    // ---------- Empfang ----------
+
+    function notifySnap() {
+      later(function () {
+        const snap = snapshot();
+        snapListeners.forEach(function (cb) {
+          try { cb(snap); } catch (e) { /* Listener ist Sache von net.js */ }
+        });
+      });
+    }
+
+    function peerList() {
+      const list = [{ peer: uid, isMe: true, presence: st.ownPres ? clone(st.ownPres) : null }];
+      if (st.remoteLinked && st.remoteUid) {
+        list.push({ peer: st.remoteUid, isMe: false, kind: 'human', presence: st.remotePres ? clone(st.remotePres) : null });
+      }
+      return list;
+    }
+
+    function notifyPeers() {
+      later(function () {
+        const payload = { peers: peerList() };
+        peersListeners.forEach(function (cb) {
+          try { cb(payload); } catch (e) { /* ignorieren */ }
+        });
+      });
+    }
+
+    function notifyConn(connected) {
+      later(function () {
+        connListeners.forEach(function (cb) {
+          try { cb(connected); } catch (e) { /* ignorieren */ }
+        });
+      });
+    }
+
+    function onHello(u) {
+      if (typeof u !== 'string' || !UID_PATTERN.test(u) || u === uid) return;
+      greet();
+      if (st.remoteUid !== u) {
+        // Anderer Mitspieler: das Dokument des alten Gegenübers verwerfen.
+        if (st.remoteUid !== null) docs.delete(st.remoteUid);
+        st.remoteUid = u;
+        st.remotePres = null;
+        notifySnap();
+      }
+      const was = st.remoteLinked;
+      st.remoteLinked = true;
+      st.attempts = 0;
+      clearRetry();
+      setLink('live');
+      notifyPeers();
+      if (!was) notifyConn(true);
+    }
+
+    function onRemoteDoc(doc) {
+      if (st.remoteUid === null) return;
+      if (doc === null) {
+        if (docs.has(st.remoteUid)) { docs.delete(st.remoteUid); notifySnap(); }
+        return;
+      }
+      if (!isPlain(doc)) return;
+      // Veraltete Stände (kleinerer seq als gespeichert) werden verworfen. Gleicher seq ist erlaubt.
+      const prev = docs.get(st.remoteUid);
+      if (prev && (!Number.isSafeInteger(doc.seq) || doc.seq < prev.seq)) return;
+      docs.set(st.remoteUid, clone(doc));
+      notifySnap();
+    }
+
+    function dispatchRoom(topic, data) {
+      const set = roomHandlers.get(topic);
+      if (!set) return;
+      const msg = { peer: st.remoteUid, isMe: false, data: data };
+      set.forEach(function (cb) {
+        try { cb(msg); } catch (e) { /* ein Handler darf die Verbindung nicht stören */ }
+      });
+    }
+
+    function onData(d) {
+      if (!isPlain(d) || byteLen(d) > MSG_MAX) return;
+      if (d.t === 'hello') { onHello(d.uid); return; }
+      if (st.remoteUid === null || !st.remoteLinked) return;
+      if (d.t === 'doc') { onRemoteDoc(d.doc); return; }
+      if (d.t === 'pres') {
+        if (isPlain(d.p)) { st.remotePres = d.p; notifyPeers(); }
+        return;
+      }
+      if (d.t === 'room' && typeof d.topic === 'string' && TOPIC_PATTERN.test(d.topic) && isPlain(d.d)) {
+        dispatchRoom(d.topic, d.d);
+      }
+    }
+
+    // ---------- Verbindung (Gast und Gastgeber) ----------
+
+    function bindConn(c) {
+      const old = st.conn;
+      st.conn = c;
+      st.greeted = false;
+      if (old && old !== c) closeQuiet(old);
+      c.on('open', function () { if (st.conn === c) greet(); });
+      c.on('data', function (d) { if (st.conn === c) onData(d); });
+      c.on('close', function () { if (st.conn === c) dropConn(); });
+      c.on('error', function () { if (st.conn === c) dropConn(); });
+      if (c.open) greet();
+    }
+
+    function dropConn() {
+      st.conn = null;
+      st.greeted = false;
+      const was = st.remoteLinked;
+      st.remoteLinked = false;
+      st.remotePres = null;
+      if (was) { notifyPeers(); notifyConn(false); }
+      if (st.disposed) return;
+      if (st.role === 'gast') {
+        scheduleConnect();
+      } else {
+        setLink('fehlt');
+      }
+    }
+
+    function scheduleConnect() {
+      if (st.disposed || st.retryTimer !== null) return;
+      st.attempts += 1;
+      if (st.attempts > RETRY_MAX) {
+        setLink('fehlt');
+        return;
+      }
+      setLink('verbinde');
+      st.retryTimer = timers.setTimeout(function () {
+        st.retryTimer = null;
+        connectToHost();
+      }, o.retryMs || RETRY_MS);
+    }
+
+    function connectToHost() {
+      if (st.disposed || !st.peer || st.peer.destroyed || st.role !== 'gast') return;
+      if (st.conn) return;
+      clearRetry();
+      let c;
+      try {
+        c = st.peer.connect(st.hostId, { reliable: true, serialization: 'json' });
+      } catch (e) {
+        scheduleConnect();
+        return;
+      }
+      bindConn(c);
+    }
+
+    function acceptConn(c) {
+      if (st.disposed) { closeQuiet(c); return; }
+      bindConn(c);
+    }
+
+    function retire(p) {
+      if (st.peer === p) st.peer = null;
+      try { p.destroy(); } catch (e) { /* schon beendet */ }
+    }
+
+    function onPeerError(p, err) {
+      if (p !== st.peer || st.disposed) return;
+      const type = err && typeof err.type === 'string' ? err.type : '';
+      if (type === 'unavailable-id' && st.role === 'gastgeber' && !st.opened) {
+        // Gastgeber-ID ist belegt: dieser Browser wird Gast.
+        retire(p);
+        openGuest();
+        return;
+      }
+      if (type === 'peer-unavailable') {
+        if (st.role === 'gast') scheduleConnect();
+        return;
+      }
+      setLink('verloren');
+      onWarn('Die Verbindung ist abgebrochen. Mit „neu verbinden“ geht es weiter.');
+    }
+
+    function onDisconnected(p) {
+      if (p !== st.peer || st.disposed) return;
+      if (!st.remoteLinked) setLink('verloren');
+      try { p.reconnect(); } catch (e) { /* Peer ist schon beendet */ }
+    }
+
+    function openHost() {
+      const p = createPeer(st.hostId);
+      st.peer = p;
+      st.role = 'gastgeber';
+      st.opened = false;
+      p.on('open', function () {
+        if (p !== st.peer) return;
+        st.opened = true;
+        setLink(st.remoteLinked ? 'live' : 'fehlt');
+      });
+      p.on('connection', function (c) { if (p === st.peer) acceptConn(c); });
+      p.on('error', function (err) { onPeerError(p, err); });
+      p.on('disconnected', function () { onDisconnected(p); });
+    }
+
+    function openGuest() {
+      const rnd = randomChars(GUEST_HEX, HEX);
+      if (!rnd) { setLink('verloren'); onWarn('Zufallszahlen fehlen, Live ist nicht möglich.'); return; }
+      const p = createPeer(GUEST_PREFIX + rnd);
+      st.peer = p;
+      st.role = 'gast';
+      st.opened = false;
+      p.on('open', function () {
+        if (p !== st.peer) return;
+        st.opened = true;
+        st.attempts = 0;
+        connectToHost();
+      });
+      // Der Gast nimmt keine eingehenden Verbindungen an.
+      p.on('connection', function (c) { closeQuiet(c); });
+      p.on('error', function (err) { onPeerError(p, err); });
+      p.on('disconnected', function () { onDisconnected(p); });
+    }
+
+    function createPeer(id) {
+      const P = peerCtorOf(o);
+      return new P(id, { debug: 0 });
+    }
+
+    function teardown() {
+      clearRetry();
+      const c = st.conn;
+      st.conn = null;
+      st.greeted = false;
+      const was = st.remoteLinked;
+      st.remoteLinked = false;
+      st.remotePres = null;
+      closeQuiet(c);
+      const p = st.peer;
+      st.peer = null;
+      st.role = null;
+      st.opened = false;
+      if (p) { try { p.destroy(); } catch (e) { /* schon beendet */ } }
+      if (was) { notifyPeers(); notifyConn(false); }
+    }
+
+    function start() {
+      if (st.disposed) return;
+      setLink('verbinde');
+      if (!uid) {
+        setLink('verloren');
+        onWarn('Keine Spieler-Kennung, Live ist nicht möglich.');
+        return;
+      }
+      Promise.all([hostIdFor(code), loadPeerJs(o)]).then(function (r) {
+        if (st.disposed) return;
+        st.hostId = r[0];
+        // Wer die Gastgeber-ID zuerst belegt, ist Gastgeber. Belegt sie schon jemand, wird man Gast.
+        openHost();
+      }, function () {
+        if (st.disposed) return;
+        setLink('verloren');
+        onWarn('Live-Verbindung nicht möglich (PeerJS oder sichere Verbindung fehlt).');
+      });
+    }
+
+    function reconnect() {
+      if (st.disposed) return;
+      teardown();
+      st.attempts = 0;
+      start();
+    }
+
+    function dispose() {
+      st.disposed = true;
+      teardown();
+      snapListeners.clear();
+      peersListeners.clear();
+      connListeners.clear();
+      roomHandlers.clear();
+    }
+
+    // ---------- Namespaces (wie die Artifact-Runtime) ----------
+
+    function snapshot() {
+      const list = [];
+      docs.forEach(function (doc, id) {
+        list.push({ id: id, exists: true, data: function () { return clone(doc); } });
+      });
+      return { docs: list };
+    }
+
+    function rejected(code) {
+      return Promise.reject({ code: code });
+    }
+
+    const dbNs = {
+      collection: function (name) {
+        const known = name === COLLECTION;
+        return {
+          onSnapshot: function (cb) {
+            if (!known || typeof cb !== 'function') throw new Error('unbekannte Sammlung');
+            snapListeners.add(cb);
+            later(function () { if (snapListeners.has(cb)) cb(snapshot()); });
+            return function () { snapListeners.delete(cb); };
+          },
+          get: function () {
+            return known ? Promise.resolve(snapshot()) : rejected('invalid_argument');
+          }
+        };
+      },
+      doc: function (path) {
+        const own = !!uid && path === COLLECTION + '/' + uid;
+        return {
+          set: function (payload) {
+            if (!own) return rejected('permission_denied');
+            if (!isPlain(payload) || byteLen(payload) > MSG_MAX) return rejected('invalid_argument');
+            const copy = clone(payload);
+            docs.set(uid, copy);
+            if (!store.set(spielKey, JSON.stringify(copy))) warnStore();
+            notifySnap();
+            send({ t: 'doc', doc: copy });
+            return Promise.resolve();
+          },
+          delete: function () {
+            if (!own) return rejected('permission_denied');
+            docs.delete(uid);
+            store.remove(spielKey);
+            notifySnap();
+            send({ t: 'doc', doc: null });
+            return Promise.resolve();
+          }
+        };
+      }
+    };
+
+    const room = {
+      on: function (topic, cb) {
+        if (typeof topic !== 'string' || typeof cb !== 'function') return null;
+        let set = roomHandlers.get(topic);
+        if (!set) { set = new Set(); roomHandlers.set(topic, set); }
+        set.add(cb);
+        return function () { set.delete(cb); };
+      },
+      onPeers: function (cb) {
+        if (typeof cb !== 'function') return null;
+        peersListeners.add(cb);
+        later(function () { if (peersListeners.has(cb)) cb({ peers: peerList() }); });
+        return function () { peersListeners.delete(cb); };
+      },
+      onConnection: function (cb) {
+        if (typeof cb !== 'function') return null;
+        connListeners.add(cb);
+        return function () { connListeners.delete(cb); };
+      },
+      connected: function () { return st.remoteLinked; },
+      emit: function (topic, payload) {
+        if (typeof topic !== 'string' || !TOPIC_PATTERN.test(topic) || !isPlain(payload)) return rejected('invalid_argument');
+        // Ohne Mitspieler entfällt die Nachricht still (wie bei der Artifact-Runtime).
+        if (!st.remoteLinked) return Promise.resolve();
+        if (byteLen({ t: 'room', topic: topic, d: payload }) > MSG_MAX) return rejected('invalid_argument');
+        return send({ t: 'room', topic: topic, d: payload }) ? Promise.resolve() : rejected('unavailable');
+      },
+      presence: function (payload) {
+        if (!isPlain(payload) || byteLen({ t: 'pres', p: payload }) > MSG_MAX) return rejected('invalid_argument');
+        st.ownPres = clone(payload);
+        if (st.remoteLinked) send({ t: 'pres', p: st.ownPres });
+        notifyPeers();
+        return Promise.resolve();
+      }
+    };
+
+    const roomNs = { join: function (name) { return Promise.resolve(name === ROOM_NAME ? room : null); } };
+    const userNs = { id: function () { return Promise.resolve(uid); } };
+    const nsByName = { db: dbNs, room: roomNs, user: userNs };
+
+    const claude = {
+      use: function (name) { return Promise.resolve(nsByName[name] || null); }
+    };
+
+    return {
+      claude: claude,
+      start: start,
+      reconnect: reconnect,
+      dispose: dispose,
+      linkState: function () { return st.linkState; },
+      storage: function () { return store.persistent ? 'dauerhaft' : 'sitzung'; }
+    };
+  }
+
+  // Erzeugt den Transport und startet die Verbindung. Liefert {claude, reconnect, dispose, ...}.
+  function create(options) {
+    const t = createTransport(options);
+    t.start();
+    return t;
+  }
+
+  return {
+    create: create,
+    createTransport: createTransport,
+    hostIdFor: hostIdFor,
+    newCode: newCode,
+    parseRoomHash: parseRoomHash,
+    ID_PREFIX: ID_PREFIX,
+    PEERJS_URL: PEERJS_URL,
+    PEERJS_SRI: PEERJS_SRI,
+    MSG_MAX: MSG_MAX,
+    CODE_LEN: CODE_LEN,
+    COLLECTION: COLLECTION
+  };
+})();
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = NetP2P;
+}
+
+'use strict';
+// Netzschicht SPIEL-LIVE (Artifact-Runtime: db, room, user).
+//
+// Keine Spiellogik. Regeln kommen aus engine.js (deriveWorld, applyLocal,
+// reconcile). Diese Datei übernimmt Verbindung, Rollen, Schreib-Warteschlange,
+// Abgleich und die Prüfung aller Fremddaten. Fremdtext wird nie als HTML
+// ausgegeben, die Seite nutzt dafür textContent.
+//
+// build.py fügt diese Datei inline in src/index.html ein. Im Node-Test wird
+// sie per require geladen. Der Browser-Teil sieht module nicht und überspringt
+// den Export.
+//
+// Schreibregeln (Auftrag SPIEL-LIVE, Entscheidungen V1 bis V6):
+// - Geschrieben wird nur spieler/<eigene uid>, immer als vollständiges Dokument.
+// - Nur bei echter Zustandsänderung, höchstens ein Write gleichzeitig.
+// - Der Abgleich (Timer, Snapshot) liest nur.
+// - Ohne uid (null) gibt es keinen DB-Schreibzugriff.
+
+const Net = (function () {
+  const ROOM_NAME = 'rosi62-spiel';
+  const COLLECTION = 'spieler';
+  const PLAYER_ROLES = ['jonathan', 'raphael'];
+  const SPECTATOR = 'zuschauer';
+  const ROLE_SET = ['jonathan', 'raphael', 'zuschauer'];
+  const GRID = 9;
+  const SYNC_MS = 3000;
+  const SAY_MAX = 200;
+  const PAYLOAD_MAX_BYTES = 4096;
+  const LEVEL_MAX = 64;
+  const UID_PATTERN = /^[A-Za-z0-9_\-.~:@+]{1,200}$/;
+  const KIND_PATTERN = /^[a-z_]{1,32}$/;
+  const DEDUPE_MAX = 500;
+  const OFFLINE_GRACE_MS = 2000;
+  const SUB_WINDOW_MS = 10000;
+  const SUB_MAX_IN_WINDOW = 2;
+  const RESTART_MS = 5000;
+  const RESTART_GIVE_UP = 3;
+  const RETRY_UNAVAILABLE_MS = 1500;
+  const RETRY_EXHAUSTED_MS = 5000;
+  const PEERS_DA = 'Mitspieler da';
+  const PEERS_ABWESEND = 'Mitspieler abwesend';
+  const PEERS_UNBEKANNT = 'Mitspieler unbekannt';
+  // Lebensende des DB-Abos: danach kein Neuaufbau.
+  const DB_TERMINAL = ['revoked', 'invalid_argument', 'not_granted',
+    'capability_disabled', 'capability_removed', 'transform_error'];
+  // Lebensende des Raums: jeder Fehler beendet die Raum-Funktionen.
+  const WRITE_ROOM_DEAD = ['revoked', 'not_granted', 'capability_disabled',
+    'capability_removed', 'transform_error'];
+
+  function noop() {}
+
+  function defaultTimers() {
+    return {
+      setTimeout: function (fn, ms) { return setTimeout(fn, ms); },
+      clearTimeout: function (h) { clearTimeout(h); },
+      setInterval: function (fn, ms) { return setInterval(fn, ms); },
+      clearInterval: function (h) { clearInterval(h); },
+      now: function () { return Date.now(); }
+    };
+  }
+
+  function isPlainObject(v) {
+    return v !== null && typeof v === 'object' && !Array.isArray(v);
+  }
+
+  function isCoord(v) {
+    return Number.isInteger(v) && v >= 0 && v < GRID;
+  }
+
+  function isSeq(v) {
+    return Number.isSafeInteger(v) && v >= 0;
+  }
+
+  function clone(v) {
+    return v === undefined || v === null ? v : JSON.parse(JSON.stringify(v));
+  }
+
+  function byteSize(obj) {
+    return new TextEncoder().encode(JSON.stringify(obj)).length;
+  }
+
+  function errCode(err) {
+    return err && typeof err.code === 'string' ? err.code : 'unbekannt';
+  }
+
+  // Text für Sprechblase und Log: Steuerzeichen durch Leerzeichen ersetzen,
+  // unsichtbare Formatzeichen entfernen, auf SAY_MAX Zeichen kürzen.
+  function clipText(value) {
+    if (typeof value !== 'string') return { text: '', cut: false };
+    const clean = value
+      .replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ')
+      .replace(/[​-‏‪-‮⁠-⁤﻿]/g, '')
+      .trim();
+    const chars = Array.from(clean);
+    if (chars.length > SAY_MAX) {
+      return { text: chars.slice(0, SAY_MAX).join(''), cut: true };
+    }
+    return { text: clean, cut: false };
+  }
+
+  function intList(v) {
+    if (!Array.isArray(v)) return [];
+    return v.filter(function (n) { return Number.isSafeInteger(n) && n >= 0 && n < 1000; });
+  }
+
+  function strList(v) {
+    if (!Array.isArray(v)) return [];
+    return v.filter(function (s) { return typeof s === 'string' && s.length <= LEVEL_MAX; });
+  }
+
+  function handoff(v, field) {
+    if (!isPlainObject(v)) return null;
+    if (ROLE_SET.indexOf(v[field]) < 0 || !isSeq(v.seq)) return null;
+    const out = { seq: v.seq };
+    out[field] = v[field];
+    return out;
+  }
+
+  // Spieler-Dokument prüfen und normalisieren. Unbrauchbare Dokumente liefern null.
+  function sanitizeDoc(raw) {
+    if (!isPlainObject(raw)) return null;
+    if (PLAYER_ROLES.indexOf(raw.role) < 0) return null;
+    if (typeof raw.level !== 'string' || raw.level.length === 0 || raw.level.length > LEVEL_MAX) return null;
+    if (!isCoord(raw.x) || !isCoord(raw.y) || !isSeq(raw.seq)) return null;
+    const inv = isPlainObject(raw.inv) ? raw.inv : {};
+    return {
+      role: raw.role,
+      level: raw.level,
+      x: raw.x,
+      y: raw.y,
+      seq: raw.seq,
+      inv: { key: inv.key === true },
+      found: intList(raw.found),
+      codesOpened: intList(raw.codesOpened),
+      keyDoorsOpened: intList(raw.keyDoorsOpened),
+      keyGiven: handoff(raw.keyGiven, 'to'),
+      keyReceived: handoff(raw.keyReceived, 'from'),
+      accused: typeof raw.accused === 'string' && raw.accused.length <= LEVEL_MAX ? raw.accused : null,
+      levelDone: strList(raw.levelDone),
+      updatedAt: typeof raw.updatedAt === 'string' && raw.updatedAt.length <= 40 ? raw.updatedAt : null
+    };
+  }
+
+  function emptyDoc(role, levelId, pos) {
+    return {
+      role: role,
+      level: levelId,
+      x: pos[0],
+      y: pos[1],
+      seq: 0,
+      inv: { key: false },
+      found: [],
+      codesOpened: [],
+      keyDoorsOpened: [],
+      keyGiven: null,
+      keyReceived: null,
+      accused: null,
+      levelDone: [],
+      updatedAt: null
+    };
+  }
+
+  // Inhalt ohne seq und Zeitstempel: nur daran erkennt man echte Änderungen.
+  function contentKey(doc) {
+    return JSON.stringify(Object.assign({}, doc, { seq: 0, updatedAt: null }));
+  }
+
+  function sanitizeMove(d) {
+    if (PLAYER_ROLES.indexOf(d.role) < 0 || typeof d.level !== 'string' || d.level.length > LEVEL_MAX) return null;
+    if (!isCoord(d.x) || !isCoord(d.y) || !isSeq(d.seq)) return null;
+    return { role: d.role, level: d.level, x: d.x, y: d.y, seq: d.seq };
+  }
+
+  function sanitizeSay(d) {
+    if (ROLE_SET.indexOf(d.role) < 0 || !isSeq(d.seq)) return null;
+    const clip = clipText(d.text);
+    if (clip.text.length === 0) return null;
+    return { role: d.role, text: clip.text, cut: d.cut === true || clip.cut, seq: d.seq };
+  }
+
+  function sanitizeAktion(d) {
+    if (ROLE_SET.indexOf(d.role) < 0 || !isSeq(d.seq)) return null;
+    if (typeof d.kind !== 'string' || !KIND_PATTERN.test(d.kind)) return null;
+    return { role: d.role, kind: d.kind, seq: d.seq };
+  }
+
+  // Presence eines Mitspielers. Sie wird nur übernommen, wenn sie vollständig gültig ist.
+  function sanitizePresence(p) {
+    if (!isPlainObject(p)) return null;
+    if (ROLE_SET.indexOf(p.role) < 0 || !isSeq(p.seq)) return null;
+    if (typeof p.level !== 'string' || p.level.length === 0 || p.level.length > LEVEL_MAX) return null;
+    if (p.role === SPECTATOR) return { role: p.role, level: p.level, seq: p.seq };
+    if (!isCoord(p.x) || !isCoord(p.y)) return null;
+    const out = { role: p.role, level: p.level, x: p.x, y: p.y, seq: p.seq };
+    // ds = seq des eigenen Spieler-Dokuments zum Zeitpunkt der Meldung (DB bleibt maßgeblich).
+    if (isSeq(p.ds)) out.ds = p.ds;
+    return out;
+  }
+
+  function createNet(options) {
+    const opts = options || {};
+    const timers = opts.timers || defaultTimers();
+    const cb = {
+      onStatus: opts.onStatus || noop,
+      onPlayers: opts.onPlayers || noop,
+      onOwn: opts.onOwn || noop,
+      onPresence: opts.onPresence || noop,
+      onMove: opts.onMove || noop,
+      onSay: opts.onSay || noop,
+      onAktion: opts.onAktion || noop,
+      onMessage: opts.onMessage || noop
+    };
+
+    const s = {
+      db: null,
+      room: null,
+      uid: null,
+      dbFailed: false,
+      roomFailed: false,
+      roomOnline: true,
+      offlineTimer: null,
+      players: {},
+      own: null,
+      floor: 0,
+      dirty: false,
+      inFlight: false,
+      attempts: 0,
+      retryTimer: null,
+      playersUnsub: null,
+      subTimes: [],
+      restarts: 0,
+      restartTimer: null,
+      tickHandle: null,
+      roomUnsubs: [],
+      seen: new Set(),
+      msgSeq: 0,
+      peerList: [],
+      seqByPeer: {},
+      presenceByPeer: {},
+      pres: null,
+      presenceSeq: 0,
+      connecting: null,
+      mode: 'lokal',
+      peers: PEERS_UNBEKANNT,
+      warnedLocal: false
+    };
+
+    function writable() {
+      return !!(s.db && s.uid && !s.dbFailed);
+    }
+
+    function ownSeq() {
+      return s.own ? s.own.seq : s.floor;
+    }
+
+    function others(list) {
+      return list.filter(function (p) { return p && !p.isMe && p.kind !== 'agent'; });
+    }
+
+    function computeMode() {
+      if (!s.db || !s.uid || s.dbFailed) return 'lokal';
+      if (s.room && !s.roomFailed && s.roomOnline) return 'live';
+      return 'nur Datenbank';
+    }
+
+    function computePeers() {
+      if (!s.room || s.roomFailed) return PEERS_UNBEKANNT;
+      return others(s.peerList).length ? PEERS_DA : PEERS_ABWESEND;
+    }
+
+    function emitStatus() {
+      s.mode = computeMode();
+      s.peers = computePeers();
+      cb.onStatus({ mode: s.mode, peers: s.peers, uid: s.uid });
+    }
+
+    function clearTimer(handle, clearFn) {
+      if (handle !== null && handle !== undefined) clearFn(handle);
+    }
+
+    // ---------- Verbindung ----------
+
+    async function grab(claude, name) {
+      try {
+        if (!claude || typeof claude.use !== 'function') return null;
+        const ns = await claude.use(name);
+        return ns || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function readUid(user) {
+      try {
+        const id = typeof user.id === 'function' ? await user.id() : null;
+        return typeof id === 'string' && UID_PATTERN.test(id) ? id : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function joinRoom(ns) {
+      try {
+        if (typeof ns.join !== 'function') return null;
+        const room = await ns.join(ROOM_NAME);
+        return room && typeof room.on === 'function' ? room : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function doConnect(claude) {
+      const db = await grab(claude, 'db');
+      const user = await grab(claude, 'user');
+      const roomNs = await grab(claude, 'room');
+      const uid = user ? await readUid(user) : null;
+      s.uid = uid;
+      s.db = db && uid ? db : null;
+      if (db && !uid) {
+        cb.onMessage('Ohne Benutzerkennung wird nicht gespeichert. Das Spiel läuft lokal.', true);
+      }
+      s.room = roomNs ? await joinRoom(roomNs) : null;
+      if (s.room) attachRoom();
+      if (s.db) {
+        subscribePlayers();
+        startTick();
+      }
+      emitStatus();
+      return { mode: s.mode };
+    }
+
+    function connect(claude) {
+      if (!s.connecting) {
+        s.connecting = doConnect(claude).catch(function () {
+          emitStatus();
+          return { mode: s.mode };
+        });
+      }
+      return s.connecting;
+    }
+
+    // ---------- Spieler-Dokumente (db) ----------
+
+    function readCollection(snap) {
+      const docs = Array.isArray(snap) ? snap : (snap && Array.isArray(snap.docs) ? snap.docs : []);
+      const map = {};
+      docs.forEach(function (d) {
+        if (!d || d.exists === false || typeof d.id !== 'string') return;
+        const doc = sanitizeDoc(typeof d.data === 'function' ? d.data() : null);
+        if (doc) map[d.id] = doc;
+      });
+      return map;
+    }
+
+    function subscribePlayers() {
+      if (s.playersUnsub || s.dbFailed || !s.db) return;
+      const now = timers.now();
+      s.subTimes = s.subTimes.filter(function (t) { return now - t <= SUB_WINDOW_MS; });
+      if (s.subTimes.length >= SUB_MAX_IN_WINDOW) {
+        failDb('subscription_limit');
+        return;
+      }
+      s.subTimes.push(now);
+      try {
+        s.playersUnsub = s.db.collection(COLLECTION).onSnapshot(onPlayersSnap, onPlayersError);
+      } catch (e) {
+        failDb('transform_error');
+      }
+    }
+
+    function onPlayersSnap(snap) {
+      s.restarts = 0;
+      applyPlayers(readCollection(snap));
+    }
+
+    function onPlayersError(err) {
+      s.playersUnsub = null;
+      const code = errCode(err);
+      if (DB_TERMINAL.indexOf(code) >= 0) {
+        failDb(code);
+        return;
+      }
+      scheduleRestart();
+    }
+
+    function scheduleRestart() {
+      if (s.restartTimer || s.dbFailed) return;
+      s.restarts += 1;
+      if (s.restarts > RESTART_GIVE_UP) {
+        failDb('unavailable');
+        return;
+      }
+      s.restartTimer = timers.setTimeout(function () {
+        s.restartTimer = null;
+        subscribePlayers();
+      }, RESTART_MS);
+    }
+
+    function failDb(code) {
+      if (s.dbFailed) return;
+      s.dbFailed = true;
+      s.dirty = false;
+      clearTimer(s.restartTimer, timers.clearTimeout);
+      s.restartTimer = null;
+      clearTimer(s.tickHandle, timers.clearInterval);
+      s.tickHandle = null;
+      if (s.playersUnsub) {
+        try { s.playersUnsub(); } catch (e) { /* bereits beendet */ }
+      }
+      s.playersUnsub = null;
+      cb.onMessage('Verbindung zur Datenbank verloren (' + code + '). Das Spiel läuft lokal weiter.', true);
+      emitStatus();
+    }
+
+    // Übernimmt den Stand aus der DB. Eigenes Dokument nur, wenn es neuer ist
+    // (seq) und nichts lokal aussteht. So geht kein Zug zurück.
+    function applyPlayers(map) {
+      s.players = map;
+      if (s.uid) {
+        const remote = map[s.uid] || null;
+        if (remote && !s.dirty && !s.inFlight && remote.seq > ownSeq()) {
+          s.own = remote;
+          cb.onOwn(clone(remote));
+        }
+        checkConflict();
+      }
+      cb.onPlayers(clone(map), s.uid);
+    }
+
+    // Zwei Konten mit derselben Figur: deterministisch gewinnt die kleinere uid.
+    // Die größere gibt ihr Dokument ab. Beide Clients kommen zum selben Ergebnis.
+    function checkConflict() {
+      const me = s.own;
+      if (!me || s.inFlight || s.dirty || !s.uid) return;
+      let rival = null;
+      Object.keys(s.players).forEach(function (uid) {
+        if (uid !== s.uid && s.players[uid].role === me.role) rival = uid;
+      });
+      if (rival === null || s.uid < rival) return;
+      s.floor = me.seq;
+      s.own = null;
+      cb.onOwn(null);
+      cb.onMessage('Rolle vergeben. Bitte wähle eine andere Figur.', true);
+      deleteOwn();
+    }
+
+    function deleteOwn() {
+      if (!writable()) return;
+      try {
+        Promise.resolve(s.db.doc(COLLECTION + '/' + s.uid).delete()).catch(onWriteError);
+      } catch (e) {
+        onWriteError(e);
+      }
+    }
+
+    // Lokale Änderung am eigenen Dokument. mutator(kopie) liefert den neuen Stand
+    // oder null. Ohne echte Änderung passiert nichts.
+    function commitOwn(mutator) {
+      const base = s.own;
+      const draft = mutator(base ? clone(base) : null);
+      // Die Engine liefert seq schon mit (+1 bei Spielaktionen). Ohne seq oder mit altem
+      // seq wird um 1 erhöht (z. B. beim Abgleich).
+      const next = sanitizeDoc(draft ? Object.assign({}, draft, { seq: isSeq(draft.seq) ? draft.seq : ownSeq() }) : null);
+      if (!next) {
+        cb.onMessage('Diese Änderung ist ungültig und wurde nicht übernommen.', true);
+        return false;
+      }
+      if (base && contentKey(base) === contentKey(next)) return false;
+      if (next.seq <= ownSeq()) next.seq = ownSeq() + 1;
+      next.updatedAt = new Date(timers.now()).toISOString();
+      s.own = next;
+      s.attempts = 0;
+      cb.onOwn(clone(next));
+      if (writable()) {
+        s.dirty = true;
+        flush();
+      } else if (!s.warnedLocal) {
+        s.warnedLocal = true;
+        cb.onMessage('Nur lokal: Dein Stand wird nicht gespeichert.', false);
+      }
+      return true;
+    }
+
+    // Schreib-Warteschlange: höchstens ein Write gleichzeitig. Gesendet wird
+    // immer der neueste lokale Stand als vollständiges Dokument.
+    function flush() {
+      if (!writable() || s.inFlight || !s.dirty || !s.own) return;
+      s.dirty = false;
+      s.inFlight = true;
+      const payload = clone(s.own);
+      let pending;
+      try {
+        pending = s.db.doc(COLLECTION + '/' + s.uid).set(payload);
+      } catch (e) {
+        s.inFlight = false;
+        onWriteError(e);
+        return;
+      }
+      Promise.resolve(pending).then(function () {
+        s.inFlight = false;
+        s.attempts = 0;
+        // Ein Snapshot kann während des Writes gekommen sein und wurde dann übersprungen.
+        checkConflict();
+        flush();
+      }, onWriteError);
+    }
+
+    function onWriteError(err) {
+      s.inFlight = false;
+      const code = errCode(err);
+      if (WRITE_ROOM_DEAD.indexOf(code) >= 0 || code === 'revoked' || code === 'not_granted') {
+        failDb(code);
+        return;
+      }
+      if (code === 'invalid_argument') {
+        cb.onMessage('Dein Zug wurde abgelehnt und gilt nur auf diesem Gerät.', true);
+        return;
+      }
+      if (code === 'quota_exceeded') {
+        cb.onMessage('Der Speicherplatz ist voll. Dein Zug gilt nur auf diesem Gerät.', true);
+        return;
+      }
+      // unavailable, resource_exhausted oder unbekannt: genau eine Wiederholung.
+      s.attempts += 1;
+      if (s.attempts >= 2) {
+        s.dirty = false;
+        cb.onMessage('Speichern hat nicht geklappt. Dein Zug gilt vorerst nur auf diesem Gerät.', true);
+        return;
+      }
+      s.dirty = true;
+      const delay = code === 'resource_exhausted' ? RETRY_EXHAUSTED_MS : RETRY_UNAVAILABLE_MS;
+      s.retryTimer = timers.setTimeout(function () {
+        s.retryTimer = null;
+        flush();
+      }, delay);
+    }
+
+    // Abgleich alle 3 s. Nur lesen, nie schreiben (V2).
+    function startTick() {
+      if (s.tickHandle !== null) return;
+      s.tickHandle = timers.setInterval(tick, SYNC_MS);
+    }
+
+    function tick() {
+      if (!s.db || s.dbFailed || s.inFlight) return;
+      try {
+        Promise.resolve(s.db.collection(COLLECTION).get()).then(function (snap) {
+          if (!s.dbFailed) applyPlayers(readCollection(snap));
+        }, function (err) {
+          const code = errCode(err);
+          if (DB_TERMINAL.indexOf(code) >= 0) failDb(code);
+        });
+      } catch (e) {
+        failDb('transform_error');
+      }
+    }
+
+    // ---------- Rollen ----------
+
+    function otherUidWithRole(role) {
+      let found = null;
+      Object.keys(s.players).forEach(function (uid) {
+        if (uid !== s.uid && s.players[uid].role === role) found = uid;
+      });
+      return found;
+    }
+
+    // Figur wählen. Zuschauer hat kein Dokument und sendet nichts.
+    function pickRole(role, levelId, startPos) {
+      if (role === SPECTATOR) return leaveRole();
+      if (PLAYER_ROLES.indexOf(role) < 0) return false;
+      if (otherUidWithRole(role) !== null) {
+        cb.onMessage('Rolle vergeben. Bitte wähle eine andere Figur.', true);
+        return false;
+      }
+      return commitOwn(function (d) {
+        return d ? Object.assign({}, d, { role: role }) : emptyDoc(role, levelId, startPos);
+      });
+    }
+
+    function leaveRole() {
+      if (!s.own) return false;
+      s.floor = s.own.seq;
+      s.own = null;
+      cb.onOwn(null);
+      if (writable()) {
+        s.dirty = false;
+        deleteOwn();
+      }
+      return true;
+    }
+
+    // ---------- Raum (room) ----------
+
+    function safeSub(make) {
+      try {
+        const unsub = make();
+        if (typeof unsub === 'function') s.roomUnsubs.push(unsub);
+      } catch (e) {
+        onRoomError({ code: 'upstream_error', message: 'Subscription fehlgeschlagen' });
+      }
+    }
+
+    function attachRoom() {
+      const room = s.room;
+      safeSub(function () { return room.on('move', onRoomMove, onRoomError); });
+      safeSub(function () { return room.on('sag', onRoomSay, onRoomError); });
+      safeSub(function () { return room.on('aktion', onRoomAktion, onRoomError); });
+      safeSub(function () { return room.onPeers(onPeers, onRoomError); });
+      safeSub(function () { return room.onConnection(onRoomConnection, onRoomError); });
+      // Beim Laden ist „nicht verbunden“ normal. Erst nach einer Schonfrist zählt es.
+      s.roomOnline = true;
+      try {
+        if (!room.connected()) startOffline();
+      } catch (e) {
+        startOffline();
+      }
+    }
+
+    function startOffline() {
+      if (s.offlineTimer !== null) return;
+      s.offlineTimer = timers.setTimeout(function () {
+        s.offlineTimer = null;
+        s.roomOnline = false;
+        emitStatus();
+      }, OFFLINE_GRACE_MS);
+    }
+
+    function onRoomConnection(connected) {
+      if (connected) {
+        clearTimer(s.offlineTimer, timers.clearTimeout);
+        s.offlineTimer = null;
+        if (!s.roomOnline) {
+          s.roomOnline = true;
+          emitStatus();
+        }
+      } else {
+        startOffline();
+      }
+    }
+
+    function onRoomError(err) {
+      if (s.roomFailed) return;
+      s.roomFailed = true;
+      clearTimer(s.offlineTimer, timers.clearTimeout);
+      s.offlineTimer = null;
+      cb.onMessage('Der Live-Raum ist nicht verfügbar. Das Spiel läuft über die Datenbank weiter.', false);
+      emitStatus();
+    }
+
+    function onPeers(change) {
+      s.peerList = change && Array.isArray(change.peers) ? change.peers.slice() : [];
+      absorbPeers(s.peerList);
+      emitStatus();
+    }
+
+    // Presence nur mit höherem seq übernehmen. Ältere Stände (Umordnung) werden ignoriert.
+    function absorbPeers(list) {
+      const keep = {};
+      list.forEach(function (p) {
+        if (!p || p.isMe || typeof p.peer !== 'string') return;
+        keep[p.peer] = true;
+        const pr = sanitizePresence(p.presence);
+        if (!pr) return;
+        const last = s.seqByPeer[p.peer];
+        if (last === undefined || pr.seq > last) {
+          s.seqByPeer[p.peer] = pr.seq;
+          s.presenceByPeer[p.peer] = pr;
+        }
+      });
+      Object.keys(s.presenceByPeer).forEach(function (key) {
+        if (!keep[key]) {
+          delete s.presenceByPeer[key];
+          delete s.seqByPeer[key];
+        }
+      });
+      cb.onPresence(clone(s.presenceByPeer));
+    }
+
+    // Fremde Nachricht prüfen. Eigene Echos (isMe) und doppelte (gleicher Sender,
+    // gleiches Topic, gleicher seq) werden verworfen.
+    function inbound(msg, topic) {
+      if (!msg || msg.isMe || !isPlainObject(msg.data)) return null;
+      const seq = msg.data.seq;
+      if (!isSeq(seq)) return null;
+      const key = String(msg.peer) + '|' + topic + '|' + seq;
+      if (s.seen.has(key)) return null;
+      s.seen.add(key);
+      if (s.seen.size > DEDUPE_MAX) {
+        s.seen.delete(s.seen.values().next().value);
+      }
+      return msg.data;
+    }
+
+    function onRoomMove(msg) {
+      const data = inbound(msg, 'move');
+      const mv = data ? sanitizeMove(data) : null;
+      if (mv) cb.onMove(mv);
+    }
+
+    function onRoomSay(msg) {
+      const data = inbound(msg, 'sag');
+      const say = data ? sanitizeSay(data) : null;
+      if (say) cb.onSay(say);
+    }
+
+    function onRoomAktion(msg) {
+      const data = inbound(msg, 'aktion');
+      const act = data ? sanitizeAktion(data) : null;
+      if (act) cb.onAktion(act);
+    }
+
+    function nextMsgSeq() {
+      s.msgSeq += 1;
+      return s.msgSeq;
+    }
+
+    function sendRoom(topic, payload) {
+      if (!s.room || s.roomFailed) return { ok: false, reason: 'nur lokal' };
+      if (byteSize(payload) > PAYLOAD_MAX_BYTES) return { ok: false, reason: 'zu groß' };
+      const onFail = function (err) {
+        const code = errCode(err);
+        cb.onMessage('Nachricht konnte nicht gesendet werden.', true);
+        if (WRITE_ROOM_DEAD.indexOf(code) >= 0) onRoomError(err);
+      };
+      try {
+        Promise.resolve(s.room.emit(topic, payload)).catch(onFail);
+      } catch (e) {
+        onFail(e);
+      }
+      return { ok: true };
+    }
+
+    function sendMove(role, levelId, x, y) {
+      if (PLAYER_ROLES.indexOf(role) < 0) return { ok: false, reason: 'zuschauer' };
+      return sendRoom('move', { role: role, level: levelId, x: x, y: y, seq: nextMsgSeq() });
+    }
+
+    // cutHint: true, wenn der Aufrufer schon vor dem Kürzen der Engine gekürzt hat.
+    function sendSay(role, text, cutHint) {
+      if (PLAYER_ROLES.indexOf(role) < 0) return { ok: false, reason: 'zuschauer' };
+      const clip = clipText(text);
+      if (clip.text.length === 0) return { ok: false, reason: 'leer' };
+      const cut = clip.cut || cutHint === true;
+      const res = sendRoom('sag', { role: role, text: clip.text, cut: cut, seq: nextMsgSeq() });
+      return Object.assign({}, res, { text: clip.text, cut: cut });
+    }
+
+    function sendAktion(role, kind) {
+      if (PLAYER_ROLES.indexOf(role) < 0) return { ok: false, reason: 'zuschauer' };
+      if (typeof kind !== 'string' || !KIND_PATTERN.test(kind)) return { ok: false, reason: 'ungültig' };
+      return sendRoom('aktion', { role: role, kind: kind, seq: nextMsgSeq() });
+    }
+
+    // Presence = absoluter Zustand (Rolle, Level, Position). Der Aufrufer gibt
+    // die Felder an, Net merged und sendet alles zusammen.
+    function setPresence(fields) {
+      const merged = Object.assign({}, s.pres || {}, fields || {});
+      const clean = sanitizePresence(Object.assign({}, merged, { seq: 0 }));
+      if (!clean) return { ok: false, reason: 'ungültig' };
+      delete clean.seq;
+      s.pres = clean;
+      if (!s.room || s.roomFailed) return { ok: false, reason: 'nur lokal' };
+      s.presenceSeq += 1;
+      const payload = Object.assign({}, clean, { seq: s.presenceSeq });
+      if (byteSize(payload) > PAYLOAD_MAX_BYTES) {
+        cb.onMessage('Die Anzeige ist zu groß und wurde nicht gesendet.', true);
+        return { ok: false, reason: 'zu groß' };
+      }
+      const onFail = function () {
+        cb.onMessage('Die Anzeige konnte nicht gesendet werden.', true);
+      };
+      try {
+        Promise.resolve(s.room.presence(payload)).catch(onFail);
+      } catch (e) {
+        onFail(e);
+      }
+      return { ok: true };
+    }
+
+    function dispose() {
+      if (s.playersUnsub) {
+        try { s.playersUnsub(); } catch (e) { /* schon beendet */ }
+      }
+      s.roomUnsubs.forEach(function (u) {
+        try { u(); } catch (e) { /* schon beendet */ }
+      });
+      s.roomUnsubs = [];
+      clearTimer(s.restartTimer, timers.clearTimeout);
+      clearTimer(s.retryTimer, timers.clearTimeout);
+      clearTimer(s.offlineTimer, timers.clearTimeout);
+      clearTimer(s.tickHandle, timers.clearInterval);
+      s.restartTimer = null;
+      s.retryTimer = null;
+      s.offlineTimer = null;
+      s.tickHandle = null;
+      s.playersUnsub = null;
+    }
+
+    return {
+      connect: connect,
+      pickRole: pickRole,
+      commitOwn: commitOwn,
+      setPresence: setPresence,
+      sendMove: sendMove,
+      sendSay: sendSay,
+      sendAktion: sendAktion,
+      dispose: dispose,
+      status: function () { return { mode: s.mode, peers: s.peers, uid: s.uid }; },
+      own: function () { return clone(s.own); },
+      players: function () { return clone(s.players); },
+      presence: function () { return clone(s.presenceByPeer); }
+    };
+  }
+
+  // ---------- Live-Schritte (rein; Engine wird per Parameter übergeben) ----------
+  function otherRole(role) {
+    if (role === 'jonathan') return 'raphael';
+    if (role === 'raphael') return 'jonathan';
+    return null;
+  }
+
+  // Spieler-Dokumente nach Rolle. Das eigene Dokument hat Vorrang.
+  function liveDocs(players, own) {
+    const docs = { jonathan: null, raphael: null };
+    Object.keys(players || {}).forEach(function (id) {
+      const d = players[id];
+      if (d && PLAYER_ROLES.indexOf(d.role) >= 0 && docs[d.role] === null) docs[d.role] = d;
+    });
+    if (own && PLAYER_ROLES.indexOf(own.role) >= 0) docs[own.role] = own;
+    return docs;
+  }
+
+  // Presence-Eintrag der Rolle mit dem höchsten seq (Presence liefert pro Peer genau einen).
+  function presenceFor(presence, role) {
+    let best = null;
+    Object.keys(presence || {}).forEach(function (k) {
+      const p = presence[k];
+      if (p && p.role === role && (best === null || p.seq > best.seq)) best = p;
+    });
+    return best;
+  }
+
+  // Position der Figur einer Rolle für die Anzeige. Presence ist voraus, wenn ihr ds
+  // größer ist als die seq des DB-Dokuments. Sonst gilt die DB. Null = keine Figur bekannt.
+  function livePeerPos(role, lvl, docs, presence) {
+    const d = docs[role] || null;
+    const pr = presenceFor(presence, role);
+    if (pr && pr.level === lvl.id && (!d || (pr.ds || 0) > (d.seq || 0))) return [pr.x, pr.y];
+    return d ? [d.x, d.y] : null;
+  }
+
+  // Abwesend: Dokument der Rolle vorhanden, aber kein Presence-Eintrag mehr dieser Rolle.
+  function livePeerAbsent(role, docs, presence) {
+    return !!docs[role] && !presenceFor(presence, role);
+  }
+
+  function liveNext(levels, lvl) {
+    const idx = levels.indexOf(lvl);
+    return idx >= 0 && idx < levels.length - 1 ? levels[idx + 1] : null;
+  }
+
+  // Abgleich der eigenen Figur mit dem Partner (engine.reconcile). true = es wurde geschrieben.
+  function liveReconcile(engine, net, lvl, own, other, next) {
+    if (!own || !other || !lvl) return false;
+    const patch = engine.reconcile(lvl, own, other, next || null);
+    if (!patch) return false;
+    return net.commitOwn(function (d) { return Object.assign({}, d, patch); });
+  }
+
+  // Ohne Partner-Dokument rechnet die Engine mit dem Startfeld des Partners (wie deriveWorld).
+  // Dieses Dokument wird nirgends geschrieben.
+  function virtualDoc(lvl, role) {
+    return {
+      role: role, level: lvl.id, x: lvl.start[role][0], y: lvl.start[role][1], seq: 0,
+      inv: { key: false }, found: [], codesOpened: [], keyDoorsOpened: [], keyGiven: null,
+      keyReceived: null, accused: null, levelDone: [], updatedAt: null
+    };
+  }
+
+  // Eine Spielaktion (engine.applyLocal). Patch schreiben, sag und move senden.
+  function liveAct(engine, net, lvl, own, other, action) {
+    const me = own ? own.role : null;
+    const partner = other || virtualDoc(lvl, otherRole(me));
+    const res = engine.applyLocal(lvl, own, partner, Object.assign({}, action, { who: me }));
+    if (!res || !res.ok) {
+      return { ok: false, message: res ? res.message : 'Unbekannte Aktion.', changed: false };
+    }
+    let changed = false;
+    if (res.myDocPatch) {
+      const patch = res.myDocPatch;
+      changed = net.commitOwn(function (d) { return Object.assign({}, d, patch); });
+    }
+    if (res.event && res.event.kind === 'say') net.sendSay(me, res.event.text, action.cut === true);
+    if (changed && action.type === 'move') {
+      const now = net.own();
+      if (now) net.sendMove(me, now.level, now.x, now.y);
+    }
+    const said = res.event && res.event.kind === 'say' ? res.event.text : null;
+    return { ok: true, message: res.message || '', changed: changed, said: said };
+  }
+
+  return {
+    livePeerPos: livePeerPos,
+    livePeerAbsent: livePeerAbsent,
+    virtualDoc: virtualDoc,
+    liveDocs: liveDocs,
+    liveNext: liveNext,
+    liveReconcile: liveReconcile,
+    liveAct: liveAct,
+    otherRole: otherRole,
+    createNet: createNet,
+    emptyDoc: emptyDoc,
+    sanitizeDoc: sanitizeDoc,
+    clipText: clipText,
+    sanitizeSay: sanitizeSay,
+    sanitizeMove: sanitizeMove,
+    sanitizePresence: sanitizePresence,
+    ROOM_NAME: ROOM_NAME,
+    COLLECTION: COLLECTION,
+    SAY_MAX: SAY_MAX,
+    SYNC_MS: SYNC_MS,
+    PAYLOAD_MAX_BYTES: PAYLOAD_MAX_BYTES
+  };
+})();
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Net;
+}
+
+/* ==========================================================
+   Rosi 62 · Minispiel-Engine
+   Reine Funktionen ohne DOM und ohne Netzwerk. Der Zustand ist
+   reines JSON (kann in db/world/current gespeichert werden).
+   Wird von game/build.py in game/dist/index.html eingefügt und
+   von game/tests/test_engine.js direkt per require geprüft.
+
+   Koordinaten: [x, y], x von links (0..8), y von oben (0..8).
+   Figuren: jonathan (roter Kreis), raphael (blaues Quadrat).
+   ========================================================== */
+
+const ENGINE_WHO = ['jonathan', 'raphael'];
+const ENGINE_LOG_MAX = 8;
+const ENGINE_MAX_STEPS = 9;
+const ENGINE_SAY_MAX = 200;
+const ENGINE_DIR_VECTORS = {
+  hoch: [0, -1],
+  runter: [0, 1],
+  links: [-1, 0],
+  rechts: [1, 0]
+};
+const ENGINE_ALIASES = {
+  hoch: 'hoch', oben: 'hoch', w: 'hoch',
+  runter: 'runter', unten: 'runter', s: 'runter',
+  links: 'links', a: 'links',
+  rechts: 'rechts', d: 'rechts',
+  nimm: 'nimm', nehmen: 'nimm', nehme: 'nimm',
+  gib: 'gib', geben: 'gib',
+  benutze: 'benutze', nutze: 'benutze', benutzen: 'benutze',
+  sag: 'sag', sage: 'sag', sagen: 'sag',
+  neu: 'neu', neustart: 'neu',
+  code: 'code',
+  beschuldige: 'beschuldige', beschuldigen: 'beschuldige',
+  hilfe: 'hilfe', help: 'hilfe', '?': 'hilfe'
+};
+const ENGINE_CODE_PATTERN = /^\d{4}$/;
+
+function engineSame(a, b) {
+  return a[0] === b[0] && a[1] === b[1];
+}
+
+function engineClone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function engineOther(who) {
+  return who === 'jonathan' ? 'raphael' : 'jonathan';
+}
+
+function engineIsWall(level, p) {
+  return level.walls.some(function (w) { return engineSame(w, p); });
+}
+
+function engineInBounds(level, p) {
+  return p[0] >= 0 && p[1] >= 0 && p[0] < level.size && p[1] < level.size;
+}
+
+function engineItemIndexAt(level, p, type) {
+  for (let i = 0; i < level.items.length; i++) {
+    const it = level.items[i];
+    if (it.type === type && engineSame(it.at, p)) return i;
+  }
+  return -1;
+}
+
+function engineDoorIndexAt(level, p) {
+  return engineItemIndexAt(level, p, 'door');
+}
+
+/* Tür-artige Blockade: Schlosstür, Schalter-Tür oder Codetür. */
+function engineBlockIndexAt(level, p) {
+  for (let i = 0; i < level.items.length; i++) {
+    const it = level.items[i];
+    if ((it.type === 'door' || it.type === 'codedoor') && engineSame(it.at, p)) return i;
+  }
+  return -1;
+}
+
+function engineAdjacent(a, b) {
+  return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) === 1;
+}
+
+/* Wer steht auf diesem Feld? 'jonathan' | 'raphael' | null */
+function engineOccupant(state, p) {
+  for (let i = 0; i < ENGINE_WHO.length; i++) {
+    if (engineSame(state.pos[ENGINE_WHO[i]], p)) return ENGINE_WHO[i];
+  }
+  return null;
+}
+
+/* Neuer Spielzustand für ein Level. items[i] gehört zu level.items[i]:
+   Schlüssel {holder, used}, Schlosstür {unlocked}, sonst null. */
+function createState(level) {
+  return {
+    pos: {
+      jonathan: engineClone(level.start.jonathan),
+      raphael: engineClone(level.start.raphael)
+    },
+    items: level.items.map(function (it) {
+      if (it.type === 'key') return { holder: null, used: false };
+      if (it.type === 'door' && !it.link) return { unlocked: false };
+      if (it.type === 'codedoor') return { unlocked: false };
+      if (it.type === 'clue') return { by: null };
+      return null;
+    }),
+    steps: 0,
+    solved: false,
+    done: false,
+    log: []
+  };
+}
+
+/* Ist die Tür offen?
+   - Schlosstür (ohne link): offen, wenn aufgeschlossen.
+   - Schalter-Tür (link "A"): offen, wenn ALLE Schalter mit link "A"
+     gleichzeitig besetzt sind (Koop: beide Figuren).
+   - Immer offen, solange eine Figur auf dem Türfeld steht. */
+function engineDoorOpen(level, state, index) {
+  const door = level.items[index];
+  if (engineOccupant(state, door.at)) return true;
+  if (!door.link) return !!(state.items[index] && state.items[index].unlocked);
+  const switches = level.items.filter(function (it) {
+    return it.type === 'switch' && it.link === door.link;
+  });
+  return switches.length > 0 && switches.every(function (s) {
+    return engineOccupant(state, s.at) !== null;
+  });
+}
+
+/* Darf 'who' auf das Feld p ziehen? Prüft gegen den aktuellen Zustand. */
+function engineCanEnter(level, state, p, who) {
+  if (!engineInBounds(level, p)) return { ok: false, reason: 'der Rand ist erreicht' };
+  if (engineIsWall(level, p)) return { ok: false, reason: 'eine Wand blockiert' };
+  if (engineOccupant(state, p) === engineOther(who)) {
+    return { ok: false, reason: 'die andere Figur steht im Weg' };
+  }
+  const di = engineBlockIndexAt(level, p);
+  if (di >= 0 && !engineDoorOpen(level, state, di)) {
+    return { ok: false, reason: 'die Tür ist zu' };
+  }
+  return { ok: true };
+}
+
+/* Ist eine Figur gerade im Ziel? */
+function engineOnGoal(level, state, who) {
+  return level.items.some(function (it) {
+    return it.type === 'goal' && engineSame(it.at, state.pos[who]);
+  });
+}
+
+function engineHeldKey(state, who) {
+  return state.items.findIndex(function (s) {
+    return s && s.holder === who;
+  });
+}
+
+function engineLog(state, who, text) {
+  state.log.push({ who: who, text: text });
+  if (state.log.length > ENGINE_LOG_MAX) {
+    state.log = state.log.slice(state.log.length - ENGINE_LOG_MAX);
+  }
+}
+
+function engineFinish(level, state, who, text) {
+  engineLog(state, who, text);
+  const goals = engineOnGoal(level, state, 'jonathan') && engineOnGoal(level, state, 'raphael');
+  state.done = goals && (!level.finale || !!state.solved);
+  return { ok: true, state: state, message: '' };
+}
+
+/* Hinweis unter der Figur als gefunden markieren (einmal pro Hinweis).
+   Liefert die Anzahl neu gefundener Hinweise (0 oder 1). */
+function engineFindClue(level, state, who) {
+  const p = state.pos[who];
+  const i = level.items.findIndex(function (it, idx) {
+    return it.type === 'clue' && engineSame(it.at, p) && state.items[idx].by === null;
+  });
+  if (i < 0) return 0;
+  state.items[i].by = who;
+  return 1;
+}
+
+/* Punkte = Anzahl gefundener Hinweise im Level. */
+function engineScore(level, state) {
+  return level.items.reduce(function (sum, it, idx) {
+    return sum + (it.type === 'clue' && state.items[idx].by !== null ? 1 : 0);
+  }, 0);
+}
+
+/* Notizbuch einer Figur: gefundene Hinweise. Text nur für `for` (oder ohne for);
+   sonst text null und hidden true. */
+function engineNotebook(level, state, who) {
+  const entries = [];
+  level.items.forEach(function (it, idx) {
+    if (it.type !== 'clue' || state.items[idx].by === null) return;
+    const mine = !it.for || it.for === who;
+    entries.push({ text: mine ? it.text : null, hidden: !mine, for: it.for || null });
+  });
+  return entries;
+}
+
+function engineFail(state, message) {
+  return { ok: false, state: state, message: message };
+}
+
+function engineMove(level, state, who, dir, n) {
+  const v = ENGINE_DIR_VECTORS[dir];
+  const next = engineClone(state);
+  let moved = 0;
+  let found = 0;
+  let reason = '';
+  for (let k = 0; k < n; k++) {
+    const p = next.pos[who];
+    const target = [p[0] + v[0], p[1] + v[1]];
+    const check = engineCanEnter(level, next, target, who);
+    if (!check.ok) {
+      reason = check.reason;
+      break;
+    }
+    next.pos[who] = target;
+    next.steps++;
+    moved++;
+    found += engineFindClue(level, next, who);
+  }
+  if (moved === 0) return engineFail(state, 'Nicht möglich: ' + reason + '.');
+  const text = dir + (n > 1 ? ' ' + moved : '');
+  const result = engineFinish(level, next, who, text);
+  for (let f = 0; f < found; f++) engineLog(result.state, who, 'Hinweis gefunden');
+  if (found > 0 && !reason) result.message = 'Hinweis gefunden! Schau ins Notizbuch.';
+  if (reason) result.message = 'Nach ' + moved + ' Schritt(en) gestoppt: ' + reason + '.';
+  return result;
+}
+
+function engineTake(level, state, who) {
+  if (engineHeldKey(state, who) >= 0) return engineFail(state, 'Du trägst schon einen Schlüssel.');
+  const p = state.pos[who];
+  const i = level.items.findIndex(function (it, idx) {
+    return it.type === 'key' && engineSame(it.at, p) &&
+      state.items[idx].holder === null && !state.items[idx].used;
+  });
+  if (i < 0) return engineFail(state, 'Hier liegt kein Schlüssel.');
+  const next = engineClone(state);
+  next.items[i].holder = who;
+  return engineFinish(level, next, who, 'nimmt den Schlüssel');
+}
+
+function engineGive(level, state, who) {
+  const i = engineHeldKey(state, who);
+  if (i < 0) return engineFail(state, 'Du hast keinen Schlüssel.');
+  const other = engineOther(who);
+  if (!engineAdjacent(state.pos[who], state.pos[other])) {
+    return engineFail(state, 'Die andere Figur muss direkt neben dir stehen.');
+  }
+  const next = engineClone(state);
+  next.items[i].holder = other;
+  return engineFinish(level, next, who, 'gibt den Schlüssel');
+}
+
+function engineUse(level, state, who) {
+  const i = engineHeldKey(state, who);
+  if (i < 0) return engineFail(state, 'Du hast keinen Schlüssel.');
+  const p = state.pos[who];
+  const di = level.items.findIndex(function (it, idx) {
+    return it.type === 'door' && !it.link && engineAdjacent(it.at, p);
+  });
+  if (di < 0) return engineFail(state, 'Keine Schlosstür neben dir.');
+  if (state.items[di].unlocked) return engineFail(state, 'Diese Tür ist schon offen.');
+  const next = engineClone(state);
+  next.items[di].unlocked = true;
+  next.items[i] = { holder: null, used: true };
+  return engineFinish(level, next, who, 'öffnet eine Tür');
+}
+
+/* Codetür neben der Figur mit code öffnen. Mehrere Codetüren daneben: die
+   erste passende zählt. Falscher Code: freundliche Meldung, nichts ändert sich. */
+function engineCode(level, state, who, code) {
+  const p = state.pos[who];
+  const near = [];
+  level.items.forEach(function (it, idx) {
+    if (it.type === 'codedoor' && engineAdjacent(it.at, p)) near.push(idx);
+  });
+  if (near.length === 0) return engineFail(state, 'Keine Codetür neben dir.');
+  const open = near.filter(function (idx) { return !state.items[idx].unlocked; });
+  if (open.length === 0) return engineFail(state, 'Diese Tür ist schon offen.');
+  const i = open.find(function (idx) { return level.items[idx].code === code; });
+  if (i === undefined) return engineFail(state, 'Der Code stimmt nicht. Such weiter nach Hinweisen.');
+  const next = engineClone(state);
+  next.items[i].unlocked = true;
+  return engineFinish(level, next, who, 'öffnet die Codetür');
+}
+
+/* Schlussrätsel: richtige Person (id oder Name, ohne Groß/Klein) beschuldigen.
+   Richtig: state.solved, message = finale.right. Falsch: Log, message = finale.wrong. */
+function engineAccuse(level, state, who, name) {
+  if (!level.finale) return engineFail(state, 'Hier gibt es niemanden zu beschuldigen.');
+  if (state.solved) return engineFail(state, 'Der Fall ist schon gelöst.');
+  const wanted = String(name || '').trim().toLowerCase();
+  if (!wanted) return engineFail(state, 'Wen beschuldigst du? Zum Beispiel: beschuldige Max');
+  const suspect = level.finale.suspects.find(function (s) {
+    return s.id === wanted || s.name.trim().toLowerCase() === wanted;
+  });
+  if (!suspect) {
+    const list = level.finale.suspects.map(function (s) { return s.name; }).join(', ');
+    return engineFail(state, 'Diesen Namen kenne ich nicht. Zur Auswahl: ' + list + '.');
+  }
+  if (suspect.id !== level.finale.culprit) {
+    const next = engineClone(state);
+    engineLog(next, who, 'beschuldigt ' + suspect.name);
+    return { ok: true, state: next, message: level.finale.wrong };
+  }
+  const next = engineClone(state);
+  next.solved = true;
+  const result = engineFinish(level, next, who, 'beschuldigt ' + suspect.name);
+  result.message = level.finale.right;
+  return result;
+}
+
+function engineSay(level, state, who, text) {
+  const clean = String(text || '').trim().slice(0, ENGINE_SAY_MAX);
+  if (!clean) return engineFail(state, 'Was soll ich sagen? Zum Beispiel: sag hallo');
+  return engineFinish(level, engineClone(state), who, 'sagt: ' + clean);
+}
+
+/* Führt eine Aktion aus und liefert {ok, state, message}.
+   state ist immer ein neues Objekt; der Eingabezustand bleibt unverändert.
+   action: {type: 'move', who, dir, n} | {type: 'take'|'give'|'use', who}
+           | {type: 'say', who, text} | {type: 'restart', who} */
+function applyAction(level, state, action) {
+  if (action.type === 'restart') {
+    const fresh = createState(level);
+    fresh.log = [{ who: action.who || 'system', text: 'Level neu gestartet' }];
+    return { ok: true, state: fresh, message: 'Level neu gestartet.' };
+  }
+  if (state.done) {
+    return engineFail(state, 'Dieses Level ist geschafft. Weiter geht es mit „Weiter“.');
+  }
+  if (ENGINE_WHO.indexOf(action.who) < 0) return engineFail(state, 'Unbekannte Figur.');
+  switch (action.type) {
+    case 'move':
+      return engineMove(level, state, action.who, action.dir, action.n || 1);
+    case 'take':
+      return engineTake(level, state, action.who);
+    case 'give':
+      return engineGive(level, state, action.who);
+    case 'use':
+      return engineUse(level, state, action.who);
+    case 'code':
+      return engineCode(level, state, action.who, String(action.code || ''));
+    case 'accuse':
+      return engineAccuse(level, state, action.who, action.name);
+    case 'say':
+      return engineSay(level, state, action.who, action.text);
+    default:
+      return engineFail(state, 'Unbekannte Aktion.');
+  }
+}
+
+/* Befehlszeile lesen (deutsch, tolerant).
+   Liefert {type: 'move', dir, n} | {type: 'take'|'give'|'use'|'restart'|'help'}
+   | {type: 'say', text} | {type: 'empty'} | {type: 'error', message}. */
+function parseCommand(input) {
+  const raw = String(input == null ? '' : input).trim();
+  if (!raw) return { type: 'empty' };
+  const match = raw.match(/^(\S+)\s*(.*)$/);
+  const verb = ENGINE_ALIASES[match[1].toLowerCase()];
+  const rest = match[2].trim();
+  const unknown = {
+    type: 'error',
+    message: 'Das habe ich nicht verstanden. Tippe „hilfe“ für alle Befehle.'
+  };
+  if (!verb) return unknown;
+  if (verb === 'sag') {
+    if (!rest) return { type: 'error', message: 'Was soll ich sagen? Zum Beispiel: sag hallo' };
+    return { type: 'say', text: rest.slice(0, ENGINE_SAY_MAX) };
+  }
+  if (verb === 'beschuldige') {
+    if (!rest) return { type: 'error', message: 'Wen beschuldigst du? Zum Beispiel: beschuldige Max' };
+    return { type: 'accuse', name: rest };
+  }
+  if (verb === 'code') {
+    if (!ENGINE_CODE_PATTERN.test(rest)) {
+      return { type: 'error', message: 'Der Code hat 4 Ziffern. Zum Beispiel: code 1234' };
+    }
+    return { type: 'code', code: rest };
+  }
+  if (verb in ENGINE_DIR_VECTORS) {
+    let n = 1;
+    if (rest) {
+      if (!/^\d+$/.test(rest)) return unknown;
+      n = parseInt(rest, 10);
+      if (n < 1) return unknown;
+      if (n > ENGINE_MAX_STEPS) n = ENGINE_MAX_STEPS;
+    }
+    return { type: 'move', dir: verb, n: n };
+  }
+  if (rest) return unknown;
+  if (verb === 'nimm') return { type: 'take' };
+  if (verb === 'gib') return { type: 'give' };
+  if (verb === 'benutze') return { type: 'use' };
+  if (verb === 'neu') return { type: 'restart' };
+  return { type: 'help' };
+}
+
+/* ==========================================================
+   Dokument-Schicht (Spieler-Dokumente, zwei Figuren)
+   Jede Figur schreibt nur ihr eigenes Dokument (spieler/<uid>):
+   { role, level, x, y, seq, inv:{key}, found, codesOpened, keyDoorsOpened,
+     keyGiven, keyReceived, accused, levelDone, updatedAt }.
+   deriveWorld leitet die gemeinsame Welt rein aus beiden Dokumenten ab.
+   applyLocal liefert nur einen Patch für das eigene Dokument.
+   reconcile übernimmt, was die andere Figur geschrieben hat.
+   Alle Funktionen sind rein: Eingaben werden nie verändert.
+   ========================================================== */
+
+const ENGINE_LABEL = { jonathan: 'Jonathan', raphael: 'Raphael' };
+
+function engineDocSeq(doc) {
+  return doc && Number.isFinite(doc.seq) ? doc.seq : 0;
+}
+
+function engineList(doc, field) {
+  return doc && Array.isArray(doc[field]) ? doc[field] : [];
+}
+
+function engineHasKey(doc) {
+  return !!(doc && doc.inv && doc.inv.key === true);
+}
+
+function engineInv(doc, key) {
+  return Object.assign({}, (doc && doc.inv) || {}, { key: key });
+}
+
+/* Vereinigung einer Index-Liste über beide Dokumente, sortiert, ohne Dubletten. */
+function engineUnion(docs, field) {
+  const out = [];
+  docs.forEach(function (d) {
+    engineList(d, field).forEach(function (v) {
+      if (Number.isInteger(v) && out.indexOf(v) < 0) out.push(v);
+    });
+  });
+  return out.sort(function (a, b) { return a - b; });
+}
+
+/* Position aus dem Dokument. Fehlendes Dokument: Startfeld der Rolle. */
+function engineDocPos(level, role, doc) {
+  if (!doc) return level.start[role].slice();
+  if (!Number.isFinite(doc.x) || !Number.isFinite(doc.y)) return [-1, -1];
+  return [doc.x, doc.y];
+}
+
+/* Figuren-Dokumente in fester Reihenfolge (jonathan, raphael). */
+function engineByRole(pJ, pR) {
+  return { jonathan: pJ || null, raphael: pR || null };
+}
+
+/* Konfliktregel: höhere seq gewinnt, bei Gleichstand jonathan. Liefert die Gewinner-Rolle. */
+function engineKeyWinner(pJ, pR) {
+  const sJ = engineDocSeq(pJ);
+  const sR = engineDocSeq(pR);
+  if (sR > sJ) return 'raphael';
+  return 'jonathan';
+}
+
+/* Gibt es eine Übergabe, die der Empfänger noch nicht übernommen hat? */
+function engineKeyPending(pJ, pR) {
+  const docs = engineByRole(pJ, pR);
+  return ENGINE_WHO.some(function (from) {
+    const giver = docs[from];
+    const g = giver && giver.keyGiven;
+    if (!g || g.to !== engineOther(from)) return false;
+    const r = docs[g.to] && docs[g.to].keyReceived;
+    return !(r && r.from === from && r.seq === g.seq);
+  });
+}
+
+/* Wer trägt den Schlüssel?
+   'jonathan' | 'raphael' (trägt ihn) | 'floor' (liegt noch auf seinem Feld)
+   | null (in einer Schlosstür verbraucht, oder unterwegs zwischen gib und Abgleich,
+   oder es gibt im Level keinen Schlüssel). */
+function engineKeyHolder(level, pJ, pR) {
+  if (level.items.findIndex(function (it) { return it.type === 'key'; }) < 0) return null;
+  if (engineList(pJ, 'keyDoorsOpened').length > 0 || engineList(pR, 'keyDoorsOpened').length > 0) {
+    return null;
+  }
+  const holders = ENGINE_WHO.filter(function (w) {
+    return engineHasKey(engineByRole(pJ, pR)[w]);
+  });
+  if (holders.length === 2) return engineKeyWinner(pJ, pR);
+  if (holders.length === 1) return holders[0];
+  if (engineKeyPending(pJ, pR)) return null;
+  return 'floor';
+}
+
+/* Zustand im Format der Prüffunktionen (engineCanEnter, engineDoorOpen, engineOnGoal),
+   abgeleitet nur aus den Dokumenten. */
+function engineWorldState(level, pJ, pR) {
+  const docs = [pJ, pR];
+  const doorsDone = engineUnion(docs, 'keyDoorsOpened');
+  const codes = engineUnion(docs, 'codesOpened');
+  const found = engineUnion(docs, 'found');
+  const used = doorsDone.length > 0;
+  const holder = engineKeyHolder(level, pJ, pR);
+  return {
+    pos: {
+      jonathan: engineDocPos(level, 'jonathan', pJ),
+      raphael: engineDocPos(level, 'raphael', pR)
+    },
+    items: level.items.map(function (it, idx) {
+      if (it.type === 'key') return { holder: ENGINE_WHO.indexOf(holder) >= 0 ? holder : null, used: used };
+      if (it.type === 'door' && !it.link) return { unlocked: doorsDone.indexOf(idx) >= 0 };
+      if (it.type === 'codedoor') return { unlocked: codes.indexOf(idx) >= 0 };
+      if (it.type === 'clue') return { by: found.indexOf(idx) >= 0 ? 'gefunden' : null };
+      return null;
+    })
+  };
+}
+
+/* Welt aus den beiden Dokumenten. Rein, deterministisch, reihenfolge-unabhängig.
+   Zusätzlich: levelComplete (beide im Ziel und ggf. Finale gelöst) und
+   levelMismatch (ein Dokument trägt eine andere Level-ID). */
+function deriveWorld(level, pJ, pR) {
+  const state = engineWorldState(level, pJ, pR);
+  const doorsOpen = {};
+  const switchesPressed = {};
+  level.items.forEach(function (it, idx) {
+    if (it.type === 'door' || it.type === 'codedoor') doorsOpen[idx] = engineDoorOpen(level, state, idx);
+    if (it.type === 'switch') switchesPressed[idx] = engineOccupant(state, it.at) !== null;
+  });
+  const cluesFound = engineUnion([pJ, pR], 'found').filter(function (i) {
+    return level.items[i] && level.items[i].type === 'clue';
+  });
+  const bothInGoal = engineOnGoal(level, state, 'jonathan') && engineOnGoal(level, state, 'raphael');
+  const culprit = level.finale ? level.finale.culprit : null;
+  const finaleSolved = !!level.finale && [pJ, pR].some(function (d) {
+    return !!d && d.accused === culprit;
+  });
+  const levelMismatch = [pJ, pR].some(function (d) { return !d || d.level !== level.id; });
+  return {
+    doorsOpen: doorsOpen,
+    switchesPressed: switchesPressed,
+    keyHolder: engineKeyHolder(level, pJ, pR),
+    cluesFound: cluesFound,
+    points: cluesFound.length,
+    bothInGoal: bothInGoal,
+    finaleSolved: finaleSolved,
+    levelComplete: bothInGoal && (!level.finale || finaleSolved) && !levelMismatch,
+    levelMismatch: levelMismatch
+  };
+}
+
+/* Notizbuch einer Figur aus den Dokumenten. Gefundene Hinweise beider Figuren sind
+   sichtbar (Fund durch die andere Figur zählt). Text nur, wenn für sie bestimmt
+   oder ohne for; sonst text null und hidden true. */
+function deriveNotebook(level, pJ, pR, who) {
+  return engineUnion([pJ, pR], 'found')
+    .filter(function (i) { return level.items[i] && level.items[i].type === 'clue'; })
+    .map(function (i) {
+      const it = level.items[i];
+      const mine = !it.for || it.for === who;
+      return { text: mine ? it.text : null, hidden: !mine, for: it.for || null };
+    });
+}
+
+/* Levelmeldung für lokale Aktionen, sonst null. */
+function engineLevelMessage(level, myDoc, otherDoc) {
+  if (myDoc.level === level.id && otherDoc.level === level.id) return null;
+  const done = engineList(myDoc, 'levelDone').indexOf(level.id) >= 0 ||
+    engineList(otherDoc, 'levelDone').indexOf(level.id) >= 0;
+  if (done) return 'Dieses Level ist schon geschafft. Weiter geht es mit dem nächsten.';
+  return 'Die Level-Kennung passt nicht. Bitte kurz abgleichen.';
+}
+
+function engineLocalMove(level, myDoc, otherDoc, me, dir, n) {
+  const v = ENGINE_DIR_VECTORS[dir];
+  if (!v) return { ok: false, myDocPatch: null, message: 'Unbekannte Richtung.' };
+  const st = engineWorldState(level, me === 'jonathan' ? myDoc : otherDoc, me === 'raphael' ? myDoc : otherDoc);
+  const known = engineUnion([myDoc, otherDoc], 'found');
+  const newFound = [];
+  let moved = 0;
+  let reason = '';
+  for (let k = 0; k < n; k++) {
+    const p = st.pos[me];
+    const target = [p[0] + v[0], p[1] + v[1]];
+    const check = engineCanEnter(level, st, target, me);
+    if (!check.ok) {
+      reason = check.reason;
+      break;
+    }
+    st.pos[me] = target;
+    moved++;
+    const ci = level.items.findIndex(function (it) {
+      return it.type === 'clue' && engineSame(it.at, target);
+    });
+    if (ci >= 0 && known.indexOf(ci) < 0 && newFound.indexOf(ci) < 0) newFound.push(ci);
+  }
+  if (moved === 0) return { ok: false, myDocPatch: null, message: 'Nicht möglich: ' + reason + '.' };
+  const patch = { x: st.pos[me][0], y: st.pos[me][1], seq: engineDocSeq(myDoc) + 1 };
+  if (newFound.length > 0) patch.found = engineList(myDoc, 'found').concat(newFound);
+  let message = '';
+  if (reason) message = 'Nach ' + moved + ' Schritt(en) gestoppt: ' + reason + '.';
+  else if (newFound.length > 0) message = 'Hinweis gefunden! Schau ins Notizbuch.';
+  const event = newFound.length > 0
+    ? { who: me, kind: 'clue', text: 'Hinweis gefunden' }
+    : { who: me, kind: 'move', text: dir + (moved > 1 ? ' ' + moved : '') };
+  return { ok: true, myDocPatch: patch, event: event, message: message };
+}
+
+function engineLocalTake(level, myDoc, otherDoc, me) {
+  if (engineHasKey(myDoc)) return { ok: false, myDocPatch: null, message: 'Du trägst schon einen Schlüssel.' };
+  const p = engineDocPos(level, me, myDoc);
+  const keyAt = level.items.some(function (it) { return it.type === 'key' && engineSame(it.at, p); });
+  if (!keyAt) return { ok: false, myDocPatch: null, message: 'Hier liegt kein Schlüssel.' };
+  const pJ = me === 'jonathan' ? myDoc : otherDoc;
+  const pR = me === 'raphael' ? myDoc : otherDoc;
+  const holder = engineKeyHolder(level, pJ, pR);
+  if (holder === null) return { ok: false, myDocPatch: null, message: 'Der Schlüssel ist gerade nicht zu haben.' };
+  if (holder !== 'floor') {
+    return { ok: false, myDocPatch: null, message: 'Den Schlüssel hat schon ' + ENGINE_LABEL[holder] + '.' };
+  }
+  return {
+    ok: true,
+    myDocPatch: { inv: engineInv(myDoc, true), seq: engineDocSeq(myDoc) + 1 },
+    event: { who: me, kind: 'take', text: 'nimmt den Schlüssel' },
+    message: ''
+  };
+}
+
+function engineLocalGive(level, myDoc, otherDoc, me) {
+  if (!engineHasKey(myDoc)) return { ok: false, myDocPatch: null, message: 'Du hast keinen Schlüssel.' };
+  const other = engineOther(me);
+  if (!engineAdjacent(engineDocPos(level, me, myDoc), engineDocPos(level, other, otherDoc))) {
+    return { ok: false, myDocPatch: null, message: 'Die andere Figur muss direkt neben dir stehen.' };
+  }
+  const seq = engineDocSeq(myDoc) + 1;
+  return {
+    ok: true,
+    myDocPatch: { inv: engineInv(myDoc, false), keyGiven: { to: other, seq: seq }, seq: seq },
+    event: { who: me, kind: 'give', text: 'gibt den Schlüssel' },
+    message: ''
+  };
+}
+
+function engineLocalUse(level, myDoc, otherDoc, me) {
+  if (!engineHasKey(myDoc)) return { ok: false, myDocPatch: null, message: 'Du hast keinen Schlüssel.' };
+  const p = engineDocPos(level, me, myDoc);
+  const di = level.items.findIndex(function (it) {
+    return it.type === 'door' && !it.link && engineAdjacent(it.at, p);
+  });
+  if (di < 0) return { ok: false, myDocPatch: null, message: 'Keine Schlosstür neben dir.' };
+  if (engineUnion([myDoc, otherDoc], 'keyDoorsOpened').indexOf(di) >= 0) {
+    return { ok: false, myDocPatch: null, message: 'Diese Tür ist schon offen.' };
+  }
+  return {
+    ok: true,
+    myDocPatch: {
+      inv: engineInv(myDoc, false),
+      keyDoorsOpened: engineList(myDoc, 'keyDoorsOpened').concat([di]),
+      seq: engineDocSeq(myDoc) + 1
+    },
+    event: { who: me, kind: 'door', text: 'öffnet eine Tür' },
+    message: ''
+  };
+}
+
+function engineLocalCode(level, myDoc, otherDoc, me, code) {
+  const p = engineDocPos(level, me, myDoc);
+  const near = [];
+  level.items.forEach(function (it, idx) {
+    if (it.type === 'codedoor' && engineAdjacent(it.at, p)) near.push(idx);
+  });
+  if (near.length === 0) return { ok: false, myDocPatch: null, message: 'Keine Codetür neben dir.' };
+  const opened = engineUnion([myDoc, otherDoc], 'codesOpened');
+  const open = near.filter(function (idx) { return opened.indexOf(idx) < 0; });
+  if (open.length === 0) return { ok: false, myDocPatch: null, message: 'Diese Tür ist schon offen.' };
+  const hit = open.find(function (idx) { return level.items[idx].code === code; });
+  if (hit === undefined) {
+    return { ok: false, myDocPatch: null, message: 'Der Code stimmt nicht. Such weiter nach Hinweisen.' };
+  }
+  return {
+    ok: true,
+    myDocPatch: { codesOpened: engineList(myDoc, 'codesOpened').concat([hit]), seq: engineDocSeq(myDoc) + 1 },
+    event: { who: me, kind: 'door', text: 'öffnet die Codetür' },
+    message: ''
+  };
+}
+
+function engineLocalAccuse(level, myDoc, otherDoc, me, name) {
+  if (!level.finale) return { ok: false, myDocPatch: null, message: 'Hier gibt es niemanden zu beschuldigen.' };
+  const pJ = me === 'jonathan' ? myDoc : otherDoc;
+  const pR = me === 'raphael' ? myDoc : otherDoc;
+  if (deriveWorld(level, pJ, pR).finaleSolved) {
+    return { ok: false, myDocPatch: null, message: 'Der Fall ist schon gelöst.' };
+  }
+  const wanted = String(name || '').trim().toLowerCase();
+  if (!wanted) return { ok: false, myDocPatch: null, message: 'Wen beschuldigst du? Zum Beispiel: beschuldige Max' };
+  const suspect = level.finale.suspects.find(function (s) {
+    return s.id === wanted || s.name.trim().toLowerCase() === wanted;
+  });
+  if (!suspect) {
+    const list = level.finale.suspects.map(function (s) { return s.name; }).join(', ');
+    return { ok: false, myDocPatch: null, message: 'Diesen Namen kenne ich nicht. Zur Auswahl: ' + list + '.' };
+  }
+  const right = suspect.id === level.finale.culprit;
+  return {
+    ok: true,
+    myDocPatch: { accused: suspect.id, seq: engineDocSeq(myDoc) + 1 },
+    event: { who: me, kind: 'accuse', text: 'beschuldigt ' + suspect.name },
+    message: right ? level.finale.right : level.finale.wrong
+  };
+}
+
+/* „neu“ im Zwei-Spieler-Modus (K-7): nur die eigene Figur geht zurück auf ihr Startfeld
+   des aktuellen Levels. Fortschritt (Hinweise, Schlüssel, Türen) bleibt. seq +1 (K-16). */
+function engineLocalRestart(level, myDoc, me) {
+  const start = level.start[me];
+  return {
+    ok: true,
+    myDocPatch: { x: start[0], y: start[1], seq: engineDocSeq(myDoc) + 1 },
+    event: { who: me, kind: 'move', text: 'zurück zum Start' },
+    message: 'Zurück zum Start'
+  };
+}
+
+/* Lokale Aktion einer Figur. action.type: move {dir,n} | take | give | use |
+   code {code} | accuse {name} | say {text} | help | restart | error {message}. restart = „neu“ (K-7).
+   action.who ist optional; wenn gesetzt, muss es die Figur des Dokuments sein.
+   Liefert {ok, myDocPatch, event?, message}. myDocPatch null = kein Dokument ändert sich.
+   seq wird bei jeder erfolgreichen Spielaktion um 1 erhöht (nicht bei sag). */
+function applyLocal(level, myDoc, otherDoc, action) {
+  const fail = function (message) { return { ok: false, myDocPatch: null, message: message }; };
+  if (!action || typeof action !== 'object') return fail('Das habe ich nicht verstanden.');
+  if (!myDoc || !otherDoc) return fail('Der Spielstand fehlt noch. Bitte kurz warten.');
+  const me = myDoc.role;
+  if (ENGINE_WHO.indexOf(me) < 0 || otherDoc.role !== engineOther(me)) return fail('Unbekannte Figur.');
+  if (action.who !== undefined && action.who !== me) return fail('Unbekannte Figur.');
+  if (action.type === 'say') {
+    const clean = String(action.text || '').trim().slice(0, ENGINE_SAY_MAX);
+    if (!clean) return fail('Was soll ich sagen? Zum Beispiel: sag hallo');
+    return { ok: true, myDocPatch: null, event: { who: me, kind: 'say', text: clean }, message: '' };
+  }
+  if (action.type === 'help') {
+    return {
+      ok: true,
+      myDocPatch: null,
+      message: 'Befehle: rechts 3, runter 2, nimm, gib, benutze, code 1234, sag Text, beschuldige Name.'
+    };
+  }
+  if (action.type === 'error') return fail(action.message || 'Das habe ich nicht verstanden.');
+  const levelMsg = engineLevelMessage(level, myDoc, otherDoc);
+  if (levelMsg) return fail(levelMsg);
+  switch (action.type) {
+    case 'move':
+      return engineLocalMove(level, myDoc, otherDoc, me, action.dir, action.n || 1);
+    case 'take':
+      return engineLocalTake(level, myDoc, otherDoc, me);
+    case 'give':
+      return engineLocalGive(level, myDoc, otherDoc, me);
+    case 'use':
+      return engineLocalUse(level, myDoc, otherDoc, me);
+    case 'code':
+      return engineLocalCode(level, myDoc, otherDoc, me, String(action.code || ''));
+    case 'accuse':
+      return engineLocalAccuse(level, myDoc, otherDoc, me, action.name);
+    case 'restart':
+      return engineLocalRestart(level, myDoc, me);
+    default:
+      return fail('Unbekannte Aktion.');
+  }
+}
+
+/* Patch für den Levelwechsel: neues Level, Startfeld der Figur, Inhalte zurücksetzen (K-12). */
+function engineLevelPatch(level, next, myDoc) {
+  const start = next.start[myDoc.role];
+  const done = engineList(myDoc, 'levelDone').slice();
+  if (done.indexOf(level.id) < 0) done.push(level.id);
+  return {
+    level: next.id,
+    x: start[0],
+    y: start[1],
+    levelDone: done,
+    found: [],
+    inv: { key: false },
+    codesOpened: [],
+    keyDoorsOpened: [],
+    keyGiven: null,
+    keyReceived: null,
+    accused: null
+  };
+}
+
+/* Übernimmt, was die andere Figur geschrieben hat. Liefert Patch für myDoc oder null.
+   next: das nächste Level-Objekt (oder null, wenn es keins gibt). Ohne next gibt es keinen
+   Levelwechsel. Die Reihenfolge der Abgleiche ist egal: beide Seiten erzeugen denselben Stand.
+   Schritte, in dieser Reihenfolge:
+   1. Levelwechsel (beide im Ziel und Finale gelöst, oder das andere Dokument ist schon im nächsten Level).
+   2. Schlüssel-Konflikt: die Figur mit der niedrigeren seq gibt ihn auf (Gleichstand: raphael).
+   3. Empfang einer Übergabe (keyGiven der anderen Figur an mich, noch nicht übernommen). */
+function reconcile(level, myDoc, otherDoc, next) {
+  if (!myDoc || !otherDoc) return null;
+  const me = myDoc.role;
+  if (ENGINE_WHO.indexOf(me) < 0 || otherDoc.role !== engineOther(me)) return null;
+  const pJ = me === 'jonathan' ? myDoc : otherDoc;
+  const pR = me === 'raphael' ? myDoc : otherDoc;
+  if (next && next.id) {
+    if (myDoc.level === level.id && otherDoc.level === next.id) return engineLevelPatch(level, next, myDoc);
+    if (myDoc.level === level.id && otherDoc.level === level.id && deriveWorld(level, pJ, pR).levelComplete) {
+      return engineLevelPatch(level, next, myDoc);
+    }
+  }
+  if (myDoc.level !== level.id || otherDoc.level !== level.id) return null;
+  if (engineHasKey(myDoc) && engineHasKey(otherDoc)) {
+    if (engineKeyWinner(pJ, pR) === me) return null;
+    return { inv: engineInv(myDoc, false) };
+  }
+  const g = otherDoc.keyGiven;
+  const received = myDoc.keyReceived;
+  if (g && g.to === me && !(received && received.from === otherDoc.role && received.seq === g.seq)) {
+    if (engineHasKey(myDoc)) return null;
+    return { inv: engineInv(myDoc, true), keyReceived: { from: otherDoc.role, seq: g.seq } };
+  }
+  return null;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    ENGINE_WHO: ENGINE_WHO,
+    ENGINE_DIR_VECTORS: ENGINE_DIR_VECTORS,
+    createState: createState,
+    applyAction: applyAction,
+    parseCommand: parseCommand,
+    engineDoorOpen: engineDoorOpen,
+    engineOccupant: engineOccupant,
+    engineScore: engineScore,
+    engineNotebook: engineNotebook,
+    deriveWorld: deriveWorld,
+    deriveNotebook: deriveNotebook,
+    applyLocal: applyLocal,
+    reconcile: reconcile
+  };
+}
+
+</script>
+<script>
+/* Level-Daten: build.py fügt hier alle Level aus game/levels/ ein. */
+const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan","size":9,"story":{"intro":"Am Morgen nach dem Krimidinner ist der goldene Wanderpokal „Rosi 62“ verschwunden. Im Flur führen Schuhabdrücke hinein, aber keine wieder hinaus. Der Täter ist also noch im Haus.","outro":"Der erste Zettel ist gefunden. Er klingt nach einer Herausforderung, und genau die lieben wir."},"walls":[[4,0],[4,1],[4,2],[4,3],[4,5],[4,6],[4,7],[4,8]],"start":{"jonathan":[0,4],"raphael":[0,3]},"items":[{"type":"clue","at":[2,1],"text":"Ein Zettel auf dem Teppich: „Wer suchet, der findet. Aber nur zu zweit.“"},{"type":"goal","at":[8,4]},{"type":"goal","at":[8,3]}],"hint":"Wände blockieren, die Lücke in der Mitte führt durch. Zieht beide ins Ziel. Der Zettel liegt oben im Flur: Wer ihn findet, bekommt einen Punkt. Befehle: rechts 3, runter 2, w a s d oder die Pfeiltasten."},{"id":"02-kueche","title":"Küche – Zwei Schalter","author":"Jonathan","size":9,"story":{"intro":"In der Küche liegen Krümel auf dem Tresen und eine leere Sektflasche steht neben der Spüle. Jemand hat spät gefeiert, und der Pokal war um diese Zeit noch da.","outro":"Der Code passt, die Tür zum Weinkeller ist offen. Im Keller stehen nur Flaschen, aber auch eine Spur: ein Stück Klebeband."},"walls":[[4,0],[4,1],[4,2],[4,3],[4,5],[4,6],[4,7],[4,8],[1,2],[2,2],[1,6],[2,6],[6,2],[7,2],[6,6],[7,6],[6,7],[8,6]],"start":{"jonathan":[0,8],"raphael":[8,0]},"items":[{"type":"switch","at":[3,4],"link":"A"},{"type":"switch","at":[6,4],"link":"A"},{"type":"door","at":[4,4],"link":"A"},{"type":"clue","at":[8,3],"text":"Unter der Sektflasche klebt ein Zettel, nur für Raphael: Der Code der Weinkeller-Tür lautet 2580.","for":"raphael"},{"type":"codedoor","at":[6,8],"code":"2580"},{"type":"goal","at":[7,8]},{"type":"goal","at":[8,8]}],"hint":"Die Tür geht nur auf, wenn ihr beide gleichzeitig auf einem Schalter A steht. Raphael findet den Zettel oben rechts und sagt den Code (sag 2580). Jonathan tippt ihn an der Codetür unten rechts (code 2580)."},{"id":"03-keller","title":"Keller – Die Übergabe","author":"Jonathan","size":9,"story":{"intro":"Im Keller steht die Werkzeugkiste offen, und die Leiter fehlt. Der Schlüssel für die Tür zum Weinregal liegt in der Ecke. Ein Zettel verrät nur halb, wer ihn zuletzt hatte.","outro":"Die Tür zum Weinregal ist auf. Der Pokal ist noch nicht da, aber die Leiter taucht hinter dem Regal auf. Der Fall geht weiter."},"walls":[[2,0],[2,1],[2,2],[2,6],[2,7],[2,8],[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,8]],"start":{"jonathan":[0,0],"raphael":[3,7]},"items":[{"type":"key","at":[0,8]},{"type":"clue","at":[3,2],"text":"Auf der Werkzeugkiste klebt ein Zettel, nur für Jonathan: „Die Leiter gehört zurück in den Flur.“","for":"jonathan"},{"type":"door","at":[4,7]},{"type":"goal","at":[7,1]},{"type":"goal","at":[8,1]}],"hint":"Jonathan nimmt den Schlüssel (nimm) und gibt ihn an Raphael weiter (gib, direkt nebeneinander). Wer den Schlüssel trägt, öffnet mit benutze die Tür neben sich. Der Zettel bei der Kiste ist nur für Jonathan."},{"id":"04-bad","title":"Bad – Der beschlagene Spiegel","author":"Raphael","size":9,"story":{"intro":"Hinter dem Keller geht es ins Bad. Der Spiegel ist noch beschlagen: Jemand hat mitten in der Nacht heiß geduscht. Oder etwas sehr Nasses gewaschen? Eine Trennwand teilt den Raum, und der Badschrank hat ein Zahlenschloss.","outro":"Der Badschrank springt auf. Drinnen: nur Handtücher. Aber die nassen Pfotenspuren führen weiter, Richtung Balkontür."},"walls":[[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,7],[4,8],[0,6],[1,6],[3,6]],"start":{"jonathan":[8,8],"raphael":[0,0]},"items":[{"type":"clue","at":[6,0],"text":"Im beschlagenen Spiegel steht mit dem Finger geschrieben: 6219. Das Zahlenschloss am Badschrank ist auf Raphaels Seite.","for":"jonathan"},{"type":"clue","at":[3,2],"text":"Nasse Abdrücke am Wannenrand. Klein und rund, für Schuhe viel zu klein."},{"type":"clue","at":[5,5],"text":"Rosis Bademantel hängt am Haken, voller Glitzer. Glitzer vom Pokal oder nur von der Party?"},{"type":"codedoor","at":[2,6],"code":"6219"},{"type":"goal","at":[7,2]},{"type":"goal","at":[1,8]}],"hint":"Die Trennwand lässt euch nicht zueinander. Jonathan findet oben im Spiegel den Code und sagt ihn (sag 6219). Raphael steht neben dem Zahlenschloss und tippt code 6219. Dann geht jeder in sein Ziel."},{"id":"05-balkon","title":"Balkon – Licht und Leiter","author":"Raphael","size":9,"story":{"intro":"Kalte Nachtluft. Die Leiter aus dem Keller lehnt an der Hauswand, nach oben zur Dachbodenluke. Eine Brüstung teilt den Balkon, und ohne Licht findet hier niemand etwas.","outro":"Der Schlüssel passt, die Luke knarzt auf. Von oben kommt ein leises Geräusch. Schnurrt da etwa jemand?"},"walls":[[4,0],[4,1],[4,2],[4,3],[4,5],[4,6],[4,7],[4,8],[5,2],[6,2],[8,2]],"start":{"jonathan":[8,8],"raphael":[0,8]},"items":[{"type":"switch","at":[3,4],"link":"L"},{"type":"switch","at":[5,4],"link":"L"},{"type":"door","at":[4,4],"link":"L"},{"type":"key","at":[0,0]},{"type":"clue","at":[2,1],"text":"Im Blumenkasten lag der Schlüssel zur Dachbodenluke. Daneben: getigerte Haare. Kommt dir bekannt vor?"},{"type":"clue","at":[1,6],"text":"Ein Zettel am Geländer: „Rosi will ihren Pokal behalten.“ Die Schrift sieht aus wie auf der Party-Einladung.","for":"raphael"},{"type":"clue","at":[7,6],"text":"An den Leitersprossen kleben feine Haare, getigert. Ein Mensch war das nicht.","for":"jonathan"},{"type":"door","at":[7,2]},{"type":"goal","at":[7,0]},{"type":"goal","at":[8,0]}],"hint":"Raphael holt den Schlüssel aus dem Blumenkasten oben links (nimm). Licht gibt es nur, wenn ihr beide auf den Schaltern L an der Brüstung steht. Dann tritt Raphael in die Lücke und gibt Jonathan den Schlüssel (gib). Jonathan öffnet die Luke (benutze), danach beide ins Ziel."},{"id":"06-dachboden","title":"Dachboden – Die Auflösung","author":"Raphael","size":9,"story":{"intro":"Staub, Kisten, ein schmaler Lichtstrahl durch die Dachluke. Ganz hinten glänzt etwas Goldenes. Jeder von euch entdeckt hier oben etwas, das der andere nicht sieht. Legt eure Hinweise zusammen, bevor ihr jemanden beschuldigt.","outro":"Fall gelöst! Der Wanderpokal „Rosi 62“ ist wieder da, und gelöst haben ihn Jonathan und Raphael zusammen."},"walls":[[2,2],[3,2],[4,2],[5,2],[6,2],[2,6],[3,6],[5,6],[6,6],[6,3],[6,4]],"start":{"jonathan":[0,8],"raphael":[8,8]},"items":[{"type":"clue","at":[1,4],"text":"Im Pokal liegt ein kleines Nest aus einem alten Pulli. Hier hat jemand geschlafen.","for":"jonathan"},{"type":"clue","at":[3,7],"text":"Rosi ist die Wohnung. Wohnungen haben keine Hände und tragen keine Pokale eine Leiter hoch.","for":"jonathan"},{"type":"clue","at":[7,4],"text":"Neben dem Pokal steht ein leerer Futternapf. Wer bringt sich bitte Futter mit auf den Dachboden?","for":"raphael"},{"type":"clue","at":[8,1],"text":"Auf einem Foto vom Krimidinner tanzt der Nachbar die ganze Nacht. Er war nie oben.","for":"raphael"},{"type":"clue","at":[4,5],"text":"Getigerte Haare auf jeder Kiste. Dieselben wie auf dem Balkon."},{"type":"goal","at":[3,0]},{"type":"goal","at":[5,0]}],"hint":"Sammelt alle Hinweise. Jeder sieht nur seine eigenen, also sagt sie euch (sag …). Geht dann beide ins Ziel beim Pokal oben und beschuldigt gemeinsam: beschuldige \u003cname\u003e.","finale":{"question":"Wer hat den Wanderpokal „Rosi 62“ auf den Dachboden gebracht?","suspects":[{"id":"mieze","name":"Mieze"},{"id":"rosi","name":"Rosi"},{"id":"nachbar","name":"Der Nachbar"}],"culprit":"mieze","right":"Mieze blinzelt verschlafen aus dem Pokal. Die WG-Katze hat ihn sich als Bett geholt. Die WG stimmt ab: Der Wanderpokal ist ab sofort ein Katzenbett und bleibt genau hier.","wrong":"Nein, so war es nicht. Schaut noch einmal in eure Notizbücher und sagt euch gegenseitig, was ihr gefunden habt."}}];
+
+(function () {
+  'use strict';
+
+  const SIZE = 9;
+  const WHO = ['jonathan', 'raphael'];
+  const LABEL = { jonathan: 'Jonathan', raphael: 'Raphael', system: 'Spiel' };
+  const LEVEL_LIST = LEVELS.slice().sort(function (a, b) {
+    return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+  });
+  /* Solange die Level 04–06 fehlen, endet die Reihe mit dieser Fortsetzungskarte. */
+  const CONTINUE_AFTER = '03-keller';
+  const KEY_DIRS = {
+    ArrowUp: 'hoch', ArrowDown: 'runter', ArrowLeft: 'links', ArrowRight: 'rechts',
+    w: 'hoch', a: 'links', s: 'runter', d: 'rechts',
+    W: 'hoch', A: 'links', S: 'runter', D: 'rechts'
+  };
+  const HELP_TEXT = 'Befehle: hoch, runter, links, rechts (optional mit Zahl, z. B. rechts 3), '
+    + 'nimm, gib, benutze, code <4 Ziffern> (an der Codetür), sag <text>, '
+    + 'beschuldige <name> (im Finale), neu, hilfe. Abkürzungen: w a s d. Pfeiltasten gehen auch.';
+
+  /* Zustand der Anzeige. world = {rev, levelId, state, finished}; rev steigt pro Aktion.
+     finished: abgeschlossene Level mit Punkten, z. B. [{id, points}]. */
+  const view = {
+    mode: 'local',
+    activeRole: 'jonathan',
+    myRole: null,
+    userId: null,
+    seats: {},
+    takenBy: {},
+    initWritten: false,
+    introOpen: true,
+    suspectsFor: null,
+    world: { rev: 0, levelId: LEVEL_LIST[0].id, state: createState(LEVEL_LIST[0]), finished: [] }
+  };
+
+  /* Netzschicht (net.js). Ohne Engine-Funktionen oder Artifact-Runtime bleibt alles lokal. */
+  /* Live-Zustand: Spieler-Dokumente aus net.js. Welt und Notizbuch kommen aus der Engine. */
+  const live = { net: null, p2p: null, linkState: 'verbinde', synced: false, frozen: false, players: {}, own: null, log: [], connMode: 'lokal', peers: 'Mitspieler unbekannt', spectator: false, presence: {} };
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function el(tag, cls, text) {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function levelOf(id) {
+    return LEVEL_LIST.find(function (l) { return l.id === id; }) || null;
+  }
+
+  function itemIndexAt(lvl, p) {
+    return lvl.items.findIndex(function (it) {
+      return it.at[0] === p[0] && it.at[1] === p[1];
+    });
+  }
+
+  function isWallAt(lvl, p) {
+    return lvl.walls.some(function (w) { return w[0] === p[0] && w[1] === p[1]; });
+  }
+
+  function lastLog(st) {
+    return st && st.log.length ? st.log[st.log.length - 1] : null;
+  }
+
+  function setMessage(text, isError) {
+    const m = $('message');
+    m.textContent = text || '';
+    m.classList.toggle('error', !!isError);
+  }
+
+  function actingRole() {
+    return view.mode === 'local' ? view.activeRole : view.myRole;
+  }
+
+  /* Punkte: abgeschlossene Level plus Hinweise im aktuellen Level. */
+  function finishedPoints(w) {
+    return (w.finished || []).reduce(function (sum, f) { return sum + f.points; }, 0);
+  }
+
+  function totalPoints(w) {
+    const lvl = levelOf(w.levelId);
+    return finishedPoints(w) + engineScore(lvl, w.state);
+  }
+
+  /* Höchstpunktzahl über alle Level (Anzahl der Hinweise). */
+  function maxPoints() {
+    return LEVEL_LIST.reduce(function (sum, lvl) {
+      return sum + lvl.items.filter(function (it) { return it.type === 'clue'; }).length;
+    }, 0);
+  }
+
+  /* ---------- Anzeige ---------- */
+
+  function renderHeader() {
+    const lvl = levelOf(view.world.levelId);
+    const st = view.world.state;
+    const idx = LEVEL_LIST.indexOf(lvl);
+    $('level-info').textContent = 'Level ' + (idx + 1) + ' von ' + LEVEL_LIST.length;
+    $('level-title').textContent = lvl.title;
+    $('level-hint').textContent = lvl.hint;
+    $('steps').textContent = String(st.steps);
+    $('points').textContent = String(totalPoints(view.world));
+  }
+
+  /* Einleitung als Karte, solange das Level offen ist und noch nicht bestätigt wurde. */
+  function renderStory() {
+    const lvl = levelOf(view.world.levelId);
+    const st = view.world.state;
+    $('story-intro').textContent = lvl.story.intro;
+    $('story').hidden = !(view.introOpen && !st.done);
+  }
+
+  function renderDone() {
+    const lvl = levelOf(view.world.levelId);
+    const st = view.world.state;
+    const idx = LEVEL_LIST.indexOf(lvl);
+    const isLast = idx === LEVEL_LIST.length - 1;
+    const total = totalPoints(view.world);
+    $('done').hidden = !st.done;
+    $('done-title').textContent = isLast ? 'Abschluss' : 'Level geschafft!';
+    $('outro-text').textContent = lvl.story.outro;
+    $('done-points').textContent = isLast
+      ? 'Punkte gesamt: ' + total + ' von ' + maxPoints()
+      : 'Punkte gesamt: ' + total;
+    $('followup').hidden = !(isLast && lvl.id === CONTINUE_AFTER);
+    $('next').textContent = isLast ? 'Von vorn' : 'Weiter';
+  }
+
+  /* Beschuldigungs-Knöpfe, solange das Finale offen ist. */
+  function renderFinale() {
+    const lvl = levelOf(view.world.levelId);
+    const st = view.world.state;
+    const f = lvl.finale;
+    const show = !!f && !st.solved;
+    $('finale').hidden = !show;
+    if (!show) {
+      $('suspects').textContent = '';
+      view.suspectsFor = null;
+      return;
+    }
+    $('finale-question').textContent = f.question;
+    if (view.suspectsFor === lvl.id) return;
+    view.suspectsFor = lvl.id;
+    const box = $('suspects');
+    box.textContent = '';
+    f.suspects.forEach(function (s) {
+      const b = el('button', 'btn', s.name);
+      b.type = 'button';
+      b.addEventListener('click', function () {
+        act({ type: 'accuse', name: s.id });
+      });
+      box.appendChild(b);
+    });
+  }
+
+  /* Notizbuch der aktiven Figur: gefundene Hinweise, Text nur für ihre Figur. */
+  function renderNotebook() {
+    const lvl = levelOf(view.world.levelId);
+    const st = view.world.state;
+    const role = actingRole();
+    const list = $('notebook');
+    list.textContent = '';
+    if (!role) {
+      $('notes-info').textContent = 'Wähle eine Figur, dann siehst du dein Notizbuch.';
+      return;
+    }
+    $('notes-info').textContent = 'Notizbuch von ' + LABEL[role] + '.';
+    const entries = engineNotebook(lvl, st, role);
+    if (!entries.length) {
+      list.appendChild(el('li', 'muted', 'Noch keine Hinweise gefunden.'));
+      return;
+    }
+    entries.forEach(function (entry) {
+      const li = el('li');
+      li.textContent = entry.hidden
+        ? 'Ein geheimer Hinweis für ' + LABEL[entry.for] + '. Nur ' + LABEL[entry.for] + ' kann ihn lesen.'
+        : entry.text;
+      list.appendChild(li);
+    });
+  }
+
+  function renderBoard() {
+    const lvl = levelOf(view.world.levelId);
+    const st = view.world.state;
+    const cells = $('cells');
+    cells.textContent = '';
+    for (let y = 0; y < SIZE; y++) {
+      for (let x = 0; x < SIZE; x++) {
+        const p = [x, y];
+        const cell = el('div', 'cell');
+        if (isWallAt(lvl, p)) cell.classList.add('wall');
+        const idx = itemIndexAt(lvl, p);
+        if (idx >= 0) cell.appendChild(itemNode(lvl, st, idx));
+        cells.appendChild(cell);
+      }
+    }
+    $('board').setAttribute('aria-label', 'Spielfeld, ' + lvl.title);
+    renderPieces(st);
+  }
+
+  function itemNode(lvl, st, idx) {
+    const it = lvl.items[idx];
+    let node;
+    if (it.type === 'goal') {
+      node = el('span', 'item goal', '★');
+    } else if (it.type === 'key') {
+      node = el('span', 'item key');
+    } else if (it.type === 'switch') {
+      const pressed = engineOccupant(st, it.at) !== null;
+      node = el('span', 'item switch' + (pressed ? ' pressed' : ''), it.link);
+    } else if (it.type === 'clue') {
+      const found = st.items[idx].by !== null;
+      node = el('span', 'item clue' + (found ? ' found' : ''), '?');
+    } else if (it.type === 'codedoor') {
+      const open = !!st.items[idx].unlocked;
+      node = el('span', 'item door code' + (open ? ' open' : ' closed'));
+    } else {
+      const open = engineDoorOpen(lvl, st, idx);
+      node = el('span', 'item door' + (it.link ? '' : ' lock') + (open ? ' open' : ' closed'));
+    }
+    node.setAttribute('aria-hidden', 'true');
+    return node;
+  }
+
+  function renderPieces(st) {
+    const layer = $('pieces');
+    WHO.forEach(function (who) {
+      let node = layer.querySelector('.piece.' + who);
+      if (!node) {
+        node = el('span', 'piece ' + who);
+        node.setAttribute('aria-hidden', 'true');
+        layer.appendChild(node);
+      }
+      const p = st.pos[who];
+      node.style.left = ((p[0] + 0.14) * 100 / SIZE) + '%';
+      node.style.top = ((p[1] + 0.14) * 100 / SIZE) + '%';
+      const holds = st.items.some(function (s) { return s && s.holder === who; });
+      node.classList.toggle('holds', holds);
+      node.classList.toggle('mine', actingRole() === who);
+    });
+  }
+
+  function renderRoles() {
+    const local = view.mode === 'local';
+    $('role-local').hidden = !local;
+    $('role-live').hidden = local;
+    let status;
+    if (local) {
+      $('switch-figure').textContent = 'Figur wechseln (aktiv: ' + LABEL[view.activeRole] + ')';
+      status = 'Lokales Spiel: beide Figuren auf diesem Gerät.';
+    } else {
+      WHO.forEach(function (who) {
+        const btn = $('pick-' + who);
+        btn.disabled = !live.synced || live.frozen || !!view.takenBy[who] || (!!view.myRole && view.myRole !== who);
+        btn.setAttribute('aria-pressed', String(view.myRole === who));
+      });
+      $('pick-none').setAttribute('aria-pressed', String(!!live.spectator));
+      if (live.frozen) status = 'Keine Verbindung zur Datenbank. Bitte Seite neu laden.';
+      else if (!live.synced) status = 'Verbinde …';
+      else status = view.myRole
+        ? 'Du spielst ' + LABEL[view.myRole] + '.'
+        : 'Du schaust zu. Wähle eine Figur, um mitzuspielen.';
+    }
+    $('role-status').textContent = status;
+  }
+
+  function renderLog() {
+    const list = $('log');
+    const st = view.world.state;
+    list.textContent = '';
+    if (!st.log.length) {
+      list.appendChild(el('li', 'muted', 'Noch keine Züge.'));
+      return;
+    }
+    st.log.slice().reverse().forEach(function (entry) {
+      const li = el('li');
+      li.appendChild(el('span', 'chip ' + (entry.who || 'system'), LABEL[entry.who] || LABEL.system));
+      li.appendChild(document.createTextNode(entry.text));
+      list.appendChild(li);
+    });
+  }
+
+  function renderAll() {
+    if (view.mode !== 'local') { renderLive(); return; }
+    renderHeader();
+    renderStory();
+    renderBoard();
+    renderRoles();
+    renderLog();
+    renderFinale();
+    renderNotebook();
+    renderDone();
+  }
+
+  /* ---------- Zustand ---------- */
+
+  /* Übernimmt einen fremden oder eigenen Stand, wenn er neuer ist.
+     Wechselt das Level, öffnet sich die Einleitung wieder. */
+  function setWorld(w) {
+    if (!w || !w.state || typeof w.rev !== 'number' || !levelOf(w.levelId)) return false;
+    if (view.world.rev > 0 && w.rev <= view.world.rev) return false;
+    const before = JSON.stringify(lastLog(view.world.state));
+    if (w.levelId !== view.world.levelId) view.introOpen = true;
+    view.world = { rev: w.rev, levelId: w.levelId, state: w.state, finished: w.finished || [] };
+    const cur = lastLog(w.state);
+    if (cur && JSON.stringify(cur) !== before && cur.text.indexOf('sagt: ') === 0) {
+      setMessage((LABEL[cur.who] || LABEL.system) + ' ' + cur.text, false);
+    }
+    return true;
+  }
+
+  /* Wendet eine Aktion auf einen Stand an, ohne ihn zu verändern.
+     Liefert {ok, message, world}. Abschluss ('advance') wechselt das Level. */
+  function transformWorld(base, action) {
+    const lvl = levelOf(base.levelId);
+    const finished = base.finished || [];
+    if (action.type === 'advance') {
+      if (!base.state.done) return { ok: false, message: 'Dieses Level ist noch nicht geschafft.' };
+      const idx = LEVEL_LIST.indexOf(lvl);
+      const isLast = idx === LEVEL_LIST.length - 1;
+      const target = LEVEL_LIST[isLast ? 0 : idx + 1];
+      const nextFinished = isLast
+        ? []
+        : finished.concat([{ id: lvl.id, points: engineScore(lvl, base.state) }]);
+      return {
+        ok: true,
+        message: '',
+        world: { rev: base.rev + 1, levelId: target.id, state: createState(target), finished: nextFinished }
+      };
+    }
+    const res = applyAction(lvl, base.state, action);
+    if (!res.ok) return { ok: false, message: res.message };
+    return {
+      ok: true,
+      message: res.message,
+      world: { rev: base.rev + 1, levelId: base.levelId, state: res.state, finished: finished }
+    };
+  }
+
+  /* Lokal: Aktion direkt auf den Stand anwenden. */
+  function submit(action) {
+    const res = transformWorld(view.world, action);
+    if (!res.ok) {
+      setMessage(res.message, true);
+      return;
+    }
+    setWorld(res.world);
+    setMessage(res.message, false);
+    renderAll();
+  }
+
+  function act(action) {
+    if (view.mode === 'connecting') { setMessage('Verbinde …', false); return; }
+    if (view.mode === 'live') { liveAct(action); return; }
+    const who = actingRole();
+    if (!who) {
+      setMessage('Wähle oben eine Figur, dann kannst du spielen. Zuschauen geht auch.', true);
+      return;
+    }
+    action.who = who;
+    submit(action);
+  }
+
+  /* Ob der Sprechtext über die Grenze (Net.SAY_MAX) hinausging. Der Engine-Text ist schon gekürzt. */
+  function sayIsCut(input) {
+    const full = String(input || '').trim();
+    const sp = full.search(/\s/);
+    const rest = sp < 0 ? '' : full.slice(sp).trim();
+    return Array.from(rest).length > Net.SAY_MAX;
+  }
+
+  function runCommand(text) {
+    const cmd = parseCommand(text);
+    switch (cmd.type) {
+      case 'empty':
+        return;
+      case 'error':
+        setMessage(cmd.message, true);
+        return;
+      case 'help':
+        setMessage(HELP_TEXT, false);
+        return;
+      case 'move':
+        act({ type: 'move', dir: cmd.dir, n: cmd.n });
+        return;
+      case 'say':
+        act({ type: 'say', text: cmd.text, cut: sayIsCut(text) });
+        return;
+      case 'code':
+        act({ type: 'code', code: cmd.code });
+        return;
+      case 'accuse':
+        act({ type: 'accuse', name: cmd.name });
+        return;
+      default:
+        act({ type: cmd.type });
+    }
+  }
+
+  /* ---------- Live-Modus (net.js + Engine) ----------
+     Verbindung über Net. Welt, Notizbuch und Regeln kommen aus der Engine
+     (deriveWorld, deriveNotebook, applyLocal, reconcile). Vor dem ersten Snapshot
+     nehmen wir keine Eingaben an (view.mode 'connecting'). Ohne Engine oder ohne
+     Runtime bleibt alles lokal (view.mode 'local'). */
+  function liveReady() {
+    return typeof deriveWorld === 'function' && typeof deriveNotebook === 'function'
+      && typeof applyLocal === 'function' && typeof reconcile === 'function'
+      && typeof Net !== 'undefined';
+  }
+
+  function liveDocsNow() {
+    return Net.liveDocs(live.players, live.own);
+  }
+
+  function liveLevel() {
+    const docs = liveDocsNow();
+    const ref = live.own || docs.jonathan || docs.raphael;
+    return (ref && levelOf(ref.level)) || LEVEL_LIST[0];
+  }
+
+  function liveWorld() {
+    const lvl = liveLevel();
+    const docs = liveDocsNow();
+    return { lvl: lvl, docs: docs, w: deriveWorld(lvl, docs.jonathan, docs.raphael) };
+  }
+
+  const LINK_LABEL = { verbinde: 'verbinde …', live: 'live (direkt)', fehlt: 'Mitspieler fehlt', verloren: 'Verbindung verloren' };
+
+  function setConn(mode, peers) {
+    let shown = live.synced || mode === 'lokal' ? mode : 'verbinde …';
+    if (live.p2p && mode !== 'lokal') shown = LINK_LABEL[live.linkState] || 'verbinde …';
+    $('conn').textContent = live.frozen ? 'lokal' : shown;
+    $('peers').textContent = peers;
+  }
+
+  function onNetStatus(s) {
+    view.userId = s.uid;
+    if (s.mode === 'lokal') {
+      // Nach einer Live-Phase: keine lokale Fortsetzung, die Welt wäre veraltet.
+      if (view.mode === 'live') live.frozen = true;
+      else view.mode = 'local';
+    } else {
+      live.frozen = false;
+      view.mode = 'live';
+    }
+    live.connMode = s.mode;
+    live.peers = s.peers;
+    setConn(s.mode, s.peers);
+    renderAll();
+  }
+
+  function onNetPlayers(map, uid) {
+    live.players = map;
+    live.synced = true;
+    const takenBy = {};
+    Object.keys(map).forEach(function (id) {
+      if (id !== uid) takenBy[map[id].role] = true;
+    });
+    view.takenBy = takenBy;
+    liveReconcileNow();
+    setConn(live.connMode, live.peers);
+    renderLive();
+  }
+
+  function onNetOwn(doc) {
+    live.own = doc;
+    view.myRole = doc ? doc.role : null;
+    if (doc) live.spectator = false;
+    if (live.net) {
+      if (doc) live.net.setPresence({ role: doc.role, level: doc.level, x: doc.x, y: doc.y, ds: doc.seq });
+      else live.net.setPresence({ role: 'zuschauer', level: liveLevel().id });
+    }
+    renderLive();
+  }
+
+  /* Presence der Mitspieler: Vorausmeldung der Position (E1). Die DB korrigiert. */
+  function onNetPresence(map) {
+    live.presence = map;
+    renderLive();
+  }
+
+  /* Sprechblase über der Figur, Log und Meldung. Text nur per textContent. */
+  function onNetSay(msg) {
+    const layer = $('pieces');
+    const bubble = el('div', 'bubble', msg.text);
+    bubble.setAttribute('aria-hidden', 'true');
+    const piece = layer.querySelector('.piece.' + msg.role);
+    if (piece) {
+      bubble.style.left = piece.style.left;
+      bubble.style.top = piece.style.top;
+    }
+    layer.appendChild(bubble);
+    setTimeout(function () { bubble.remove(); }, 4000);
+    const text = 'sagt: ' + msg.text + (msg.cut ? ' (gekürzt)' : '');
+    pushLiveLog(msg.role, text);
+    setMessage(LABEL[msg.role] + ' ' + text, false);
+    renderLiveLog();
+  }
+
+  function pushLiveLog(who, text) {
+    live.log.push({ who: who, text: text });
+    if (live.log.length > 60) live.log.shift();
+  }
+
+  /* Abgleich (bei jedem Snapshot und alle 3 s über net.js). */
+  function liveReconcileNow() {
+    if (!live.net || !live.own || live.frozen) return;
+    const docs = liveDocsNow();
+    const other = docs[Net.otherRole(live.own.role)];
+    const lvl = levelOf(live.own.level);
+    if (!other || !lvl) return;
+    Net.liveReconcile({ reconcile: reconcile }, live.net, lvl, live.own, other, nextLevelOf(lvl));
+  }
+
+  function nextLevelOf(lvl) {
+    return Net.liveNext(LEVEL_LIST, lvl);
+  }
+
+  /* Eingabe in der Live-Ansicht: applyLocal, dann Patch schreiben. */
+  function liveAct(action) {
+    if (!live.synced) { setMessage('Verbinde …', false); return; }
+    if (live.frozen) { setMessage('Keine Verbindung zur Datenbank. Dein Zug wird nicht gespeichert.', true); return; }
+    const me = live.own ? live.own.role : null;
+    if (!me) { setMessage('Wähle oben eine Figur, dann kannst du spielen. Zuschauen geht auch.', true); return; }
+    const other = liveDocsNow()[Net.otherRole(me)] || null;
+    const lvl = levelOf(live.own.level);
+    if (!lvl) { setMessage('Unbekanntes Level.', true); return; }
+    const res = Net.liveAct({ applyLocal: applyLocal, reconcile: reconcile }, live.net, lvl, live.own, other, action);
+    if (!res.ok) { setMessage(res.message, true); return; }
+    if (res.said) pushLiveLog(me, 'sagt: ' + res.said);
+    if (res.message) pushLiveLog(me, res.message);
+    setMessage(res.message || '', false);
+    renderLive();
+  }
+
+  function pickLiveRole(role) {
+    if (!live.net || !live.synced || live.frozen) { setMessage('Verbinde …', false); return; }
+    if (role === 'zuschauer') {
+      live.spectator = true;
+      live.net.pickRole('zuschauer', liveLevel().id, [0, 0]);
+      renderRoles();
+      return;
+    }
+    if (live.own && live.own.role !== role) {
+      setMessage('Du spielst schon ' + LABEL[live.own.role] + '.', true);
+      return;
+    }
+    const lvl = liveLevel();
+    live.spectator = false;
+    live.net.pickRole(role, lvl.id, lvl.start[role]);
+    renderRoles();
+  }
+
+  /* Verbindungsstatus des P2P-Transports (verbinde, live, fehlt, verloren). */
+  function onP2PLink(state) {
+    live.linkState = state;
+    $('p2p-reconnect').hidden = !(state === 'fehlt' || state === 'verloren');
+    setConn(live.connMode, live.peers);
+  }
+
+  /* Live starten. Mit Claude-Runtime über claude, sonst über P2P mit dem Raumcode. */
+  function startLive(code) {
+    const hasRuntime = typeof claude !== 'undefined' && !!claude;
+    if (!liveReady() || (!hasRuntime && !code)) { view.mode = 'local'; renderAll(); return Promise.resolve(false); }
+    if (live.net) { live.net.dispose(); live.net = null; }
+    if (live.p2p) { live.p2p.dispose(); live.p2p = null; }
+    let transport = hasRuntime ? claude : null;
+    if (!hasRuntime) {
+      try {
+        live.p2p = NetP2P.create({ code: code, onLink: onP2PLink, onWarn: function (t) { setMessage(t, true); } });
+      } catch (e) {
+        view.mode = 'local';
+        setMessage('Der Raumcode ist ungültig.', true);
+        renderAll();
+        return Promise.resolve(false);
+      }
+      transport = live.p2p.claude;
+    }
+    live.players = {}; live.own = null; live.presence = {}; live.synced = false; live.frozen = false; live.log = [];
+    live.linkState = 'verbinde';
+    view.mode = 'connecting';
+    live.net = Net.createNet({
+      onStatus: onNetStatus,
+      onPlayers: onNetPlayers,
+      onOwn: onNetOwn,
+      onSay: onNetSay,
+      onPresence: onNetPresence,
+      onMessage: function (text, isError) { setMessage(text, isError); }
+    });
+    return live.net.connect(transport).then(function () {
+      renderAll();
+      return true;
+    }, function () {
+      view.mode = 'local';
+      renderAll();
+      return false;
+    });
+  }
+
+  /* Zu zweit: neuer Raum, Einladungslink zum Kopieren. */
+  function showInvite(code) {
+    $('invite-url').value = location.href.split('#')[0] + '#raum=' + code;
+    $('invite').hidden = false;
+    try { history.replaceState(null, '', '#raum=' + code); } catch (e) { /* Hash bleibt, Link steht trotzdem im Feld */ }
+  }
+
+  function onNewGame() {
+    const code = NetP2P.newCode();
+    if (!code) { setMessage('Die Zufallszahl fehlt in diesem Browser. Kein Spiel zu zweit möglich.', true); return; }
+    showInvite(code);
+    startLive(code);
+  }
+
+  function copyInvite() {
+    const input = $('invite-url');
+    const fallback = function () {
+      input.focus();
+      input.select();
+      setMessage('Der Link ist markiert. Bitte mit Strg+C oder Cmd+C kopieren.', false);
+    };
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(input.value).then(function () {
+        setMessage('Link kopiert.', false);
+      }, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  /* Live-Ansicht: Welt aus deriveWorld, Notizbuch aus deriveNotebook. */
+  function renderLive() {
+    const L = liveWorld();
+    const lvl = L.lvl;
+    const docs = L.docs;
+    const w = L.w;
+    const idx = LEVEL_LIST.indexOf(lvl);
+    const me = live.own ? live.own.role : null;
+    $('level-info').textContent = 'Level ' + (idx + 1) + ' von ' + LEVEL_LIST.length;
+    $('level-title').textContent = lvl.title;
+    $('level-hint').textContent = lvl.hint;
+    $('points').textContent = String(w.points);
+    $('steps').textContent = '–';
+    $('story-intro').textContent = lvl.story.intro;
+    $('story').hidden = !(view.introOpen && !w.levelComplete);
+    renderLiveBoard(lvl, docs, w);
+    renderRoles();
+    renderLiveLog();
+    renderLiveFinale(lvl, w, me);
+    renderLiveNotebook(lvl, docs, me);
+    renderLiveDone(lvl, w);
+  }
+
+  function liveItemNode(lvl, w, idx) {
+    const it = lvl.items[idx];
+    let node;
+    if (it.type === 'goal') {
+      node = el('span', 'item goal', '★');
+    } else if (it.type === 'key') {
+      if (w.keyHolder !== 'floor') return null;
+      node = el('span', 'item key');
+    } else if (it.type === 'switch') {
+      node = el('span', 'item switch' + (w.switchesPressed[idx] ? ' pressed' : ''), it.link);
+    } else if (it.type === 'clue') {
+      node = el('span', 'item clue' + (w.cluesFound.indexOf(idx) >= 0 ? ' found' : ''), '?');
+    } else if (it.type === 'codedoor') {
+      node = el('span', 'item door code' + (w.doorsOpen[idx] ? ' open' : ' closed'));
+    } else {
+      node = el('span', 'item door' + (it.link ? '' : ' lock') + (w.doorsOpen[idx] ? ' open' : ' closed'));
+    }
+    node.setAttribute('aria-hidden', 'true');
+    return node;
+  }
+
+  function renderLiveBoard(lvl, docs, w) {
+    const cells = $('cells');
+    cells.textContent = '';
+    for (let y = 0; y < SIZE; y++) {
+      for (let x = 0; x < SIZE; x++) {
+        const p = [x, y];
+        const cell = el('div', 'cell');
+        if (isWallAt(lvl, p)) cell.classList.add('wall');
+        const idx = itemIndexAt(lvl, p);
+        if (idx >= 0) {
+          const node = liveItemNode(lvl, w, idx);
+          if (node) cell.appendChild(node);
+        }
+        cells.appendChild(cell);
+      }
+    }
+    $('board').setAttribute('aria-label', 'Spielfeld, ' + lvl.title);
+    const layer = $('pieces');
+    const liveNow = live.connMode === 'live';
+    WHO.forEach(function (who) {
+      let node = layer.querySelector('.piece.' + who);
+      if (!node) {
+        node = el('span', 'piece ' + who);
+        node.setAttribute('aria-hidden', 'true');
+        layer.appendChild(node);
+      }
+      let tag = layer.querySelector('.tag.' + who);
+      if (!tag) {
+        tag = el('div', 'bubble tag ' + who, 'abwesend');
+        tag.setAttribute('aria-hidden', 'true');
+        layer.appendChild(tag);
+      }
+      const isMe = !!live.own && live.own.role === who;
+      const p = isMe ? [live.own.x, live.own.y] : Net.livePeerPos(who, lvl, docs, live.presence);
+      const absent = !isMe && liveNow && Net.livePeerAbsent(who, docs, live.presence);
+      node.style.display = p ? '' : 'none';
+      tag.style.display = absent && p ? '' : 'none';
+      if (p) {
+        node.style.left = ((p[0] + 0.14) * 100 / SIZE) + '%';
+        node.style.top = ((p[1] + 0.14) * 100 / SIZE) + '%';
+        tag.style.left = node.style.left;
+        tag.style.top = node.style.top;
+      }
+      node.classList.toggle('absent', absent);
+      node.classList.toggle('holds', w.keyHolder === who);
+      node.classList.toggle('mine', isMe);
+    });
+  }
+
+  function renderLiveLog() {
+    const list = $('log');
+    list.textContent = '';
+    if (!live.log.length) {
+      list.appendChild(el('li', 'muted', 'Noch keine Züge.'));
+      return;
+    }
+    live.log.slice().reverse().forEach(function (entry) {
+      const li = el('li');
+      li.appendChild(el('span', 'chip ' + entry.who, LABEL[entry.who] || LABEL.system));
+      li.appendChild(document.createTextNode(' ' + entry.text));
+      list.appendChild(li);
+    });
+  }
+
+  function renderLiveNotebook(lvl, docs, me) {
+    const list = $('notebook');
+    list.textContent = '';
+    $('notes-info').textContent = me
+      ? 'Notizbuch von ' + LABEL[me] + '.'
+      : 'Zuschauen: geheime Hinweise sind nur für die Figuren sichtbar.';
+    const entries = deriveNotebook(lvl, docs.jonathan, docs.raphael, me);
+    if (!entries.length) {
+      list.appendChild(el('li', 'muted', 'Noch keine Hinweise gefunden.'));
+      return;
+    }
+    entries.forEach(function (entry) {
+      const li = el('li');
+      li.textContent = entry.hidden
+        ? 'Ein geheimer Hinweis für ' + LABEL[entry.for] + '. Nur ' + LABEL[entry.for] + ' kann ihn lesen.'
+        : entry.text;
+      list.appendChild(li);
+    });
+  }
+
+  function renderLiveFinale(lvl, w, me) {
+    const f = lvl.finale;
+    const show = !!f && !!me && !w.finaleSolved;
+    $('finale').hidden = !show;
+    if (!show) {
+      $('suspects').textContent = '';
+      view.suspectsFor = null;
+      return;
+    }
+    $('finale-question').textContent = f.question;
+    if (view.suspectsFor === lvl.id) return;
+    view.suspectsFor = lvl.id;
+    const box = $('suspects');
+    box.textContent = '';
+    f.suspects.forEach(function (s) {
+      const b = el('button', 'btn', s.name);
+      b.type = 'button';
+      b.addEventListener('click', function () { act({ type: 'accuse', name: s.id }); });
+      box.appendChild(b);
+    });
+  }
+
+  /* Levelende: beide im Ziel (und Finale gelöst). Der Wechsel passiert über den Abgleich. */
+  function renderLiveDone(lvl, w) {
+    const isLast = !nextLevelOf(lvl);
+    $('done').hidden = !w.levelComplete;
+    $('done-title').textContent = isLast ? 'Abschluss' : 'Level geschafft!';
+    $('outro-text').textContent = lvl.story.outro;
+    $('done-points').textContent = 'Punkte in diesem Level: ' + w.points;
+    $('followup').hidden = !(isLast && lvl.id === CONTINUE_AFTER);
+    $('next').hidden = true;
+  }
+
+  /* ---------- Ereignisse ---------- */
+
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    const dir = KEY_DIRS[e.key];
+    if (!dir) return;
+    e.preventDefault();
+    act({ type: 'move', dir: dir, n: 1 });
+  });
+
+  document.querySelectorAll('[data-dir]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      act({ type: 'move', dir: btn.getAttribute('data-dir'), n: 1 });
+    });
+  });
+
+  document.querySelectorAll('[data-cmd]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      runCommand(btn.getAttribute('data-cmd'));
+    });
+  });
+
+  $('cmd-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const input = $('cmd');
+    runCommand(input.value);
+    input.value = '';
+  });
+
+  $('next').addEventListener('click', function () {
+    if (view.world.state.done) submit({ type: 'advance' });
+  });
+
+  $('intro-ok').addEventListener('click', function () {
+    view.introOpen = false;
+    renderAll();
+  });
+
+  $('switch-figure').addEventListener('click', function () {
+    view.activeRole = view.activeRole === 'jonathan' ? 'raphael' : 'jonathan';
+    renderAll();
+  });
+
+  $('pick-jonathan').addEventListener('click', function () { pickLiveRole('jonathan'); });
+  $('pick-raphael').addEventListener('click', function () { pickLiveRole('raphael'); });
+  $('pick-none').addEventListener('click', function () { pickLiveRole('zuschauer'); });
+  $('p2p-new').addEventListener('click', onNewGame);
+  $('invite-copy').addEventListener('click', copyInvite);
+  $('p2p-reconnect').addEventListener('click', function () { if (live.p2p) live.p2p.reconnect(); });
+
+  /* ---------- Start ---------- */
+
+  /* Ohne Claude-Runtime: P2P-Angebot. Ein gültiger Hash #raum=<code> startet direkt den Beitritt. */
+  const hasRuntime = typeof claude !== 'undefined' && !!claude;
+  let startCode = null;
+  if (!hasRuntime && liveReady() && typeof NetP2P !== 'undefined') {
+    startCode = NetP2P.parseRoomHash(location.hash);
+    if (!startCode && location.hash.indexOf('#raum=') === 0) setMessage('Der Einladungslink ist ungültig.', true);
+    $('p2p').hidden = false;
+  }
+  $('privacy').hidden = hasRuntime;
+  if (liveReady() && (hasRuntime || startCode)) view.mode = 'connecting';
+  renderAll();
+  if (hasRuntime) startLive(null);
+  else if (startCode) startLive(startCode);
+})();
+</script>
 </body>
 </html>
