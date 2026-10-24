@@ -4,11 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; worker-src blob:; connect-src 'self' wss://broker.hivemq.com:8884 wss://test.mosquitto.org:8081 wss://broker.emqx.io:8084; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Rosi 62 Krimi</title>
 <style>
 /* ==========================================================
    Rosi 62 · Krimi
-   Tokens übernommen aus site/style.css (Branch jonathan/testseite).
+   Farb- und Abstandstokens aus der Stilvorlage übernommen.
    Keine externen Schriften; Stack wie vorgegeben.
    ========================================================== */
 
@@ -403,7 +405,7 @@ h2 {
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: var(--fs-caption);
+  font-size: var(--fs-callout);
   line-height: 1;
 }
 
@@ -514,6 +516,97 @@ h2 {
   font-size: var(--fs-callout);
 }
 
+/* Spielfeld und Chat: mobil untereinander, ab 48rem nebeneinander */
+.play {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.play .frame {
+  margin: var(--space-2) auto 0;
+  flex: 0 0 auto;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-top: var(--space-2);
+}
+
+.chat h2 {
+  margin-bottom: var(--space-1);
+}
+
+.chat-wrap {
+  position: relative;
+}
+
+.chat-log {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-1);
+  height: 16rem;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  background: var(--color-surface);
+  border: var(--rule-hair) solid var(--color-separator);
+  border-radius: var(--radius-m);
+}
+
+.chat-log li {
+  margin: 0 0 var(--space-1);
+  padding: 4px 8px;
+  border-radius: var(--radius-s);
+}
+
+/* Spielereignisse: gelb abgesetzt */
+.chat-log li.event {
+  background: var(--color-yellow);
+  color: var(--color-on-yellow);
+  font-weight: 600;
+}
+
+.chat-new {
+  position: absolute;
+  right: var(--space-1);
+  bottom: var(--space-1);
+  box-shadow: 0 1px 0 var(--color-label);
+}
+
+.chat-help {
+  margin-top: var(--space-1);
+  font-size: var(--fs-callout);
+}
+
+@media (min-width: 48rem) {
+  .wrap {
+    max-width: 52rem;
+  }
+
+  .play {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .play .frame {
+    margin: var(--space-2) 0 0;
+    flex: 0 0 440px;
+    max-width: 440px;
+  }
+
+  .chat {
+    flex: 1 1 0;
+    margin-top: var(--space-2);
+  }
+
+  .chat-log {
+    height: 20rem;
+  }
+}
+
 .cmd input {
   flex: 1 1 180px;
   min-width: 0;
@@ -592,7 +685,7 @@ h2 {
   padding: 2px 8px;
   margin-right: 4px;
   border-radius: var(--radius-s);
-  font-size: var(--fs-caption);
+  font-size: var(--fs-callout);
   font-weight: 600;
   color: var(--color-on-accent);
   background: var(--color-label);
@@ -632,6 +725,7 @@ h2 {
     </div>
     <h1>Rosi 62 · Krimi</h1>
     <p class="subtitle">Zwei Figuren, ein Fall. Hinweise finden, Befehle eintippen oder die Knöpfe nutzen.</p>
+    <p class="subtitle"><a href="funk.html">Zum Agentenfunk</a></p>
   </header>
 
   <section class="block" aria-labelledby="h-role">
@@ -655,6 +749,7 @@ h2 {
       <button type="button" class="btn btn-primary" id="p2p-new">Neues Spiel</button>
       <button type="button" class="btn" id="p2p-reconnect" hidden>Verbindung verloren – neu verbinden</button>
     </div>
+    <p id="p2p-hint" class="muted" hidden>Kommt keine Verbindung zustande, liegt es oft am Netzwerk – anderes WLAN oder Handy-Hotspot probieren.</p>
     <div id="invite" class="stack" hidden>
       <label for="invite-url">Einladungslink</label>
       <input id="invite-url" class="invite-input" type="text" readonly spellcheck="false" autocomplete="off">
@@ -674,11 +769,27 @@ h2 {
       <button type="button" class="btn btn-primary" id="intro-ok">Los geht’s</button>
     </section>
 
-    <div class="frame">
-      <div id="board" class="board" role="group" aria-label="Spielfeld">
-        <div id="cells" class="cells"></div>
-        <div id="pieces" class="pieces"></div>
+    <div class="play">
+      <div class="frame">
+        <div id="board" class="board" role="group" aria-label="Spielfeld">
+          <div id="cells" class="cells"></div>
+          <div id="pieces" class="pieces"></div>
+        </div>
       </div>
+
+      <section id="chat" class="chat" aria-labelledby="h-chat">
+        <h2 id="h-chat">Chat</h2>
+        <div class="chat-wrap">
+          <ol id="chat-log" class="chat-log" role="log" aria-label="Chatverlauf"></ol>
+          <button type="button" class="btn chat-new" id="chat-new" hidden>↓ neu</button>
+        </div>
+        <form id="cmd-form" class="cmd" autocomplete="off">
+          <label for="cmd">Nachricht oder Befehl</label>
+          <input id="cmd" name="cmd" type="text" autocomplete="off" spellcheck="false" placeholder="Nachricht, oder /rechts 3 für die eigene Figur">
+          <button type="submit" class="btn btn-primary">Senden</button>
+        </form>
+        <p class="muted chat-help">Eine normale Zeile geht an den Mitspieler. Mit / (z. B. /rechts 3) oder einem eindeutigen Befehl (z. B. nimm) steuert sie deine Figur.</p>
+      </section>
     </div>
 
     <p id="message" class="message" role="status" aria-live="polite"></p>
@@ -719,11 +830,6 @@ h2 {
       <button type="button" class="btn" data-cmd="neu">neu</button>
       <button type="button" class="btn" data-cmd="hilfe">hilfe</button>
     </div>
-    <form id="cmd-form" class="cmd" autocomplete="off">
-      <label for="cmd">Befehl eingeben</label>
-      <input id="cmd" name="cmd" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="z. B. rechts 3, sag hallo, code 1234">
-      <button type="submit" class="btn btn-primary">Senden</button>
-    </form>
     <p class="muted">Tasten: Pfeiltasten oder w a s d. Gesteuert wird die aktive Figur.</p>
   </section>
 
@@ -731,37 +837,49 @@ h2 {
     <h2 id="h-log">Zug-Log</h2>
     <ol id="log" class="log"></ol>
   </section>
-  <p id="privacy" class="muted privacy" hidden>Live-Verbindung direkt zwischen euren Geräten (WebRTC), vermittelt über den öffentlichen PeerJS-Server.</p>
+  <p id="privacy" class="muted privacy" hidden>Live über einen öffentlichen MQTT-Server (Nachrichten laufen über diesen Server; eure Geräte sehen ihre IP-Adressen nicht gegenseitig).</p>
 </div>
 
 <script>
 'use strict';
-// Transport SPIEL-P2P: WebRTC über PeerJS, für statische Seiten (GitHub Pages).
+// Transport für die statische Seite (GitHub Pages): MQTT über WebSocket (wss).
 //
 // Liefert dieselben Einstiegspunkte wie die Artifact-Runtime (claude.use('db'|'room'|'user')),
-// damit net.js unverändert bleibt. Keine Spiellogik. Ohne Netz oder ohne PeerJS
+// damit die Netzschicht unverändert bleibt. Keine Spiellogik. Ohne Netz oder ohne MQTT-Bibliothek
 // meldet der Transport den Zustand, die Seite läuft lokal weiter.
 //
-// Entscheidungen (Auftrag SPIEL-P2P, P-V1 bis P-V5):
-// - P-V1: Die PeerJS-ID des Gastgebers ist „rosi62-“ + 24 Hex-Zeichen von SHA-256(Raumcode).
-//   Der Raumcode selbst verlässt den Browser nie (nur im Einladungslink-Hash).
-// - P-V4: Zuschauer schreibt kein Dokument (das regelt net.js über pickRole).
-// - P-V5: Gastgeberwechsel nur beim Neuladen oder per Knopf „neu verbinden“, kein stiller Wechsel.
-// - Nachrichten vom Peer werden auf Form und Größe (4096 Byte, UTF-8) geprüft. Die Prüfung
-//   der Spielwerte macht net.js (sanitize*).
+// Festlegungen:
+// - Alle Nachrichten laufen über öffentliche MQTT-Server. Die Server sehen die Nachrichten,
+//   die Geräte sehen ihre IP-Adressen nicht gegenseitig.
+// - Jeder Browser verbindet sich zu ALLEN Servern der Liste gleichzeitig. Sendung an alle verbundenen,
+//   Empfang von allen. Öffentliche Server sind getrennte Systeme: Bei nur einem Server je Browser
+//   würden sich zwei Browser auf verschiedenen Servern nie finden. Doppelte Raum-Nachrichten
+//   werden über eine Nachrichten-ID herausgefiltert.
+// - Thema je Raum: „rosi62/“ + 24 Hex-Zeichen von SHA-256(Raumcode). Der Raumcode verlässt den Browser nie.
+// - Spieler-Dokumente stehen als retained Nachricht auf rosi62/<hash>/d/<uid>. Wer später kommt, bekommt den Stand.
+// - Partner ist, wer zuerst eine Herzschlag- oder Raum-Nachricht schickt. Fremde Absender werden ignoriert,
+//   solange der Partner aktiv ist. Ohne Herzschlag über 15 s gilt der Partner als weg.
+// - Zuschauer schreibt kein Dokument (das regelt die Netzschicht über pickRole).
+// - Nachrichten vom Netz werden auf Form und Größe (4096 Byte, UTF-8) geprüft. Die Prüfung
+//   der Spielwerte macht die Netzschicht (sanitize*).
 //
-// build.py fügt diese Datei inline in src/index.html ein. Im Node-Test wird sie per require geladen.
+// Wird beim Build inline eingefügt. Die Tests laden die Datei direkt.
 
 const NetP2P = (function () {
-  const PEERJS_URL = 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js';
-  const PEERJS_SRI = 'sha384-x0YgkOr/3UOZP2CRDxGW9e0Q+2Qjyr3uJrm4xU32Y7ZCNAo7Cc7bjhrZMi/dwczu';
-  const ID_PREFIX = 'rosi62-';
-  const HOST_HEX = 24;
-  const GUEST_PREFIX = 'g-';
-  const GUEST_HEX = 16;
+  const MQTT_URL = 'https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js';
+  const MQTT_SRI = 'sha384-u4uqeACkFcoKl57rBQJHVGDd1pqhW4w8X3WjTu1ZksPdxoLqdt34jpoNkJisE25W';
+  const BROKERS = [
+    'wss://broker.hivemq.com:8884/mqtt',
+    'wss://test.mosquitto.org:8081',
+    'wss://broker.emqx.io:8084/mqtt'
+  ];
+  const TOPIC_PREFIX = 'rosi62/';
+  const HASH_HEX = 24;
   const COLLECTION = 'spieler';
   const ROOM_NAME = 'rosi62-spiel';
   const ROOM_CODE = /^[A-Za-z0-9_-]{10,64}$/;
+  // 31 Zeichen ohne Verwechslungsgefahr (kein i, l, o, 0, 1). 31 teilt 256 nicht, daher verwirft
+  // randomChars Bytes oberhalb des größten Vielfachen von 31 (Rejection Sampling), sonst gäbe es Verzerrung.
   const CODE_ALPHABET = 'abcdefghjkmnpqrstuvwxyz23456789';
   const CODE_LEN = 12;
   const HEX = '0123456789abcdef';
@@ -770,8 +888,13 @@ const NetP2P = (function () {
   const SPIEL_KEY = 'rosi62.spiel.';
   const TOPIC_PATTERN = /^[a-z][a-z0-9_.-]{0,47}$/;
   const MSG_MAX = 4096;
-  const RETRY_MS = 2000;
+  const HEARTBEAT_MS = 5000;
+  const PARTNER_TIMEOUT_MS = 15000;
+  const CONNECT_MS = 6000;
+  const RECONNECT_MS = 2000;
   const RETRY_MAX = 5;
+  const OTHERS_MAX = 4;
+  const SEEN_MAX = 300;
 
   function noop() {}
 
@@ -779,8 +902,12 @@ const NetP2P = (function () {
     return v !== null && typeof v === 'object' && !Array.isArray(v);
   }
 
+  function textBytes(s) {
+    return new TextEncoder().encode(s).length;
+  }
+
   function byteLen(v) {
-    return new TextEncoder().encode(JSON.stringify(v)).length;
+    return textBytes(JSON.stringify(v));
   }
 
   function clone(v) {
@@ -789,10 +916,6 @@ const NetP2P = (function () {
 
   function later(fn) {
     Promise.resolve().then(fn).catch(noop);
-  }
-
-  function closeQuiet(c) {
-    try { if (c) c.close(); } catch (e) { /* schon geschlossen */ }
   }
 
   function defaultTimers() {
@@ -806,11 +929,16 @@ const NetP2P = (function () {
   function randomChars(n, alphabet) {
     const c = typeof crypto !== 'undefined' ? crypto : null;
     if (!c || typeof c.getRandomValues !== 'function') return null;
-    const bytes = new Uint8Array(n);
-    c.getRandomValues(bytes);
-    // 256 ist durch 32 und 16 teilbar, die Verteilung ist also gleichmäßig.
+    // Gleichverteilung: nur Bytes unterhalb des größten Vielfachen der Alphabetlänge nehmen.
+    const limit = 256 - (256 % alphabet.length);
     let out = '';
-    for (let i = 0; i < n; i++) out += alphabet[bytes[i] % alphabet.length];
+    while (out.length < n) {
+      const bytes = new Uint8Array(n);
+      c.getRandomValues(bytes);
+      for (let i = 0; i < n && out.length < n; i++) {
+        if (bytes[i] < limit) out += alphabet[bytes[i] % alphabet.length];
+      }
+    }
     return out;
   }
 
@@ -818,10 +946,11 @@ const NetP2P = (function () {
     return randomChars(CODE_LEN, CODE_ALPHABET);
   }
 
-  async function hostIdFor(code) {
+  // Thema des Raums: rosi62/ + erste 24 Hex-Zeichen von SHA-256(Raumcode).
+  async function topicBaseFor(code) {
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code));
     const hex = Array.from(new Uint8Array(digest), function (b) { return b.toString(16).padStart(2, '0'); }).join('');
-    return ID_PREFIX + hex.slice(0, HOST_HEX);
+    return TOPIC_PREFIX + hex.slice(0, HASH_HEX);
   }
 
   // Raumcode aus dem Hash lesen: '#raum=<code>'. Liefert null bei allem anderen.
@@ -875,34 +1004,48 @@ const NetP2P = (function () {
     return fresh;
   }
 
-  function parseDoc(text) {
+  function parseJson(text) {
     if (typeof text !== 'string') return null;
     try {
       const v = JSON.parse(text);
-      return isPlain(v) && byteLen(v) <= MSG_MAX ? v : null;
+      return isPlain(v) ? v : null;
     } catch (e) {
       return null;
     }
   }
 
-  function peerCtorOf(opts) {
-    if (opts && typeof opts.Peer === 'function') return opts.Peer;
-    return typeof globalThis.Peer === 'function' ? globalThis.Peer : null;
+  function parseDoc(text) {
+    const v = parseJson(text);
+    return v && byteLen(v) <= MSG_MAX ? v : null;
   }
 
-  function loadPeerJs(opts) {
-    if (peerCtorOf(opts)) return Promise.resolve();
+  function decodeBytes(payload) {
+    if (typeof payload === 'string') return payload;
+    if (payload && typeof payload.length === 'number') {
+      try { return new TextDecoder().decode(payload); } catch (e) { return null; }
+    }
+    return null;
+  }
+
+  function libOf(opts) {
+    if (opts && opts.lib && typeof opts.lib.connect === 'function') return opts.lib;
+    const g = typeof globalThis !== 'undefined' ? globalThis.mqtt : undefined;
+    return g && typeof g.connect === 'function' ? g : null;
+  }
+
+  function loadMqtt(opts) {
+    if (libOf(opts)) return Promise.resolve();
     if (typeof document === 'undefined') return Promise.reject(new Error('kein Browser'));
     return new Promise(function (resolve, reject) {
       const s = document.createElement('script');
-      s.src = PEERJS_URL;
-      s.integrity = PEERJS_SRI;
+      s.src = MQTT_URL;
+      s.integrity = MQTT_SRI;
       s.crossOrigin = 'anonymous';
       s.async = true;
       s.onload = function () {
-        if (peerCtorOf(opts)) resolve(); else reject(new Error('PeerJS fehlt'));
+        if (libOf(opts)) resolve(); else reject(new Error('MQTT fehlt'));
       };
-      s.onerror = function () { reject(new Error('PeerJS nicht geladen')); };
+      s.onerror = function () { reject(new Error('MQTT nicht geladen')); };
       document.head.appendChild(s);
     });
   }
@@ -913,30 +1056,38 @@ const NetP2P = (function () {
     if (typeof code !== 'string' || !ROOM_CODE.test(code)) throw new Error('ungültiger Raumcode');
     const store = o.store || makeStore();
     const timers = o.timers || defaultTimers();
+    const now = o.now || function () { return Date.now(); };
     const onLink = o.onLink || noop;
     const onWarn = o.onWarn || noop;
+    const brokers = Array.isArray(o.brokers) && o.brokers.length ? o.brokers : BROKERS;
     const uid = loadUid(store);
-    const spielKey = SPIEL_KEY + code;
+    // Schlüssel = Topic-Hash (ohne Raumcode im Klartext). Steht erst nach topicBaseFor fest.
+    let spielKey = null;
 
-    // Dokumente nach Spieler-ID (Map, damit keine Schlüssel wie __proto__ stören).
-    const docs = new Map();
+    // Eigenes Dokument und fremde Dokumente (höchstens OTHERS_MAX, nach Absender-ID).
+    let ownDoc = null;
+    const others = new Map();
     const roomHandlers = new Map();
     const snapListeners = new Set();
     const peersListeners = new Set();
     const connListeners = new Set();
+    const seenIds = [];
+    let msgCounter = 0;
     let warnedStore = false;
+    let base = null;
+
+    // Je Server: Client, Retry-Timer, Zähler für Wiederholungen, Connect-Timer.
+    const links = brokers.map(function () { return null; });
+    const up = new Set();
+    const retryTimers = brokers.map(function () { return null; });
+    const connTimers = brokers.map(function () { return null; });
+    const attempts = brokers.map(function () { return 0; });
+    const failedOnce = brokers.map(function () { return false; });
 
     const st = {
-      peer: null, conn: null, role: null, opened: false, hostId: null,
-      linkState: 'verbinde', greeted: false,
-      remoteUid: null, remoteLinked: false, remotePres: null, ownPres: null,
-      attempts: 0, retryTimer: null, disposed: false
+      linkState: 'verbinde', partner: null, partnerSeen: 0, partnerPres: null, ownPres: null,
+      hbTimer: null, ready: null, disposed: false, everUp: false
     };
-
-    if (uid) {
-      const own = parseDoc(store.get(spielKey));
-      if (own) docs.set(uid, own);
-    }
 
     function warnStore() {
       if (warnedStore) return;
@@ -949,43 +1100,100 @@ const NetP2P = (function () {
       onLink(state);
     }
 
-    function clearRetry() {
-      if (st.retryTimer !== null) timers.clearTimeout(st.retryTimer);
-      st.retryTimer = null;
+    // Status aus den Verbindungen: live, wenn der Partner da ist; fehlt, wenn nur ein Server steht;
+    // verbinde, solange ein Versuch läuft; verloren, wenn kein Server erreichbar ist.
+    function refreshLink() {
+      if (st.disposed) return;
+      if (up.size > 0) { setLink(st.partner ? 'live' : 'fehlt'); return; }
+      // „verbinde“ nur, solange ein Versuch läuft. Zwischen Wiederholungen ist der Stand „verloren“.
+      const trying = links.some(function (c) { return c !== null; });
+      setLink(trying ? 'verbinde' : 'verloren');
     }
 
     // ---------- Senden ----------
 
-    function send(msg) {
-      if (!st.conn || !st.conn.open) return false;
-      if (byteLen(msg) > MSG_MAX) return false;
-      try { st.conn.send(msg); return true; } catch (e) { return false; }
+    function publish(topic, text, opts) {
+      let any = false;
+      up.forEach(function (i) {
+        const c = links[i];
+        if (!c) return;
+        try { c.publish(topic, text, opts); any = true; } catch (e) { /* dieser Server antwortet nicht */ }
+      });
+      return any;
     }
 
-    function greet() {
-      if (st.greeted || !st.conn) return;
-      st.greeted = true;
-      send({ t: 'hello', uid: uid });
-      const own = uid ? docs.get(uid) : null;
-      if (own) send({ t: 'doc', doc: own });
-      if (st.ownPres) send({ t: 'pres', p: st.ownPres });
+    // Raum-Nachrichten: nicht retained, für den Partner. Jede hat eine ID gegen Doppel-Empfang.
+    function publishRoom(obj) {
+      if (!base || !uid) return 'none';
+      msgCounter += 1;
+      obj.i = uid + '-' + msgCounter;
+      const text = JSON.stringify(obj);
+      if (textBytes(text) > MSG_MAX) return 'big';
+      return publish(base + '/m', text, { qos: 0, retain: false }) ? 'ok' : 'none';
     }
 
-    // ---------- Empfang ----------
+    function sendHeartbeat() {
+      if (up.size === 0 || !uid) return;
+      publishRoom({ t: 'hb', u: uid, p: st.ownPres });
+    }
+
+    function publishOwnDoc(clear) {
+      if (!base || !uid) return;
+      const topic = base + '/d/' + uid;
+      if (clear) { publish(topic, '', { qos: 1, retain: true }); return; }
+      if (ownDoc) publish(topic, JSON.stringify(ownDoc), { qos: 1, retain: true });
+    }
+
+    function startHeartbeat() {
+      if (st.hbTimer !== null) return;
+      st.hbTimer = timers.setTimeout(function tick() {
+        st.hbTimer = null;
+        if (up.size === 0) return;
+        sendHeartbeat();
+        if (st.partner && now() - st.partnerSeen > PARTNER_TIMEOUT_MS) dropPartner();
+        st.hbTimer = timers.setTimeout(tick, HEARTBEAT_MS);
+      }, HEARTBEAT_MS);
+    }
+
+    function clearHeartbeat() {
+      if (st.hbTimer !== null) timers.clearTimeout(st.hbTimer);
+      st.hbTimer = null;
+    }
+
+    // ---------- Snapshot (db-ähnlich) ----------
+
+    function entry(id, doc) {
+      return { id: id, exists: true, data: function () { return clone(doc); } };
+    }
+
+    // Fremdes Dokument: das des Partners, sonst das älteste bekannte (Stand aus einer früheren Sitzung).
+    function foreignUid() {
+      if (st.partner && others.has(st.partner)) return st.partner;
+      const it = others.keys().next();
+      return it.done ? null : it.value;
+    }
+
+    function snapshot() {
+      const list = [];
+      if (uid && ownDoc) list.push(entry(uid, ownDoc));
+      const fu = foreignUid();
+      if (fu !== null) list.push(entry(fu, others.get(fu)));
+      return { docs: list };
+    }
 
     function notifySnap() {
       later(function () {
         const snap = snapshot();
         snapListeners.forEach(function (cb) {
-          try { cb(snap); } catch (e) { /* Listener ist Sache von net.js */ }
+          try { cb(snap); } catch (e) { /* Listener ist Sache der Netzschicht */ }
         });
       });
     }
 
     function peerList() {
       const list = [{ peer: uid, isMe: true, presence: st.ownPres ? clone(st.ownPres) : null }];
-      if (st.remoteLinked && st.remoteUid) {
-        list.push({ peer: st.remoteUid, isMe: false, kind: 'human', presence: st.remotePres ? clone(st.remotePres) : null });
+      if (st.partner) {
+        list.push({ peer: st.partner, isMe: false, kind: 'human', presence: st.partnerPres ? clone(st.partnerPres) : null });
       }
       return list;
     }
@@ -1007,206 +1215,206 @@ const NetP2P = (function () {
       });
     }
 
-    function onHello(u) {
-      if (typeof u !== 'string' || !UID_PATTERN.test(u) || u === uid) return;
-      greet();
-      if (st.remoteUid !== u) {
-        // Anderer Mitspieler: das Dokument des alten Gegenübers verwerfen.
-        if (st.remoteUid !== null) docs.delete(st.remoteUid);
-        st.remoteUid = u;
-        st.remotePres = null;
-        notifySnap();
-      }
-      const was = st.remoteLinked;
-      st.remoteLinked = true;
-      st.attempts = 0;
-      clearRetry();
-      setLink('live');
+    // ---------- Partner ----------
+
+    function setPartner(u) {
+      if (st.partner === u) return;
+      st.partner = u;
+      st.partnerPres = null;
+      st.partnerSeen = now();
       notifyPeers();
-      if (!was) notifyConn(true);
+      notifyConn(true);
+      notifySnap();
+      refreshLink();
+      sendHeartbeat();
     }
 
-    function onRemoteDoc(doc) {
-      if (st.remoteUid === null) return;
-      if (doc === null) {
-        if (docs.has(st.remoteUid)) { docs.delete(st.remoteUid); notifySnap(); }
-        return;
-      }
-      if (!isPlain(doc)) return;
-      // Veraltete Stände (kleinerer seq als gespeichert) werden verworfen. Gleicher seq ist erlaubt.
-      const prev = docs.get(st.remoteUid);
-      if (prev && (!Number.isSafeInteger(doc.seq) || doc.seq < prev.seq)) return;
-      docs.set(st.remoteUid, clone(doc));
+    function dropPartner() {
+      if (!st.partner) return;
+      st.partner = null;
+      st.partnerPres = null;
+      notifyPeers();
+      notifyConn(false);
       notifySnap();
+      refreshLink();
     }
+
+    // ---------- Empfang ----------
 
     function dispatchRoom(topic, data) {
       const set = roomHandlers.get(topic);
       if (!set) return;
-      const msg = { peer: st.remoteUid, isMe: false, data: data };
+      const msg = { peer: st.partner, isMe: false, data: data };
       set.forEach(function (cb) {
         try { cb(msg); } catch (e) { /* ein Handler darf die Verbindung nicht stören */ }
       });
     }
 
-    function onData(d) {
-      if (!isPlain(d) || byteLen(d) > MSG_MAX) return;
-      if (d.t === 'hello') { onHello(d.uid); return; }
-      if (st.remoteUid === null || !st.remoteLinked) return;
-      if (d.t === 'doc') { onRemoteDoc(d.doc); return; }
-      if (d.t === 'pres') {
-        if (isPlain(d.p)) { st.remotePres = d.p; notifyPeers(); }
+    function seenBefore(id) {
+      if (seenIds.indexOf(id) >= 0) return true;
+      seenIds.push(id);
+      if (seenIds.length > SEEN_MAX) seenIds.shift();
+      return false;
+    }
+
+    function onRoomMsg(text) {
+      const m = parseJson(text);
+      if (!m) return;
+      const from = m.u;
+      if (typeof from !== 'string' || !UID_PATTERN.test(from) || from === uid) return;
+      if (m.t !== 'hb' && typeof m.i === 'string' && seenBefore(m.i)) return;
+      if (st.partner === null) {
+        if (m.t !== 'hb' && m.t !== 'room') return;
+        setPartner(from);
+      } else if (st.partner !== from) {
         return;
       }
-      if (d.t === 'room' && typeof d.topic === 'string' && TOPIC_PATTERN.test(d.topic) && isPlain(d.d)) {
-        dispatchRoom(d.topic, d.d);
+      st.partnerSeen = now();
+      if (m.t === 'hb') {
+        const p = isPlain(m.p) ? m.p : null;
+        if (JSON.stringify(p) !== JSON.stringify(st.partnerPres)) {
+          st.partnerPres = p;
+          notifyPeers();
+        }
+        return;
+      }
+      if (m.t === 'room' && typeof m.topic === 'string' && TOPIC_PATTERN.test(m.topic) && isPlain(m.d)) {
+        dispatchRoom(m.topic, m.d);
       }
     }
 
-    // ---------- Verbindung (Gast und Gastgeber) ----------
-
-    function bindConn(c) {
-      const old = st.conn;
-      st.conn = c;
-      st.greeted = false;
-      if (old && old !== c) closeQuiet(old);
-      c.on('open', function () { if (st.conn === c) greet(); });
-      c.on('data', function (d) { if (st.conn === c) onData(d); });
-      c.on('close', function () { if (st.conn === c) dropConn(); });
-      c.on('error', function () { if (st.conn === c) dropConn(); });
-      if (c.open) greet();
+    function onDocMsg(u, text) {
+      if (!UID_PATTERN.test(u) || u === uid) return;
+      if (text === '') {
+        if (others.delete(u)) notifySnap();
+        return;
+      }
+      const doc = parseDoc(text);
+      if (!doc) return;
+      const prev = others.get(u);
+      // Veraltete Stände (kleinerer seq als gespeichert) werden verworfen. Gleicher seq ist erlaubt.
+      if (prev && (!Number.isSafeInteger(doc.seq) || doc.seq < prev.seq)) return;
+      if (!prev && others.size >= OTHERS_MAX) return;
+      others.set(u, clone(doc));
+      notifySnap();
     }
 
-    function dropConn() {
-      st.conn = null;
-      st.greeted = false;
-      const was = st.remoteLinked;
-      st.remoteLinked = false;
-      st.remotePres = null;
-      if (was) { notifyPeers(); notifyConn(false); }
+    function onWire(topic, payload) {
+      const text = decodeBytes(payload);
+      if (text === null || textBytes(text) > MSG_MAX) return;
+      if (topic === base + '/m') { onRoomMsg(text); return; }
+      const pre = base + '/d/';
+      if (typeof topic === 'string' && topic.indexOf(pre) === 0) onDocMsg(topic.slice(pre.length), text);
+    }
+
+    // ---------- Verbindungen (je Server) ----------
+
+    function clearConnTimer(i) {
+      if (connTimers[i] !== null) timers.clearTimeout(connTimers[i]);
+      connTimers[i] = null;
+    }
+
+    function clearRetryTimer(i) {
+      if (retryTimers[i] !== null) timers.clearTimeout(retryTimers[i]);
+      retryTimers[i] = null;
+    }
+
+    function endOne(i) {
+      clearConnTimer(i);
+      clearRetryTimer(i);
+      up.delete(i);
+      const c = links[i];
+      links[i] = null;
+      if (c) { try { c.end(true); } catch (e) { /* schon beendet */ } }
+    }
+
+    function failOne(i, c) {
+      if (links[i] !== c) return;
+      const wasUp = up.has(i);
+      endOne(i);
+      if (up.size === 0) {
+        if (st.partner) dropPartner();
+        clearHeartbeat();
+        if (st.everUp) onWarn('Verbindung zum MQTT-Server verloren. Mit „neu verbinden“ geht es weiter.');
+      }
+      failedOnce[i] = true;
+      if (!st.everUp && up.size === 0 && failedOnce.every(function (x) { return x; }) && !st.noServerWarned) {
+        st.noServerWarned = true;
+        onWarn('Kein MQTT-Server erreichbar. Netz prüfen, dann „neu verbinden“.');
+      }
+      scheduleRetry(i);
+      refreshLink();
+    }
+
+    function scheduleRetry(i) {
       if (st.disposed) return;
-      if (st.role === 'gast') {
-        scheduleConnect();
-      } else {
-        setLink('fehlt');
-      }
+      attempts[i] += 1;
+      if (attempts[i] > RETRY_MAX) return;
+      clearRetryTimer(i);
+      retryTimers[i] = timers.setTimeout(function () {
+        retryTimers[i] = null;
+        connectOne(i);
+      }, o.retryMs || RECONNECT_MS);
     }
 
-    function scheduleConnect() {
-      if (st.disposed || st.retryTimer !== null) return;
-      st.attempts += 1;
-      if (st.attempts > RETRY_MAX) {
-        setLink('fehlt');
+    function connectOne(i) {
+      if (st.disposed || links[i]) return;
+      const lib = libOf(o);
+      const rnd = lib ? randomChars(16, HEX) : null;
+      if (!lib || !rnd) {
+        setLink('verloren');
+        onWarn('Live-Verbindung nicht möglich (MQTT-Bibliothek fehlt).');
         return;
       }
-      setLink('verbinde');
-      st.retryTimer = timers.setTimeout(function () {
-        st.retryTimer = null;
-        connectToHost();
-      }, o.retryMs || RETRY_MS);
-    }
-
-    function connectToHost() {
-      if (st.disposed || !st.peer || st.peer.destroyed || st.role !== 'gast') return;
-      if (st.conn) return;
-      clearRetry();
       let c;
       try {
-        c = st.peer.connect(st.hostId, { reliable: true, serialization: 'json' });
+        c = lib.connect(brokers[i], { clientId: 'r' + rnd, clean: true, reconnectPeriod: 0, connectTimeout: CONNECT_MS, keepalive: 30 });
       } catch (e) {
-        scheduleConnect();
+        failOne(i, null);
         return;
       }
-      bindConn(c);
-    }
-
-    function acceptConn(c) {
-      if (st.disposed) { closeQuiet(c); return; }
-      bindConn(c);
-    }
-
-    function retire(p) {
-      if (st.peer === p) st.peer = null;
-      try { p.destroy(); } catch (e) { /* schon beendet */ }
-    }
-
-    function onPeerError(p, err) {
-      if (p !== st.peer || st.disposed) return;
-      const type = err && typeof err.type === 'string' ? err.type : '';
-      if (type === 'unavailable-id' && st.role === 'gastgeber' && !st.opened) {
-        // Gastgeber-ID ist belegt: dieser Browser wird Gast.
-        retire(p);
-        openGuest();
-        return;
-      }
-      if (type === 'peer-unavailable') {
-        if (st.role === 'gast') scheduleConnect();
-        return;
-      }
-      setLink('verloren');
-      onWarn('Die Verbindung ist abgebrochen. Mit „neu verbinden“ geht es weiter.');
-    }
-
-    function onDisconnected(p) {
-      if (p !== st.peer || st.disposed) return;
-      if (!st.remoteLinked) setLink('verloren');
-      try { p.reconnect(); } catch (e) { /* Peer ist schon beendet */ }
-    }
-
-    function openHost() {
-      const p = createPeer(st.hostId);
-      st.peer = p;
-      st.role = 'gastgeber';
-      st.opened = false;
-      p.on('open', function () {
-        if (p !== st.peer) return;
-        st.opened = true;
-        setLink(st.remoteLinked ? 'live' : 'fehlt');
+      links[i] = c;
+      refreshLink();
+      clearConnTimer(i);
+      connTimers[i] = timers.setTimeout(function () {
+        connTimers[i] = null;
+        if (links[i] === c && !up.has(i)) failOne(i, c);
+      }, CONNECT_MS + 1000);
+      c.on('connect', function () {
+        if (links[i] !== c) return;
+        clearConnTimer(i);
+        up.add(i);
+        attempts[i] = 0;
+        st.everUp = true;
+        st.noServerWarned = false;
+        c.subscribe([base + '/m', base + '/d/+'], { qos: 0 });
+        publishOwnDoc(false);
+        sendHeartbeat();
+        startHeartbeat();
+        refreshLink();
       });
-      p.on('connection', function (c) { if (p === st.peer) acceptConn(c); });
-      p.on('error', function (err) { onPeerError(p, err); });
-      p.on('disconnected', function () { onDisconnected(p); });
-    }
-
-    function openGuest() {
-      const rnd = randomChars(GUEST_HEX, HEX);
-      if (!rnd) { setLink('verloren'); onWarn('Zufallszahlen fehlen, Live ist nicht möglich.'); return; }
-      const p = createPeer(GUEST_PREFIX + rnd);
-      st.peer = p;
-      st.role = 'gast';
-      st.opened = false;
-      p.on('open', function () {
-        if (p !== st.peer) return;
-        st.opened = true;
-        st.attempts = 0;
-        connectToHost();
+      c.on('message', function (topic, payload) {
+        if (links[i] === c) onWire(topic, payload);
       });
-      // Der Gast nimmt keine eingehenden Verbindungen an.
-      p.on('connection', function (c) { closeQuiet(c); });
-      p.on('error', function (err) { onPeerError(p, err); });
-      p.on('disconnected', function () { onDisconnected(p); });
+      c.on('error', function () { failOne(i, c); });
+      c.on('close', function () { failOne(i, c); });
     }
 
-    function createPeer(id) {
-      const P = peerCtorOf(o);
-      return new P(id, { debug: 0 });
+    function connectAll() {
+      for (let i = 0; i < brokers.length; i++) connectOne(i);
     }
 
     function teardown() {
-      clearRetry();
-      const c = st.conn;
-      st.conn = null;
-      st.greeted = false;
-      const was = st.remoteLinked;
-      st.remoteLinked = false;
-      st.remotePres = null;
-      closeQuiet(c);
-      const p = st.peer;
-      st.peer = null;
-      st.role = null;
-      st.opened = false;
-      if (p) { try { p.destroy(); } catch (e) { /* schon beendet */ } }
-      if (was) { notifyPeers(); notifyConn(false); }
+      for (let i = 0; i < brokers.length; i++) endOne(i);
+      clearHeartbeat();
+      st.everUp = false;
+      if (st.partner) {
+        st.partner = null;
+        st.partnerPres = null;
+        notifyPeers();
+        notifyConn(false);
+      }
+      refreshLink();
     }
 
     function start() {
@@ -1217,22 +1425,34 @@ const NetP2P = (function () {
         onWarn('Keine Spieler-Kennung, Live ist nicht möglich.');
         return;
       }
-      Promise.all([hostIdFor(code), loadPeerJs(o)]).then(function (r) {
+      if (!st.ready) {
+        st.ready = Promise.all([loadMqtt(o), topicBaseFor(code)]).then(function (r) {
+          base = r[1];
+          spielKey = SPIEL_KEY + base.slice(TOPIC_PREFIX.length);
+          if (uid && !ownDoc) {
+            const saved = parseDoc(store.get(spielKey));
+            if (saved) ownDoc = saved;
+          }
+          if (ownDoc) store.set(spielKey, JSON.stringify(ownDoc));
+          return true;
+        });
+        st.ready.catch(function () { st.ready = null; });
+      }
+      st.ready.then(function () {
         if (st.disposed) return;
-        st.hostId = r[0];
-        // Wer die Gastgeber-ID zuerst belegt, ist Gastgeber. Belegt sie schon jemand, wird man Gast.
-        openHost();
+        connectAll();
       }, function () {
         if (st.disposed) return;
         setLink('verloren');
-        onWarn('Live-Verbindung nicht möglich (PeerJS oder sichere Verbindung fehlt).');
+        onWarn('Live-Verbindung nicht möglich (MQTT-Bibliothek oder sichere Verbindung fehlt).');
       });
     }
 
     function reconnect() {
       if (st.disposed) return;
       teardown();
-      st.attempts = 0;
+      for (let i = 0; i < brokers.length; i++) { attempts[i] = 0; failedOnce[i] = false; }
+      st.noServerWarned = false;
       start();
     }
 
@@ -1246,14 +1466,6 @@ const NetP2P = (function () {
     }
 
     // ---------- Namespaces (wie die Artifact-Runtime) ----------
-
-    function snapshot() {
-      const list = [];
-      docs.forEach(function (doc, id) {
-        list.push({ id: id, exists: true, data: function () { return clone(doc); } });
-      });
-      return { docs: list };
-    }
 
     function rejected(code) {
       return Promise.reject({ code: code });
@@ -1281,18 +1493,18 @@ const NetP2P = (function () {
             if (!own) return rejected('permission_denied');
             if (!isPlain(payload) || byteLen(payload) > MSG_MAX) return rejected('invalid_argument');
             const copy = clone(payload);
-            docs.set(uid, copy);
-            if (!store.set(spielKey, JSON.stringify(copy))) warnStore();
+            ownDoc = copy;
+            if (spielKey && !store.set(spielKey, JSON.stringify(copy))) warnStore();
             notifySnap();
-            send({ t: 'doc', doc: copy });
+            publishOwnDoc(false);
             return Promise.resolve();
           },
           delete: function () {
             if (!own) return rejected('permission_denied');
-            docs.delete(uid);
-            store.remove(spielKey);
+            ownDoc = null;
+            if (spielKey) store.remove(spielKey);
             notifySnap();
-            send({ t: 'doc', doc: null });
+            publishOwnDoc(true);
             return Promise.resolve();
           }
         };
@@ -1318,18 +1530,19 @@ const NetP2P = (function () {
         connListeners.add(cb);
         return function () { connListeners.delete(cb); };
       },
-      connected: function () { return st.remoteLinked; },
+      connected: function () { return st.partner !== null; },
       emit: function (topic, payload) {
         if (typeof topic !== 'string' || !TOPIC_PATTERN.test(topic) || !isPlain(payload)) return rejected('invalid_argument');
         // Ohne Mitspieler entfällt die Nachricht still (wie bei der Artifact-Runtime).
-        if (!st.remoteLinked) return Promise.resolve();
-        if (byteLen({ t: 'room', topic: topic, d: payload }) > MSG_MAX) return rejected('invalid_argument');
-        return send({ t: 'room', topic: topic, d: payload }) ? Promise.resolve() : rejected('unavailable');
+        if (!st.partner) return Promise.resolve();
+        const res = publishRoom({ t: 'room', u: uid, topic: topic, d: payload });
+        if (res === 'big') return rejected('invalid_argument');
+        return res === 'ok' ? Promise.resolve() : rejected('unavailable');
       },
       presence: function (payload) {
-        if (!isPlain(payload) || byteLen({ t: 'pres', p: payload }) > MSG_MAX) return rejected('invalid_argument');
+        if (!isPlain(payload) || byteLen({ t: 'hb', u: uid, p: payload, i: 'u-000000' }) > MSG_MAX) return rejected('invalid_argument');
         st.ownPres = clone(payload);
-        if (st.remoteLinked) send({ t: 'pres', p: st.ownPres });
+        sendHeartbeat();
         notifyPeers();
         return Promise.resolve();
       }
@@ -1363,12 +1576,12 @@ const NetP2P = (function () {
   return {
     create: create,
     createTransport: createTransport,
-    hostIdFor: hostIdFor,
+    topicBaseFor: topicBaseFor,
     newCode: newCode,
     parseRoomHash: parseRoomHash,
-    ID_PREFIX: ID_PREFIX,
-    PEERJS_URL: PEERJS_URL,
-    PEERJS_SRI: PEERJS_SRI,
+    BROKERS: BROKERS,
+    MQTT_URL: MQTT_URL,
+    MQTT_SRI: MQTT_SRI,
     MSG_MAX: MSG_MAX,
     CODE_LEN: CODE_LEN,
     COLLECTION: COLLECTION
@@ -1380,18 +1593,17 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 'use strict';
-// Netzschicht SPIEL-LIVE (Artifact-Runtime: db, room, user).
+// Netzschicht (Artifact-Runtime: db, room, user; Transport für P2P im Nachbarmodul).
 //
-// Keine Spiellogik. Regeln kommen aus engine.js (deriveWorld, applyLocal,
+// Keine Spiellogik. Regeln kommen aus der Spiel-Engine (deriveWorld, applyLocal,
 // reconcile). Diese Datei übernimmt Verbindung, Rollen, Schreib-Warteschlange,
 // Abgleich und die Prüfung aller Fremddaten. Fremdtext wird nie als HTML
 // ausgegeben, die Seite nutzt dafür textContent.
 //
-// build.py fügt diese Datei inline in src/index.html ein. Im Node-Test wird
-// sie per require geladen. Der Browser-Teil sieht module nicht und überspringt
-// den Export.
+// Wird beim Build inline eingefügt. Die Tests laden sie direkt. Der Browser-Teil
+// sieht module nicht und überspringt den Export.
 //
-// Schreibregeln (Auftrag SPIEL-LIVE, Entscheidungen V1 bis V6):
+// Schreibregeln:
 // - Geschrieben wird nur spieler/<eigene uid>, immer als vollständiges Dokument.
 // - Nur bei echter Zustandsänderung, höchstens ein Write gleichzeitig.
 // - Der Abgleich (Timer, Snapshot) liest nur.
@@ -1470,7 +1682,7 @@ const Net = (function () {
     if (typeof value !== 'string') return { text: '', cut: false };
     const clean = value
       .replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ')
-      .replace(/[​-‏‪-‮⁠-⁤﻿]/g, '')
+      .replace(/[\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]/g, '')
       .trim();
     const chars = Array.from(clean);
     if (chars.length > SAY_MAX) {
@@ -1916,7 +2128,7 @@ const Net = (function () {
       }, delay);
     }
 
-    // Abgleich alle 3 s. Nur lesen, nie schreiben (V2).
+    // Abgleich alle 3 s. Nur lesen, nie schreiben.
     function startTick() {
       if (s.tickHandle !== null) return;
       s.tickHandle = timers.setInterval(tick, SYNC_MS);
@@ -2194,6 +2406,51 @@ const Net = (function () {
     };
   }
 
+  // ---------- Chat-Zeile (rein) ----------
+  // Entscheidet, was eine Eingabe im Chat ist: Befehl (steuert die eigene Figur) oder Sprechtext.
+  // parse = engine.parseCommand. Ein Schrägstrich am Anfang erzwingt einen Befehl.
+  const CHAT_COMMAND_TYPES = ['move', 'take', 'give', 'use', 'restart', 'code', 'accuse'];
+  const CHAT_COMMAND_WORDS = ['code', 'beschuldige', 'hilfe', 'sag'];
+
+  // Ereignisse für den Chat aus zwei aufeinander folgenden Ständen (chatSnap*). Liefert {who, text} in
+  // Reihenfolge. Im Live-Modus wechselt das Level nur nach Abschluss. Der Abschluss kommt beim
+  // Mitspieler oft in derselben Änderung wie der Levelwechsel an, daher wird er dann gemeldet.
+  function chatEvents(prev, next) {
+    const out = [];
+    if (!prev || !next || prev.mode !== next.mode) return out;
+    if (prev.level !== next.level) {
+      if (next.mode === 'live' && !prev.done) out.push({ who: 'system', text: 'Level geschafft' });
+      return out;
+    }
+    Object.keys(next.clues || {}).forEach(function (k) {
+      if (!Object.prototype.hasOwnProperty.call(prev.clues || {}, k)) out.push({ who: next.clues[k], text: 'Hinweis gefunden' });
+    });
+    Object.keys(next.doors || {}).forEach(function (k) {
+      if (next.doors[k] && !(prev.doors || {})[k]) out.push({ who: 'system', text: 'Tür offen' });
+    });
+    if (next.done && !prev.done) out.push({ who: 'system', text: 'Level geschafft' });
+    return out;
+  }
+
+  function chatRoute(text, parse) {
+    const raw = String(text == null ? '' : text).trim();
+    if (!raw) return { kind: 'none' };
+    if (raw.charAt(0) === '/') {
+      const cmd = raw.slice(1).trim();
+      if (!cmd) return { kind: 'error', message: 'Hinter dem Schrägstrich fehlt der Befehl, z. B. /rechts 3.' };
+      return { kind: 'command', text: cmd };
+    }
+    const first = raw.split(/\s/)[0].toLowerCase();
+    const p = typeof parse === 'function' ? parse(raw) : { type: 'help' };
+    if (CHAT_COMMAND_TYPES.indexOf(p.type) >= 0 || CHAT_COMMAND_WORDS.indexOf(first) >= 0) {
+      return { kind: 'command', text: raw };
+    }
+    if (Array.from(raw).length > SAY_MAX) {
+      return { kind: 'error', message: 'Nachrichten haben höchstens ' + SAY_MAX + ' Zeichen.' };
+    }
+    return { kind: 'say', text: raw };
+  }
+
   // ---------- Live-Schritte (rein; Engine wird per Parameter übergeben) ----------
   function otherRole(role) {
     if (role === 'jonathan') return 'raphael';
@@ -2291,6 +2548,8 @@ const Net = (function () {
     liveAct: liveAct,
     otherRole: otherRole,
     createNet: createNet,
+    chatRoute: chatRoute,
+    chatEvents: chatEvents,
     emptyDoc: emptyDoc,
     sanitizeDoc: sanitizeDoc,
     clipText: clipText,
@@ -2313,8 +2572,7 @@ if (typeof module !== 'undefined' && module.exports) {
    Rosi 62 · Minispiel-Engine
    Reine Funktionen ohne DOM und ohne Netzwerk. Der Zustand ist
    reines JSON (kann in db/world/current gespeichert werden).
-   Wird von game/build.py in game/dist/index.html eingefügt und
-   von game/tests/test_engine.js direkt per require geprüft.
+   Wird beim Build eingefügt und von den Tests direkt geprüft.
 
    Koordinaten: [x, y], x von links (0..8), y von oben (0..8).
    Figuren: jonathan (roter Kreis), raphael (blaues Quadrat).
@@ -2324,6 +2582,10 @@ const ENGINE_WHO = ['jonathan', 'raphael'];
 const ENGINE_LOG_MAX = 8;
 const ENGINE_MAX_STEPS = 9;
 const ENGINE_SAY_MAX = 200;
+// Kürzt nach Unicode-Codepoints (Emoji zählen als 1), nie mitten in einem Zeichen.
+function engineCut(text) {
+  return Array.from(String(text)).slice(0, ENGINE_SAY_MAX).join('');
+}
 const ENGINE_DIR_VECTORS = {
   hoch: [0, -1],
   runter: [0, 1],
@@ -2627,7 +2889,7 @@ function engineAccuse(level, state, who, name) {
 }
 
 function engineSay(level, state, who, text) {
-  const clean = String(text || '').trim().slice(0, ENGINE_SAY_MAX);
+  const clean = engineCut(String(text || '').trim());
   if (!clean) return engineFail(state, 'Was soll ich sagen? Zum Beispiel: sag hallo');
   return engineFinish(level, engineClone(state), who, 'sagt: ' + clean);
 }
@@ -2682,7 +2944,7 @@ function parseCommand(input) {
   if (!verb) return unknown;
   if (verb === 'sag') {
     if (!rest) return { type: 'error', message: 'Was soll ich sagen? Zum Beispiel: sag hallo' };
-    return { type: 'say', text: rest.slice(0, ENGINE_SAY_MAX) };
+    return { type: 'say', text: engineCut(rest) };
   }
   if (verb === 'beschuldige') {
     if (!rest) return { type: 'error', message: 'Wen beschuldigst du? Zum Beispiel: beschuldige Max' };
@@ -3020,8 +3282,8 @@ function engineLocalAccuse(level, myDoc, otherDoc, me, name) {
   };
 }
 
-/* „neu“ im Zwei-Spieler-Modus (K-7): nur die eigene Figur geht zurück auf ihr Startfeld
-   des aktuellen Levels. Fortschritt (Hinweise, Schlüssel, Türen) bleibt. seq +1 (K-16). */
+/* „neu“ im Zwei-Spieler-Modus: nur die eigene Figur geht zurück auf ihr Startfeld
+   des aktuellen Levels. Fortschritt (Hinweise, Schlüssel, Türen) bleibt. seq +1. */
 function engineLocalRestart(level, myDoc, me) {
   const start = level.start[me];
   return {
@@ -3033,7 +3295,7 @@ function engineLocalRestart(level, myDoc, me) {
 }
 
 /* Lokale Aktion einer Figur. action.type: move {dir,n} | take | give | use |
-   code {code} | accuse {name} | say {text} | help | restart | error {message}. restart = „neu“ (K-7).
+   code {code} | accuse {name} | say {text} | help | restart | error {message}. restart = „neu“.
    action.who ist optional; wenn gesetzt, muss es die Figur des Dokuments sein.
    Liefert {ok, myDocPatch, event?, message}. myDocPatch null = kein Dokument ändert sich.
    seq wird bei jeder erfolgreichen Spielaktion um 1 erhöht (nicht bei sag). */
@@ -3045,7 +3307,7 @@ function applyLocal(level, myDoc, otherDoc, action) {
   if (ENGINE_WHO.indexOf(me) < 0 || otherDoc.role !== engineOther(me)) return fail('Unbekannte Figur.');
   if (action.who !== undefined && action.who !== me) return fail('Unbekannte Figur.');
   if (action.type === 'say') {
-    const clean = String(action.text || '').trim().slice(0, ENGINE_SAY_MAX);
+    const clean = engineCut(String(action.text || '').trim());
     if (!clean) return fail('Was soll ich sagen? Zum Beispiel: sag hallo');
     return { ok: true, myDocPatch: null, event: { who: me, kind: 'say', text: clean }, message: '' };
   }
@@ -3079,7 +3341,7 @@ function applyLocal(level, myDoc, otherDoc, action) {
   }
 }
 
-/* Patch für den Levelwechsel: neues Level, Startfeld der Figur, Inhalte zurücksetzen (K-12). */
+/* Patch für den Levelwechsel: neues Level, Startfeld der Figur, Inhalte zurücksetzen. */
 function engineLevelPatch(level, next, myDoc) {
   const start = next.start[myDoc.role];
   const done = engineList(myDoc, 'levelDone').slice();
@@ -3152,7 +3414,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 </script>
 <script>
-/* Level-Daten: build.py fügt hier alle Level aus game/levels/ ein. */
+/* Level-Daten werden beim Build eingefügt. */
 const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan","size":9,"story":{"intro":"Am Morgen nach dem Krimidinner ist der goldene Wanderpokal „Rosi 62“ verschwunden. Im Flur führen Schuhabdrücke hinein, aber keine wieder hinaus. Der Täter ist also noch im Haus.","outro":"Der erste Zettel ist gefunden. Er klingt nach einer Herausforderung, und genau die lieben wir."},"walls":[[4,0],[4,1],[4,2],[4,3],[4,5],[4,6],[4,7],[4,8]],"start":{"jonathan":[0,4],"raphael":[0,3]},"items":[{"type":"clue","at":[2,1],"text":"Ein Zettel auf dem Teppich: „Wer suchet, der findet. Aber nur zu zweit.“"},{"type":"goal","at":[8,4]},{"type":"goal","at":[8,3]}],"hint":"Wände blockieren, die Lücke in der Mitte führt durch. Zieht beide ins Ziel. Der Zettel liegt oben im Flur: Wer ihn findet, bekommt einen Punkt. Befehle: rechts 3, runter 2, w a s d oder die Pfeiltasten."},{"id":"02-kueche","title":"Küche – Zwei Schalter","author":"Jonathan","size":9,"story":{"intro":"In der Küche liegen Krümel auf dem Tresen und eine leere Sektflasche steht neben der Spüle. Jemand hat spät gefeiert, und der Pokal war um diese Zeit noch da.","outro":"Der Code passt, die Tür zum Weinkeller ist offen. Im Keller stehen nur Flaschen, aber auch eine Spur: ein Stück Klebeband."},"walls":[[4,0],[4,1],[4,2],[4,3],[4,5],[4,6],[4,7],[4,8],[1,2],[2,2],[1,6],[2,6],[6,2],[7,2],[6,6],[7,6],[6,7],[8,6]],"start":{"jonathan":[0,8],"raphael":[8,0]},"items":[{"type":"switch","at":[3,4],"link":"A"},{"type":"switch","at":[6,4],"link":"A"},{"type":"door","at":[4,4],"link":"A"},{"type":"clue","at":[8,3],"text":"Unter der Sektflasche klebt ein Zettel, nur für Raphael: Der Code der Weinkeller-Tür lautet 2580.","for":"raphael"},{"type":"codedoor","at":[6,8],"code":"2580"},{"type":"goal","at":[7,8]},{"type":"goal","at":[8,8]}],"hint":"Die Tür geht nur auf, wenn ihr beide gleichzeitig auf einem Schalter A steht. Raphael findet den Zettel oben rechts und sagt den Code (sag 2580). Jonathan tippt ihn an der Codetür unten rechts (code 2580)."},{"id":"03-keller","title":"Keller – Die Übergabe","author":"Jonathan","size":9,"story":{"intro":"Im Keller steht die Werkzeugkiste offen, und die Leiter fehlt. Der Schlüssel für die Tür zum Weinregal liegt in der Ecke. Ein Zettel verrät nur halb, wer ihn zuletzt hatte.","outro":"Die Tür zum Weinregal ist auf. Der Pokal ist noch nicht da, aber die Leiter taucht hinter dem Regal auf. Der Fall geht weiter."},"walls":[[2,0],[2,1],[2,2],[2,6],[2,7],[2,8],[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,8]],"start":{"jonathan":[0,0],"raphael":[3,7]},"items":[{"type":"key","at":[0,8]},{"type":"clue","at":[3,2],"text":"Auf der Werkzeugkiste klebt ein Zettel, nur für Jonathan: „Die Leiter gehört zurück in den Flur.“","for":"jonathan"},{"type":"door","at":[4,7]},{"type":"goal","at":[7,1]},{"type":"goal","at":[8,1]}],"hint":"Jonathan nimmt den Schlüssel (nimm) und gibt ihn an Raphael weiter (gib, direkt nebeneinander). Wer den Schlüssel trägt, öffnet mit benutze die Tür neben sich. Der Zettel bei der Kiste ist nur für Jonathan."},{"id":"04-bad","title":"Bad – Der beschlagene Spiegel","author":"Raphael","size":9,"story":{"intro":"Hinter dem Keller geht es ins Bad. Der Spiegel ist noch beschlagen: Jemand hat mitten in der Nacht heiß geduscht. Oder etwas sehr Nasses gewaschen? Eine Trennwand teilt den Raum, und der Badschrank hat ein Zahlenschloss.","outro":"Der Badschrank springt auf. Drinnen: nur Handtücher. Aber die nassen Pfotenspuren führen weiter, Richtung Balkontür."},"walls":[[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,7],[4,8],[0,6],[1,6],[3,6]],"start":{"jonathan":[8,8],"raphael":[0,0]},"items":[{"type":"clue","at":[6,0],"text":"Im beschlagenen Spiegel steht mit dem Finger geschrieben: 6219. Das Zahlenschloss am Badschrank ist auf Raphaels Seite.","for":"jonathan"},{"type":"clue","at":[3,2],"text":"Nasse Abdrücke am Wannenrand. Klein und rund, für Schuhe viel zu klein."},{"type":"clue","at":[5,5],"text":"Rosis Bademantel hängt am Haken, voller Glitzer. Glitzer vom Pokal oder nur von der Party?"},{"type":"codedoor","at":[2,6],"code":"6219"},{"type":"goal","at":[7,2]},{"type":"goal","at":[1,8]}],"hint":"Die Trennwand lässt euch nicht zueinander. Jonathan findet oben im Spiegel den Code und sagt ihn (sag 6219). Raphael steht neben dem Zahlenschloss und tippt code 6219. Dann geht jeder in sein Ziel."},{"id":"05-balkon","title":"Balkon – Licht und Leiter","author":"Raphael","size":9,"story":{"intro":"Kalte Nachtluft. Die Leiter aus dem Keller lehnt an der Hauswand, nach oben zur Dachbodenluke. Eine Brüstung teilt den Balkon, und ohne Licht findet hier niemand etwas.","outro":"Der Schlüssel passt, die Luke knarzt auf. Von oben kommt ein leises Geräusch. Schnurrt da etwa jemand?"},"walls":[[4,0],[4,1],[4,2],[4,3],[4,5],[4,6],[4,7],[4,8],[5,2],[6,2],[8,2]],"start":{"jonathan":[8,8],"raphael":[0,8]},"items":[{"type":"switch","at":[3,4],"link":"L"},{"type":"switch","at":[5,4],"link":"L"},{"type":"door","at":[4,4],"link":"L"},{"type":"key","at":[0,0]},{"type":"clue","at":[2,1],"text":"Im Blumenkasten lag der Schlüssel zur Dachbodenluke. Daneben: getigerte Haare. Kommt dir bekannt vor?"},{"type":"clue","at":[1,6],"text":"Ein Zettel am Geländer: „Rosi will ihren Pokal behalten.“ Die Schrift sieht aus wie auf der Party-Einladung.","for":"raphael"},{"type":"clue","at":[7,6],"text":"An den Leitersprossen kleben feine Haare, getigert. Ein Mensch war das nicht.","for":"jonathan"},{"type":"door","at":[7,2]},{"type":"goal","at":[7,0]},{"type":"goal","at":[8,0]}],"hint":"Raphael holt den Schlüssel aus dem Blumenkasten oben links (nimm). Licht gibt es nur, wenn ihr beide auf den Schaltern L an der Brüstung steht. Dann tritt Raphael in die Lücke und gibt Jonathan den Schlüssel (gib). Jonathan öffnet die Luke (benutze), danach beide ins Ziel."},{"id":"06-dachboden","title":"Dachboden – Die Auflösung","author":"Raphael","size":9,"story":{"intro":"Staub, Kisten, ein schmaler Lichtstrahl durch die Dachluke. Ganz hinten glänzt etwas Goldenes. Jeder von euch entdeckt hier oben etwas, das der andere nicht sieht. Legt eure Hinweise zusammen, bevor ihr jemanden beschuldigt.","outro":"Fall gelöst! Der Wanderpokal „Rosi 62“ ist wieder da, und gelöst haben ihn Jonathan und Raphael zusammen."},"walls":[[2,2],[3,2],[4,2],[5,2],[6,2],[2,6],[3,6],[5,6],[6,6],[6,3],[6,4]],"start":{"jonathan":[0,8],"raphael":[8,8]},"items":[{"type":"clue","at":[1,4],"text":"Im Pokal liegt ein kleines Nest aus einem alten Pulli. Hier hat jemand geschlafen.","for":"jonathan"},{"type":"clue","at":[3,7],"text":"Rosi ist die Wohnung. Wohnungen haben keine Hände und tragen keine Pokale eine Leiter hoch.","for":"jonathan"},{"type":"clue","at":[7,4],"text":"Neben dem Pokal steht ein leerer Futternapf. Wer bringt sich bitte Futter mit auf den Dachboden?","for":"raphael"},{"type":"clue","at":[8,1],"text":"Auf einem Foto vom Krimidinner tanzt der Nachbar die ganze Nacht. Er war nie oben.","for":"raphael"},{"type":"clue","at":[4,5],"text":"Getigerte Haare auf jeder Kiste. Dieselben wie auf dem Balkon."},{"type":"goal","at":[3,0]},{"type":"goal","at":[5,0]}],"hint":"Sammelt alle Hinweise. Jeder sieht nur seine eigenen, also sagt sie euch (sag …). Geht dann beide ins Ziel beim Pokal oben und beschuldigt gemeinsam: beschuldige \u003cname\u003e.","finale":{"question":"Wer hat den Wanderpokal „Rosi 62“ auf den Dachboden gebracht?","suspects":[{"id":"mieze","name":"Mieze"},{"id":"rosi","name":"Rosi"},{"id":"nachbar","name":"Der Nachbar"}],"culprit":"mieze","right":"Mieze blinzelt verschlafen aus dem Pokal. Die WG-Katze hat ihn sich als Bett geholt. Die WG stimmt ab: Der Wanderpokal ist ab sofort ein Katzenbett und bleibt genau hier.","wrong":"Nein, so war es nicht. Schaut noch einmal in eure Notizbücher und sagt euch gegenseitig, was ihr gefunden habt."}}];
 
 (function () {
@@ -3190,8 +3452,8 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     world: { rev: 0, levelId: LEVEL_LIST[0].id, state: createState(LEVEL_LIST[0]), finished: [] }
   };
 
-  /* Netzschicht (net.js). Ohne Engine-Funktionen oder Artifact-Runtime bleibt alles lokal. */
-  /* Live-Zustand: Spieler-Dokumente aus net.js. Welt und Notizbuch kommen aus der Engine. */
+  /* Netzschicht. Ohne Engine-Funktionen oder Artifact-Runtime bleibt alles lokal. */
+  /* Live-Zustand: Spieler-Dokumente aus der Netzschicht. Welt und Notizbuch kommen aus der Engine. */
   const live = { net: null, p2p: null, linkState: 'verbinde', synced: false, frozen: false, players: {}, own: null, log: [], connMode: 'lokal', peers: 'Mitspieler unbekannt', spectator: false, presence: {} };
 
   function $(id) {
@@ -3443,6 +3705,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
 
   function renderAll() {
     if (view.mode !== 'local') { renderLive(); return; }
+    chatSync(chatSnapLocal());
     renderHeader();
     renderStory();
     renderBoard();
@@ -3507,6 +3770,10 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     }
     setWorld(res.world);
     setMessage(res.message, false);
+    if (action.type === 'say') {
+      const last = lastLog(res.world.state);
+      if (last && last.text.indexOf('sagt: ') === 0) chatPush('say', action.who, last.text.slice(6), true);
+    }
     renderAll();
   }
 
@@ -3558,7 +3825,101 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     }
   }
 
-  /* ---------- Live-Modus (net.js + Engine) ----------
+  /* ---------- Chat (gemeinsamer Verlauf) ----------
+     Zeilen: {kind: 'say' | 'event', who, text}. Sprechtext kommt aus der Engine bzw. der
+     Netzschicht, Spielereignisse (Hinweis gefunden, Tür offen, Level geschafft) aus dem
+     Vergleich zweier Zustände. Alles per textContent. Nur der Zuwachs zählt, nie ein Neustart. */
+  const CHAT_MAX = 200;
+  const chat = { items: [], total: 0, rendered: 0, unseen: 0, prev: null, force: false };
+
+  function chatWho(who) {
+    return WHO.indexOf(who) >= 0 ? who : 'system';
+  }
+
+  function chatPush(kind, who, text, own) {
+    chat.items.push({ kind: kind, who: chatWho(who), text: String(text == null ? '' : text) });
+    if (chat.items.length > CHAT_MAX) chat.items.shift();
+    chat.total += 1;
+    if (own) chat.force = true;
+    renderChat();
+  }
+
+  function chatAtBottom(list) {
+    return list.scrollHeight - list.scrollTop - list.clientHeight < 8;
+  }
+
+  function renderChat() {
+    const list = $('chat-log');
+    const wasBottom = chatAtBottom(list) || chat.force;
+    const top = list.scrollTop;
+    chat.force = false;
+    list.textContent = '';
+    if (!chat.items.length) list.appendChild(el('li', 'muted', 'Noch keine Nachrichten.'));
+    chat.items.forEach(function (it) {
+      const li = el('li', it.kind === 'event' ? 'event' : 'say');
+      li.appendChild(el('span', 'chip ' + it.who, LABEL[it.who] || LABEL.system));
+      li.appendChild(document.createTextNode(' ' + it.text));
+      list.appendChild(li);
+    });
+    const added = chat.total - chat.rendered;
+    chat.rendered = chat.total;
+    if (wasBottom) {
+      list.scrollTop = list.scrollHeight;
+      chat.unseen = 0;
+    } else {
+      list.scrollTop = top;
+      chat.unseen += added;
+    }
+    $('chat-new').hidden = chat.unseen === 0;
+  }
+
+  function chatReset() {
+    chat.items = [];
+    chat.total = 0;
+    chat.rendered = 0;
+    chat.unseen = 0;
+    chat.prev = null;
+    chat.force = false;
+    renderChat();
+  }
+
+  /* Ereignisse aus dem Vergleich. Ein Moduswechsel oder ein neues Level setzt nur die Grundlage. */
+  function chatSync(next) {
+    const prev = chat.prev;
+    chat.prev = next;
+    Net.chatEvents(prev, next).forEach(function (ev) { chatPush('event', ev.who, ev.text); });
+  }
+
+  function chatSnapLocal() {
+    const w = view.world;
+    const lvl = levelOf(w.levelId);
+    const clues = {};
+    const doors = {};
+    if (lvl) {
+      lvl.items.forEach(function (it, idx) {
+        const s = w.state.items[idx];
+        if (it.type === 'clue' && s && s.by) clues[idx] = s.by;
+        if (it.type === 'door' || it.type === 'codedoor') doors[idx] = engineDoorOpen(lvl, w.state, idx);
+      });
+    }
+    return { mode: 'local', level: w.levelId, clues: clues, doors: doors, done: !!w.state.done };
+  }
+
+  function chatSnapLive(L) {
+    const clues = {};
+    const doors = {};
+    const jFound = (L.docs.jonathan && L.docs.jonathan.found) || [];
+    const rFound = (L.docs.raphael && L.docs.raphael.found) || [];
+    L.w.cluesFound.forEach(function (i) {
+      const inJ = jFound.indexOf(i) >= 0;
+      const inR = rFound.indexOf(i) >= 0;
+      clues[i] = inJ && !inR ? 'jonathan' : (inR && !inJ ? 'raphael' : 'system');
+    });
+    Object.keys(L.w.doorsOpen).forEach(function (k) { doors[k] = !!L.w.doorsOpen[k]; });
+    return { mode: 'live', level: L.lvl.id, clues: clues, doors: doors, done: !!L.w.levelComplete };
+  }
+
+  /* ---------- Live-Modus (Netzschicht + Engine) ----------
      Verbindung über Net. Welt, Notizbuch und Regeln kommen aus der Engine
      (deriveWorld, deriveNotebook, applyLocal, reconcile). Vor dem ersten Snapshot
      nehmen wir keine Eingaben an (view.mode 'connecting'). Ohne Engine oder ohne
@@ -3585,7 +3946,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     return { lvl: lvl, docs: docs, w: deriveWorld(lvl, docs.jonathan, docs.raphael) };
   }
 
-  const LINK_LABEL = { verbinde: 'verbinde …', live: 'live (direkt)', fehlt: 'Mitspieler fehlt', verloren: 'Verbindung verloren' };
+  const LINK_LABEL = { verbinde: 'verbinde …', live: 'live (über Server)', fehlt: 'Mitspieler fehlt', verloren: 'Verbindung verloren' };
 
   function setConn(mode, peers) {
     let shown = live.synced || mode === 'lokal' ? mode : 'verbinde …';
@@ -3634,7 +3995,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     renderLive();
   }
 
-  /* Presence der Mitspieler: Vorausmeldung der Position (E1). Die DB korrigiert. */
+  /* Presence der Mitspieler: Vorausmeldung der Position. Der Abgleich über die Datenbank korrigiert sie. */
   function onNetPresence(map) {
     live.presence = map;
     renderLive();
@@ -3642,6 +4003,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
 
   /* Sprechblase über der Figur, Log und Meldung. Text nur per textContent. */
   function onNetSay(msg) {
+    chatPush('say', msg.role, msg.text + (msg.cut ? ' (gekürzt)' : ''));
     const layer = $('pieces');
     const bubble = el('div', 'bubble', msg.text);
     bubble.setAttribute('aria-hidden', 'true');
@@ -3663,7 +4025,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     if (live.log.length > 60) live.log.shift();
   }
 
-  /* Abgleich (bei jedem Snapshot und alle 3 s über net.js). */
+  /* Abgleich (bei jedem Snapshot und alle 3 s über die Netzschicht). */
   function liveReconcileNow() {
     if (!live.net || !live.own || live.frozen) return;
     const docs = liveDocsNow();
@@ -3688,7 +4050,10 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     if (!lvl) { setMessage('Unbekanntes Level.', true); return; }
     const res = Net.liveAct({ applyLocal: applyLocal, reconcile: reconcile }, live.net, lvl, live.own, other, action);
     if (!res.ok) { setMessage(res.message, true); return; }
-    if (res.said) pushLiveLog(me, 'sagt: ' + res.said);
+    if (res.said) {
+      pushLiveLog(me, 'sagt: ' + res.said);
+      chatPush('say', me, res.said, true);
+    }
     if (res.message) pushLiveLog(me, res.message);
     setMessage(res.message || '', false);
     renderLive();
@@ -3716,6 +4081,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
   function onP2PLink(state) {
     live.linkState = state;
     $('p2p-reconnect').hidden = !(state === 'fehlt' || state === 'verloren');
+    $('p2p-hint').hidden = state !== 'fehlt';
     setConn(live.connMode, live.peers);
   }
 
@@ -3738,6 +4104,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
       transport = live.p2p.claude;
     }
     live.players = {}; live.own = null; live.presence = {}; live.synced = false; live.frozen = false; live.log = [];
+    chatReset();
     live.linkState = 'verbinde';
     view.mode = 'connecting';
     live.net = Net.createNet({
@@ -3806,6 +4173,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     renderLiveBoard(lvl, docs, w);
     renderRoles();
     renderLiveLog();
+    if (live.synced) chatSync(chatSnapLive(L)); else chat.prev = null;
     renderLiveFinale(lvl, w, me);
     renderLiveNotebook(lvl, docs, me);
     renderLiveDone(lvl, w);
@@ -3973,11 +4341,30 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     });
   });
 
+  /* Eine Zeile: Nachricht (sag) oder Befehl. Fehler bleiben im Feld stehen. */
   $('cmd-form').addEventListener('submit', function (e) {
     e.preventDefault();
     const input = $('cmd');
-    runCommand(input.value);
+    const route = Net.chatRoute(input.value, parseCommand);
+    if (route.kind === 'none') return;
+    if (route.kind === 'error') { setMessage(route.message, true); return; }
     input.value = '';
+    if (route.kind === 'say') { act({ type: 'say', text: route.text, cut: false }); return; }
+    runCommand(route.text);
+  });
+
+  $('chat-log').addEventListener('scroll', function () {
+    if (chatAtBottom($('chat-log'))) {
+      chat.unseen = 0;
+      $('chat-new').hidden = true;
+    }
+  });
+
+  $('chat-new').addEventListener('click', function () {
+    const list = $('chat-log');
+    list.scrollTop = list.scrollHeight;
+    chat.unseen = 0;
+    $('chat-new').hidden = true;
   });
 
   $('next').addEventListener('click', function () {

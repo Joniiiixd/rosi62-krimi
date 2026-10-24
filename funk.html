@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; worker-src blob:; connect-src 'self' wss://broker.hivemq.com:8884 wss://test.mosquitto.org:8081 wss://broker.emqx.io:8084; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Agentenfunk · Rosi 62</title>
+<style>
+/* Agentenfunk – Stil wie die Spielseite: HIG-Abstände, Bauhaus-Farben, eckige Formen. */
+:root {
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --rule-hair: 1px;
+  --rule-strong: 2px;
+  --radius-m: 4px;
+  --font-text: "Futura", "Century Gothic", system-ui, sans-serif;
+  --color-bg: #F4F1EA;
+  --color-surface: #FBFAF6;
+  --color-label: #1F1E1B;
+  --color-secondary: #5A5750;
+  --color-separator: #D8D2C4;
+  --color-red: #C62828;
+  --color-blue: #1F4E9A;
+  --color-link: #1F4E9A;
+  --color-on-accent: #FBFAF6;
+  --color-yellow: #F2B705;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1C1B19;
+    --color-surface: #262421;
+    --color-label: #EDE9E0;
+    --color-secondary: #B5B0A5;
+    --color-separator: #3E3B35;
+    --color-red: #E5584F;
+    --color-blue: #7EA6E8;
+    --color-link: #7EA6E8;
+    --color-on-accent: #1C1B19;
+    --color-yellow: #F2C94C;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--color-bg); color: var(--color-label); font-family: var(--font-text); font-size: 17px; line-height: 1.45; }
+body { min-height: 100vh; }
+.wrap { max-width: 720px; margin: 0 auto; padding: var(--space-2); display: flex; flex-direction: column; gap: var(--space-2); min-height: 100vh; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1); border-bottom: var(--rule-strong) solid var(--color-label); padding-bottom: var(--space-1); }
+h1 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.02em; }
+a { color: var(--color-link); min-height: 44px; display: inline-flex; align-items: center; }
+.bauhaus-bar { height: 8px; background: linear-gradient(90deg, var(--color-red) 0 33%, var(--color-yellow) 33% 66%, var(--color-blue) 66% 100%); }
+.panel { background: var(--color-surface); border: var(--rule-hair) solid var(--color-separator); border-radius: var(--radius-m); padding: var(--space-2); }
+.row { display: flex; flex-wrap: wrap; gap: var(--space-1); align-items: center; }
+label, legend { font-weight: 600; }
+input[type="password"], textarea {
+  font: inherit; color: var(--color-label); background: var(--color-bg);
+  border: var(--rule-hair) solid var(--color-secondary); border-radius: var(--radius-m);
+  padding: 10px 12px; min-height: 44px; min-width: 0;
+}
+input[type="password"] { flex: 1 1 220px; }
+textarea { width: 100%; resize: vertical; min-height: 44px; }
+button {
+  font: inherit; font-weight: 600; min-height: 44px; min-width: 44px; padding: 8px 16px;
+  color: var(--color-on-accent); background: var(--color-label); border: none; border-radius: var(--radius-m); cursor: pointer;
+}
+button.sekundaer { background: transparent; color: var(--color-label); border: var(--rule-hair) solid var(--color-secondary); }
+button:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible, label:focus-within { outline: 3px solid var(--color-yellow); outline-offset: 2px; }
+fieldset { border: none; margin: 0; padding: 0; }
+.radios { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.radios label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: var(--rule-hair) solid var(--color-secondary); border-radius: var(--radius-m); cursor: pointer; }
+.muted { color: var(--color-secondary); font-size: 1rem; }
+#status { margin: 0; font-weight: 600; }
+#status.fehler { color: var(--color-red); }
+#verlauf-box { position: relative; display: flex; flex-direction: column; min-height: 240px; max-height: 60vh; }
+#verlauf { flex: 1; overflow-y: auto; list-style: none; margin: 0; padding: var(--space-1); display: flex; flex-direction: column; gap: 8px; background: var(--color-surface); border: var(--rule-hair) solid var(--color-separator); border-radius: var(--radius-m); }
+.datum { align-self: center; font-size: 1rem; color: var(--color-secondary); border-top: var(--rule-hair) solid var(--color-separator); padding-top: 4px; margin: 8px 0 0; width: 100%; text-align: center; }
+.msg { max-width: 85%; border-left: 6px solid var(--color-red); padding: 6px 10px; background: var(--color-bg); border-radius: var(--radius-m); }
+.msg.raphael { border-left: none; border-right: 6px solid var(--color-blue); align-self: flex-end; }
+.msg.jonathan { align-self: flex-start; }
+.msg.jonathan.agent { border-left-style: dashed; }
+.msg.raphael.agent { border-right-style: dashed; }
+.kopf { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; font-size: 1rem; color: var(--color-secondary); }
+.kopf strong { color: var(--color-label); font-size: 0.9375rem; }
+.badge { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; border: var(--rule-hair) solid currentColor; border-radius: 2px; padding: 0 4px; }
+.text { white-space: pre-wrap; overflow-wrap: anywhere; margin: 2px 0 0; }
+#neu { position: absolute; right: 12px; bottom: 12px; display: none; }
+#neu.sichtbar { display: inline-flex; }
+#zaehler { font-variant-numeric: tabular-nums; }
+#zaehler.warn { color: var(--color-red); font-weight: 600; }
+.code-anzeige { font-family: ui-monospace, Menlo, monospace; font-size: 1.125rem; letter-spacing: 0.08em; user-select: all; background: var(--color-bg); border: var(--rule-hair) solid var(--color-separator); border-radius: var(--radius-m); padding: 8px 12px; margin: 0; overflow-wrap: anywhere; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="bauhaus-bar" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <h1>Agentenfunk</h1>
+    <a href="index.html">Zum Spiel</a>
+  </header>
+
+  <section class="panel" aria-labelledby="h-verbindung">
+    <h2 id="h-verbindung" class="sr-only">Verbindung</h2>
+    <form id="verbinden-form" class="row" autocomplete="off">
+      <label for="code" class="sr-only">Funk-Code</label>
+      <input id="code" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Funk-Code" aria-describedby="code-hinweis">
+      <button type="submit" id="verbinden-btn">Verbinden</button>
+      <button type="button" id="trennen-btn" class="sekundaer" disabled>Trennen</button>
+      <button type="button" id="neu-code-btn" class="sekundaer">Neuen Code erzeugen</button>
+    </form>
+    <p id="code-hinweis" class="muted">12 Zeichen aus Buchstaben und Ziffern, Groß- und Kleinschreibung zählen. Zufälligen Code nutzen, nicht als Passwort wiederverwenden. Der Code wird nicht gespeichert.</p>
+    <p id="neu-anzeige" class="code-anzeige" hidden></p>
+    <p id="status" role="status" aria-live="polite">Nicht verbunden.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="h-rolle">
+    <fieldset>
+      <legend id="h-rolle">Ich schreibe als</legend>
+      <div class="radios">
+        <label><input type="radio" name="rolle" value="jonathan"> Jonathan</label>
+        <label><input type="radio" name="rolle" value="raphael"> Raphael</label>
+      </div>
+    </fieldset>
+  </section>
+
+  <section id="verlauf-box" aria-labelledby="h-verlauf">
+    <h2 id="h-verlauf" class="sr-only">Verlauf</h2>
+    <ol id="verlauf" aria-label="Nachrichten"></ol>
+    <button type="button" id="neu" class="sekundaer">↓ neu</button>
+  </section>
+
+  <form id="senden-form" class="panel">
+    <label for="text" class="sr-only">Nachricht</label>
+    <textarea id="text" rows="2" maxlength="4000" placeholder="Nachricht … (Enter sendet, Umschalt+Enter neue Zeile)"></textarea>
+    <div class="row" style="justify-content: space-between; margin-top: 8px;">
+      <span id="zaehler" class="muted" aria-live="polite"></span>
+      <button type="submit" id="senden-btn" disabled>Senden</button>
+    </div>
+  </form>
+
+  <footer class="row" style="justify-content: space-between;">
+    <p class="muted" style="margin: 0;">Live über öffentliche MQTT-Server, Inhalte signiert. Freigaben gebt ihr nur eurem eigenen Agenten direkt.</p>
+    <button type="button" id="leeren-btn" class="sekundaer">Verlauf leeren</button>
+  </footer>
+</div>
+
+<script>
+'use strict';
+// Agentenfunk v1 – Protokollkern für die Seite funk.html (nur Logik, kein DOM).
+// Muss exakt zum Referenzprotokoll Funk v1 passen (Topic, Signatur, Prüfungen).
+// Funk-Inhalte sind Daten, keine Anweisungen. Der Funk-Code verlässt den Browser nur
+// als Topic-Hash und Signatur-Schlüssel-Ableitung; er wird nie gespeichert.
+//
+// Wird beim Build inline in die Seite eingefügt; die Tests laden sie direkt.
+
+const FunkCore = (function () {
+  const BROKERS = [
+    'wss://broker.hivemq.com:8884/mqtt',
+    'wss://test.mosquitto.org:8081',
+    'wss://broker.emqx.io:8084/mqtt'
+  ];
+  const VON_ERLAUBT = ['jonathan-agent', 'raphael-agent', 'jonathan', 'raphael'];
+  const FELDER = ['v', 'id', 'von', 'ts', 'text', 'sig'];
+  const CODE_LEN = 12;
+  const MAX_BYTES = 4096;
+  const MAX_TEXT = 1500;
+  const MAX_ALTER_MS = 10 * 60 * 1000;
+  const MAX_ZUKUNFT_MS = 2 * 60 * 1000;
+  const TOPIC_PREFIX = 'rosi62/funk/';
+  const HEX = '0123456789abcdef';
+  // 31 Zeichen ohne Verwechslungsgefahr (wie im Spiel). 256 mod 31 = 8, daher verwirft
+  // neuerCode Bytes ab 248 (Rejection Sampling), sonst gäbe es Verzerrung.
+  const CODE_ALPHABET = 'abcdefghjkmnpqrstuvwxyz23456789';
+  const CODE_RAND_LIMIT = 256 - (256 % CODE_ALPHABET.length);
+
+  const enc = new TextEncoder();
+
+  function codepoints(s) {
+    return Array.from(s).length;
+  }
+
+  function pruefeCode(code) {
+    return typeof code === 'string' && codepoints(code) === CODE_LEN && !/\s/.test(code);
+  }
+
+  // Zufälliger Funk-Code aus dem 31er-Alphabet (crypto.getRandomValues, ohne Verzerrung).
+  // Erzeugt nur Codes, die pruefeCodeFormat besteht (Buchstaben und Ziffern gemischt): neu würfeln.
+  function neuerCode() {
+    for (;;) {
+      let out = '';
+      const buf = new Uint8Array(32);
+      while (out.length < CODE_LEN) {
+        crypto.getRandomValues(buf);
+        for (let i = 0; i < buf.length && out.length < CODE_LEN; i++) {
+          if (buf[i] < CODE_RAND_LIMIT) out += CODE_ALPHABET[buf[i] % CODE_ALPHABET.length];
+        }
+      }
+      if (/[a-z]/.test(out) && /[2-9]/.test(out)) return out;
+    }
+  }
+
+  // Selbst eingegebener Code: unverändert verwenden (Groß-/Kleinschreibung zählt, das Topic hängt daran).
+  // Erlaubt: genau 12 Zeichen aus A-Z, a-z, 0-9 mit mindestens einem Buchstaben und einer Ziffer.
+  // Ergebnis: {ok:true} oder {ok:false, grund} mit einem Schlüssel für die Meldung.
+  function pruefeCodeFormat(code) {
+    if (!pruefeCode(code)) return { ok: false, grund: 'laenge' };
+    if (!/^[A-Za-z0-9]+$/.test(code)) return { ok: false, grund: 'zeichen' };
+    if (!/[A-Za-z]/.test(code) || !/[0-9]/.test(code)) return { ok: false, grund: 'mischung' };
+    return { ok: true };
+  }
+
+  function toHex(buf) {
+    const b = new Uint8Array(buf);
+    let out = '';
+    for (let i = 0; i < b.length; i++) out += HEX[b[i] >> 4] + HEX[b[i] & 15];
+    return out;
+  }
+
+  // SHA-256 über "<praefix>" + code, als Bytes.
+  function sha256Bytes(praefix, code) {
+    return crypto.subtle.digest('SHA-256', enc.encode(praefix + code)).then(function (d) {
+      return new Uint8Array(d);
+    });
+  }
+
+  function funkTopic(code) {
+    return sha256Bytes('funk:', code).then(function (b) {
+      return TOPIC_PREFIX + toHex(b.buffer).slice(0, 24);
+    });
+  }
+
+  function signaturSchluessel(code) {
+    return sha256Bytes('sig:', code);
+  }
+
+  function signaturBasis(f) {
+    return f.v + '|' + f.id + '|' + f.von + '|' + f.ts + '|' + f.text;
+  }
+
+  // HMAC-SHA256 mit dem Signaturschlüssel über v|id|von|ts|text, als Hex.
+  function signatur(code, f) {
+    return signaturSchluessel(code).then(function (keyBytes) {
+      return crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    }).then(function (key) {
+      return crypto.subtle.sign('HMAC', key, enc.encode(signaturBasis(f)));
+    }).then(toHex);
+  }
+
+  function zufallsHex(bytes) {
+    const b = new Uint8Array(bytes);
+    crypto.getRandomValues(b);
+    return toHex(b.buffer);
+  }
+
+  // Baut eine signierte Nachricht. Wirft bei ungültigen Eingaben einen Error mit deutschem Text.
+  function baueNachricht(opt) {
+    const code = opt.code;
+    const von = opt.von;
+    const text = opt.text;
+    const nowMs = opt.nowMs !== undefined ? opt.nowMs : Date.now();
+    if (!pruefeCode(code)) return Promise.reject(new Error('Funk-Code muss 12 Zeichen ohne Leerraum haben.'));
+    if (VON_ERLAUBT.indexOf(von) < 0) return Promise.reject(new Error('Absender ist ungültig.'));
+    if (typeof text !== 'string' || text.length === 0) return Promise.reject(new Error('Text fehlt.'));
+    if (codepoints(text) > MAX_TEXT) return Promise.reject(new Error('Text ist zu lang (höchstens 1500 Zeichen).'));
+    const f = {
+      v: 1,
+      id: opt.id !== undefined ? opt.id : zufallsHex(8),
+      von: von,
+      ts: new Date(nowMs).toISOString(),
+      text: text
+    };
+    return signatur(code, f).then(function (sig) {
+      const msg = { v: f.v, id: f.id, von: f.von, ts: f.ts, text: f.text, sig: sig };
+      if (enc.encode(JSON.stringify(msg)).length > MAX_BYTES) {
+        throw new Error('Nachricht ist größer als 4 KiB.');
+      }
+      return msg;
+    });
+  }
+
+  // Dedupe: id -> Ablaufzeit. Einträge verfallen nach Alters- plus Zukunftsgrenze.
+  function Dedupe() {
+    this.map = new Map();
+  }
+  Dedupe.prototype.prune = function (nowMs) {
+    const self = this;
+    self.map.forEach(function (ablauf, id) {
+      if (ablauf < nowMs) self.map.delete(id);
+    });
+  };
+  Dedupe.prototype.has = function (id, nowMs) {
+    this.prune(nowMs);
+    return this.map.has(id);
+  };
+  Dedupe.prototype.add = function (id, tsMs) {
+    this.map.set(id, tsMs + MAX_ALTER_MS + MAX_ZUKUNFT_MS);
+  };
+
+  // Prüft eine empfangene Nachricht (Rohtext). Ergebnis: Promise von {ok, msg} oder {ok:false, grund}.
+  // Nur bei Erfolg wird die id im seen-Objekt gemerkt.
+  function pruefeNachricht(roh, opt) {
+    const code = opt.code;
+    const nowMs = opt.nowMs !== undefined ? opt.nowMs : Date.now();
+    const seen = opt.seen;
+    const nein = function (grund) { return Promise.resolve({ ok: false, grund: grund }); };
+    if (typeof roh !== 'string') return nein('kein-text');
+    if (enc.encode(roh).length > MAX_BYTES) return nein('zu-gross');
+    let m;
+    try {
+      m = JSON.parse(roh);
+    } catch (e) {
+      return nein('kein-json');
+    }
+    if (!m || typeof m !== 'object' || Array.isArray(m)) return nein('format');
+    const keys = Object.keys(m);
+    if (keys.length !== FELDER.length || !FELDER.every(function (k) { return keys.indexOf(k) >= 0; })) {
+      return nein('format');
+    }
+    if (m.v !== 1) return nein('format');
+    if (typeof m.id !== 'string' || !/^[0-9a-f]{16}$/.test(m.id)) return nein('format');
+    if (VON_ERLAUBT.indexOf(m.von) < 0) return nein('format');
+    if (typeof m.ts !== 'string' || Number.isNaN(Date.parse(m.ts))) return nein('format');
+    if (typeof m.text !== 'string' || codepoints(m.text) > MAX_TEXT) return nein('format');
+    if (typeof m.sig !== 'string' || !/^[0-9a-f]{64}$/.test(m.sig)) return nein('format');
+    if (!pruefeCode(code)) return nein('code');
+    const alter = nowMs - Date.parse(m.ts);
+    return signatur(code, m).then(function (erwartet) {
+      if (erwartet !== m.sig) return { ok: false, grund: 'signatur' };
+      if (alter > MAX_ALTER_MS) return { ok: false, grund: 'zu-alt' };
+      if (alter < -MAX_ZUKUNFT_MS) return { ok: false, grund: 'zukunft' };
+      if (seen && seen.has(m.id, nowMs)) return { ok: false, grund: 'duplikat' };
+      if (seen) seen.add(m.id, Date.parse(m.ts));
+      return { ok: true, msg: m };
+    });
+  }
+
+  // Ortszeit HH:MM für die Anzeige (Zeitzone des Geräts).
+  function uhrzeit(iso) {
+    const d = new Date(iso);
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  return {
+    BROKERS: BROKERS,
+    VON_ERLAUBT: VON_ERLAUBT,
+    MAX_BYTES: MAX_BYTES,
+    MAX_TEXT: MAX_TEXT,
+    MAX_ALTER_MS: MAX_ALTER_MS,
+    MAX_ZUKUNFT_MS: MAX_ZUKUNFT_MS,
+    pruefeCode: pruefeCode,
+    pruefeCodeFormat: pruefeCodeFormat,
+    neuerCode: neuerCode,
+    CODE_ALPHABET: CODE_ALPHABET,
+    funkTopic: funkTopic,
+    signaturSchluessel: signaturSchluessel,
+    signatur: signatur,
+    baueNachricht: baueNachricht,
+    pruefeNachricht: pruefeNachricht,
+    Dedupe: Dedupe,
+    uhrzeit: uhrzeit,
+    codepoints: codepoints
+  };
+})();
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = FunkCore;
+}
+
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var MQTT_URL = 'https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js';
+  var MQTT_SRI = 'sha384-u4uqeACkFcoKl57rBQJHVGDd1pqhW4w8X3WjTu1ZksPdxoLqdt34jpoNkJisE25W';
+  var ROLLE_KEY = 'rosi62.funk.rolle';
+  var VERLAUF_KEY = 'rosi62.funk.verlauf';
+  var VERLAUF_MAX = 300;
+  var WARN_AB = 1200;
+  var ROLLEN = ['jonathan', 'raphael'];
+  var BROKER_ANZAHL = 3;
+  var TEXT_MAX = 1500;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var el = {
+    form: $('verbinden-form'), code: $('code'), verbinden: $('verbinden-btn'), trennen: $('trennen-btn'),
+    neuBtn: $('neu-code-btn'), neuAnzeige: $('neu-anzeige'),
+    status: $('status'), verlauf: $('verlauf'), neu: $('neu'), senden: $('senden-form'),
+    text: $('text'), sendenBtn: $('senden-btn'), zaehler: $('zaehler'), leeren: $('leeren-btn'),
+    box: $('verlauf-box')
+  };
+
+  var state = {
+    code: null,
+    topic: null,
+    clients: [],
+    verbunden: {},
+    anzahl: 0,
+    seen: new FunkCore.Dedupe(),
+    verlauf: [],
+    rolle: null,
+    gesendetRolle: null,
+    verbindet: false,
+    neuStand: 0
+  };
+
+  function setStatus(text, fehler) {
+    el.status.textContent = text;
+    el.status.className = fehler ? 'fehler' : '';
+  }
+
+  function istRolle(r) { return ROLLEN.indexOf(r) >= 0; }
+
+  function sichtbarStatus() {
+    if (state.verbindet && state.anzahl > 0) {
+      setStatus('Verbunden (' + state.anzahl + ' von ' + BROKER_ANZAHL + ' Servern)', false);
+    }
+  }
+
+  function updateButtons() {
+    el.trennen.disabled = !state.code;
+    el.sendenBtn.disabled = !(state.anzahl > 0 && istRolle(state.rolle));
+    el.verbinden.disabled = state.verbindet;
+  }
+
+  function zaehlerAktualisieren() {
+    var n = FunkCore.codepoints(el.text.value);
+    if (n >= WARN_AB) {
+      el.zaehler.textContent = n + ' / ' + TEXT_MAX;
+      el.zaehler.className = n > TEXT_MAX ? 'warn' : '';
+    } else {
+      el.zaehler.textContent = '';
+      el.zaehler.className = '';
+    }
+    el.sendenBtn.disabled = !(state.anzahl > 0 && istRolle(state.rolle)) || n === 0 || n > TEXT_MAX;
+  }
+
+  function sessionLaden() {
+    try {
+      var roh = sessionStorage.getItem(VERLAUF_KEY);
+      var liste = roh ? JSON.parse(roh) : [];
+      if (!Array.isArray(liste)) return [];
+      return liste.filter(function (m) {
+        return m && typeof m.id === 'string' && typeof m.ts === 'string' && typeof m.text === 'string' &&
+          FunkCore.VON_ERLAUBT.indexOf(m.von) >= 0 && !Number.isNaN(Date.parse(m.ts));
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function sessionSpeichern() {
+    try {
+      sessionStorage.setItem(VERLAUF_KEY, JSON.stringify(state.verlauf.slice(-VERLAUF_MAX).map(function (m) {
+        return { v: m.v, id: m.id, von: m.von, ts: m.ts, text: m.text, sig: m.sig };
+      })));
+    } catch (e) {
+      /* Speicher nicht verfügbar: Verlauf gilt nur für diese Ansicht */
+    }
+  }
+
+  function istNahUnten() {
+    var v = el.verlauf;
+    return v.scrollHeight - v.scrollTop - v.clientHeight < 40;
+  }
+
+  function anHindernUnten() {
+    el.verlauf.scrollTop = el.verlauf.scrollHeight;
+    el.neu.className = '';
+  }
+
+  function datumsText(iso) {
+    return new Date(iso).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function renderAlles() {
+    var nahUnten = istNahUnten();
+    var v = el.verlauf;
+    while (v.firstChild) v.removeChild(v.firstChild);
+    var letztesDatum = null;
+    state.verlauf.forEach(function (m) {
+      var tag = datumsText(m.ts);
+      if (tag !== letztesDatum) {
+        letztesDatum = tag;
+        var sep = document.createElement('li');
+        sep.className = 'datum';
+        sep.setAttribute('role', 'separator');
+        sep.textContent = tag;
+        v.appendChild(sep);
+      }
+      v.appendChild(baueMsg(m));
+    });
+    if (nahUnten || state.neuStand === 0) anHindernUnten();
+    else el.neu.className = 'sichtbar';
+  }
+
+  function baueMsg(m) {
+    var li = document.createElement('li');
+    var familie = m.von.indexOf('raphael') === 0 ? 'raphael' : 'jonathan';
+    var istAgent = m.von.slice(-6) === '-agent';
+    li.className = 'msg ' + familie + (istAgent ? ' agent' : '');
+
+    var kopf = document.createElement('div');
+    kopf.className = 'kopf';
+    var name = document.createElement('strong');
+    name.textContent = familie === 'raphael' ? 'Raphael' : 'Jonathan';
+    kopf.appendChild(name);
+    if (istAgent) {
+      var badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = 'Agent';
+      kopf.appendChild(badge);
+    }
+    var zeit = document.createElement('time');
+    zeit.setAttribute('datetime', m.ts);
+    zeit.textContent = FunkCore.uhrzeit(m.ts);
+    kopf.appendChild(zeit);
+    li.appendChild(kopf);
+
+    var t = document.createElement('p');
+    t.className = 'text';
+    t.textContent = m.text;
+    li.appendChild(t);
+    return li;
+  }
+
+  function verlaufHinzufuegen(m) {
+    state.verlauf.push(m);
+    state.verlauf.sort(function (a, b) { return Date.parse(a.ts) - Date.parse(b.ts); });
+    sessionSpeichern();
+    state.neuStand += 1;
+    renderAlles();
+  }
+
+  function nachrichtEmpfangen(payload) {
+    if (!state.code || !payload) return;
+    if (payload.length > FunkCore.MAX_BYTES) return;
+    var text;
+    try {
+      text = new TextDecoder('utf-8', { fatal: true }).decode(payload);
+    } catch (e) {
+      return;
+    }
+    FunkCore.pruefeNachricht(text, { code: state.code, seen: state.seen }).then(function (r) {
+      if (r && r.ok) verlaufHinzufuegen(r.msg);
+    }).catch(function () { /* ungültig: still verwerfen */ });
+  }
+
+  function ladeMqtt() {
+    if (window.mqtt && typeof window.mqtt.connect === 'function') return Promise.resolve(window.mqtt);
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = MQTT_URL;
+      s.integrity = MQTT_SRI;
+      s.crossOrigin = 'anonymous';
+      s.async = true;
+      s.onload = function () {
+        if (window.mqtt && typeof window.mqtt.connect === 'function') resolve(window.mqtt);
+        else reject(new Error('MQTT fehlt'));
+      };
+      s.onerror = function () { reject(new Error('MQTT nicht geladen')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function randomClientId() {
+    var b = new Uint8Array(8);
+    crypto.getRandomValues(b);
+    var h = '';
+    for (var i = 0; i < b.length; i++) h += ('0' + b[i].toString(16)).slice(-2);
+    return 'rfunkweb' + h;
+  }
+
+  function trennen(meldung) {
+    state.clients.forEach(function (c) {
+      try { c.end(true); } catch (e) { /* schon beendet */ }
+    });
+    state.clients = [];
+    state.verbunden = {};
+    state.anzahl = 0;
+    state.code = null;
+    state.topic = null;
+    state.verbindet = false;
+    setStatus(meldung || 'Nicht verbunden.', false);
+    updateButtons();
+    zaehlerAktualisieren();
+  }
+
+  var CODE_MELDUNG = {
+    laenge: 'Der Funk-Code muss genau 12 Zeichen lang sein.',
+    zeichen: 'Der Code darf nur Buchstaben (A–Z, a–z) und Ziffern (0–9) enthalten.',
+    mischung: 'Der Code braucht mindestens einen Buchstaben und eine Ziffer. Am sichersten: „Neuen Code erzeugen“.'
+  };
+
+  function codeAnzeigeAus() {
+    el.neuAnzeige.textContent = '';
+    el.neuAnzeige.hidden = true;
+  }
+
+  function neuerCodeKlick() {
+    var code = FunkCore.neuerCode();
+    el.code.value = code;
+    el.neuAnzeige.textContent = code;
+    el.neuAnzeige.hidden = false;
+    setStatus('Neuer Code erzeugt. Teilt ihn nur im Chat mit eurem Agenten, dann „Verbinden“.', false);
+  }
+
+  function verbinden(e) {
+    e.preventDefault();
+    var code = el.code.value;
+    el.code.value = '';
+    var pruef = FunkCore.pruefeCodeFormat(code);
+    if (!pruef.ok) {
+      setStatus(CODE_MELDUNG[pruef.grund] || CODE_MELDUNG.laenge, true);
+      return;
+    }
+    codeAnzeigeAus();
+    trennen();
+    state.code = code;
+    state.verbindet = true;
+    setStatus('Verbinde …', false);
+    updateButtons();
+    FunkCore.funkTopic(code).then(function (topic) {
+      state.topic = topic;
+      return ladeMqtt().then(function (mqtt) {
+        FunkCore.BROKERS.forEach(function (url, i) {
+          var c = mqtt.connect(url, {
+            clientId: randomClientId(), clean: true, protocolVersion: 4,
+            reconnectPeriod: 5000, connectTimeout: 10000, keepalive: 30
+          });
+          state.clients.push(c);
+          c.on('connect', function () {
+            c.subscribe(topic, { qos: 0 });
+            state.verbunden[i] = true;
+            state.anzahl = Object.keys(state.verbunden).length;
+            sichtbarStatus();
+            updateButtons();
+            zaehlerAktualisieren();
+          });
+          c.on('message', function (t, payload) {
+            if (t === topic) nachrichtEmpfangen(payload);
+          });
+          var weg = function () {
+            if (state.verbunden[i]) {
+              delete state.verbunden[i];
+              state.anzahl = Object.keys(state.verbunden).length;
+              if (state.anzahl === 0) setStatus('Keine Verbindung. Die Server werden erneut versucht.', true);
+              else sichtbarStatus();
+              updateButtons();
+              zaehlerAktualisieren();
+            }
+          };
+          c.on('close', weg);
+          c.on('offline', weg);
+          c.on('error', weg);
+        });
+      });
+    }).catch(function () {
+      setStatus('Live-Verbindung nicht möglich (MQTT-Bibliothek oder sichere Verbindung fehlt).', true);
+      state.verbindet = false;
+      updateButtons();
+    });
+  }
+
+  function senden(e) {
+    e.preventDefault();
+    var text = el.text.value.trim();
+    if (!text || !state.code || !istRolle(state.rolle) || state.anzahl === 0) return;
+    var rolle = state.rolle;
+    FunkCore.baueNachricht({ code: state.code, von: rolle, text: text }).then(function (msg) {
+      var n = 0;
+      state.clients.forEach(function (c, i) {
+        if (state.verbunden[i] && c.connected) {
+          c.publish(state.topic, JSON.stringify(msg), { qos: 0, retain: false });
+          n += 1;
+        }
+      });
+      if (n === 0) {
+        setStatus('Nicht gesendet: keine Verbindung.', true);
+        return;
+      }
+      state.seen.add(msg.id, Date.parse(msg.ts));
+      el.text.value = '';
+      zaehlerAktualisieren();
+      verlaufHinzufuegen(msg);
+      anHindernUnten();
+    }).catch(function (err) {
+      setStatus(err && err.message ? err.message : 'Nicht gesendet.', true);
+    });
+  }
+
+  function rolleGewaehlt(r) {
+    state.rolle = istRolle(r) ? r : null;
+    try {
+      if (state.rolle) localStorage.setItem(ROLLE_KEY, state.rolle);
+    } catch (e) { /* ohne Speicher gilt die Wahl für diese Sitzung */ }
+    updateButtons();
+    zaehlerAktualisieren();
+  }
+
+  function init() {
+    var gemerkt = null;
+    try { gemerkt = localStorage.getItem(ROLLE_KEY); } catch (e) { gemerkt = null; }
+    state.verlauf = sessionLaden();
+    state.neuStand = 0;
+    document.querySelectorAll('input[name="rolle"]').forEach(function (inp) {
+      if (inp.value === gemerkt) inp.checked = true;
+      inp.addEventListener('change', function () { rolleGewaehlt(inp.value); });
+    });
+    rolleGewaehlt(gemerkt);
+    renderAlles();
+
+    el.form.addEventListener('submit', verbinden);
+    el.trennen.addEventListener('click', function () { trennen('Getrennt.'); codeAnzeigeAus(); });
+    el.neuBtn.addEventListener('click', neuerCodeKlick);
+    el.senden.addEventListener('submit', senden);
+    el.text.addEventListener('input', zaehlerAktualisieren);
+    el.text.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
+        ev.preventDefault();
+        el.senden.dispatchEvent(new Event('submit', { cancelable: true }));
+      }
+    });
+    el.neu.addEventListener('click', anHindernUnten);
+    el.verlauf.addEventListener('scroll', function () {
+      if (istNahUnten()) { el.neu.className = ''; state.neuStand = 0; }
+    });
+    el.leeren.addEventListener('click', function () {
+      state.verlauf = [];
+      state.seen = new FunkCore.Dedupe();
+      try { sessionStorage.removeItem(VERLAUF_KEY); } catch (e) { /* ignorieren */ }
+      renderAlles();
+    });
+    updateButtons();
+    zaehlerAktualisieren();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
