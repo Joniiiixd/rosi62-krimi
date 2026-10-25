@@ -4055,11 +4055,17 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
       if (!dx && !dy) return;
       const lvl = levelOf(level);
       const start = lvl && lvl.start[who];
+      const n = Math.abs(dx) + Math.abs(dy);
       if (dx && dy) {
-        if (who !== me && start && d.x === start[0] && d.y === start[1]) pushLiveLog(who, 'zurück zum Start');
+        // Zurück aufs Startfeld über Eck: „neu“, kein Schritt. Sonst mehrere Züge auf einmal.
+        if (start && d.x === start[0] && d.y === start[1]) {
+          if (who !== me) pushLiveLog(who, 'zurück zum Start');
+          return;
+        }
+        t.steps += n;
+        if (who !== me) pushLiveLog(who, 'zieht ' + n + ' Felder');
         return;
       }
-      const n = Math.abs(dx) + Math.abs(dy);
       t.steps += n;
       if (who === me) return;
       const dir = dx > 0 ? 'rechts' : dx < 0 ? 'links' : dy > 0 ? 'runter' : 'hoch';
