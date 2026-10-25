@@ -4040,7 +4040,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
   function liveTrack() {
     const t = live.track;
     const level = live.own ? live.own.level : null;
-    if (level !== t.level) { t.level = level; t.pos = {}; t.steps = 0; }
+    if (level !== t.level) { t.level = level; t.pos = {}; t.steps = 0; t.skipOwn = false; }
     if (!level) return;
     const docs = liveDocsNow();
     const me = live.own.role;
@@ -4053,6 +4053,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
       const dx = d.x - prev.x;
       const dy = d.y - prev.y;
       if (!dx && !dy) return;
+      if (who === me && t.skipOwn) { t.skipOwn = false; return; }
       const lvl = levelOf(level);
       const start = lvl && lvl.start[who];
       const n = Math.abs(dx) + Math.abs(dy);
@@ -4101,7 +4102,10 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     const other = liveDocsNow()[Net.otherRole(me)] || null;
     const lvl = levelOf(live.own.level);
     if (!lvl) { setMessage('Unbekanntes Level.', true); return; }
+    // „neu“: die nächste eigene Positionsänderung ist ein Sprung, kein Schritt.
+    if (action.type === 'restart') live.track.skipOwn = true;
     const res = Net.liveAct({ applyLocal: applyLocal, reconcile: reconcile }, live.net, lvl, live.own, other, action);
+    if (!res.ok || !res.changed) live.track.skipOwn = false;
     if (!res.ok) {
       setMessage(res.message, true);
       // Abgelehnter Zug (Wand, Rand, Tür, Figur): Rückmeldung auch im Zug-Log.
@@ -4112,8 +4116,9 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
       pushLiveLog(me, 'sagt: ' + res.said);
       chatPush('say', me, res.said, true);
     }
-    if (res.event && res.event.kind !== 'say' && res.event.kind !== 'clue') pushLiveLog(me, res.event.text);
-    if (res.message) pushLiveLog(me, res.message);
+    const evText = res.event && res.event.kind !== 'say' && res.event.kind !== 'clue' ? res.event.text : '';
+    if (evText) pushLiveLog(me, evText);
+    if (res.message && res.message.toLowerCase() !== evText.toLowerCase()) pushLiveLog(me, res.message);
     setMessage(res.message || '', false);
     renderLive();
   }
