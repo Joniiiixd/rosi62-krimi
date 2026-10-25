@@ -893,6 +893,8 @@ const NetP2P = (function () {
   const CONNECT_MS = 6000;
   const RECONNECT_MS = 2000;
   const RETRY_MAX = 5;
+  const RETRY_QUIET = 2;
+  const RETRY_CAP_MS = 60000;
   const OTHERS_MAX = 4;
   const SEEN_MAX = 300;
 
@@ -1335,6 +1337,10 @@ const NetP2P = (function () {
       if (up.size === 0) {
         if (st.partner) dropPartner();
         clearHeartbeat();
+        // Server, die aufgegeben hatten, weil andere trugen, bekommen wieder eine Chance.
+        for (let j = 0; j < brokers.length; j++) {
+          if (j !== i && !links[j] && retryTimers[j] === null && attempts[j] > RETRY_QUIET) scheduleRetry(j);
+        }
         if (st.everUp) onWarn('Verbindung zum MQTT-Server verloren. Mit „neu verbinden“ geht es weiter.');
       }
       failedOnce[i] = true;
@@ -1346,15 +1352,20 @@ const NetP2P = (function () {
       refreshLink();
     }
 
+    // Wartezeit verdoppelt sich je Fehlversuch (2, 4, 8 … s, höchstens 60 s). Tragen andere
+    // Server die Verbindung, gibt ein dauerhaft scheiternder Server nach RETRY_QUIET Versuchen auf
+    // („neu verbinden“ setzt das zurück). So bleibt die Konsole ruhig, wenn ein Server gesperrt ist.
     function scheduleRetry(i) {
       if (st.disposed) return;
       attempts[i] += 1;
       if (attempts[i] > RETRY_MAX) return;
+      if (up.size > 0 && attempts[i] > RETRY_QUIET) return;
       clearRetryTimer(i);
+      const delay = Math.min((o.retryMs || RECONNECT_MS) * Math.pow(2, attempts[i] - 1), RETRY_CAP_MS);
       retryTimers[i] = timers.setTimeout(function () {
         retryTimers[i] = null;
         connectOne(i);
-      }, o.retryMs || RECONNECT_MS);
+      }, delay);
     }
 
     function connectOne(i) {
@@ -2535,7 +2546,7 @@ const Net = (function () {
       if (now) net.sendMove(me, now.level, now.x, now.y);
     }
     const said = res.event && res.event.kind === 'say' ? res.event.text : null;
-    return { ok: true, message: res.message || '', changed: changed, said: said };
+    return { ok: true, message: res.message || '', changed: changed, said: said, event: res.event || null };
   }
 
   return {
@@ -3454,7 +3465,8 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
 
   /* Netzschicht. Ohne Engine-Funktionen oder Artifact-Runtime bleibt alles lokal. */
   /* Live-Zustand: Spieler-Dokumente aus der Netzschicht. Welt und Notizbuch kommen aus der Engine. */
-  const live = { net: null, p2p: null, linkState: 'verbinde', synced: false, frozen: false, players: {}, own: null, log: [], connMode: 'lokal', peers: 'Mitspieler unbekannt', spectator: false, presence: {} };
+  const live = { net: null, p2p: null, linkState: 'verbinde', synced: false, frozen: false, players: {}, own: null, log: [], connMode: 'lokal', peers: 'Mitspieler unbekannt', spectator: false, presence: {},
+    track: { level: null, pos: {}, steps: 0 } };
 
   function $(id) {
     return document.getElementById(id);
@@ -3979,6 +3991,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
       if (id !== uid) takenBy[map[id].role] = true;
     });
     view.takenBy = takenBy;
+    liveTrack();
     liveReconcileNow();
     setConn(live.connMode, live.peers);
     renderLive();
@@ -3988,6 +4001,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     live.own = doc;
     view.myRole = doc ? doc.role : null;
     if (doc) live.spectator = false;
+    liveTrack();
     if (live.net) {
       if (doc) live.net.setPresence({ role: doc.role, level: doc.level, x: doc.x, y: doc.y, ds: doc.seq });
       else live.net.setPresence({ role: 'zuschauer', level: liveLevel().id });
@@ -4020,6 +4034,39 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     renderLiveLog();
   }
 
+  /* Schritte und Züge der anderen Figur aus den Dokumenten ableiten (nur in dieser Ansicht,
+     nicht gespeichert). Gezählt wird ab dem Beitritt bzw. Levelstart; ein Levelwechsel setzt zurück.
+     Eigene Züge stehen schon über liveAct im Log. Sprünge (z. B. „neu“) zählen nicht als Schritte. */
+  function liveTrack() {
+    const t = live.track;
+    const level = live.own ? live.own.level : null;
+    if (level !== t.level) { t.level = level; t.pos = {}; t.steps = 0; }
+    if (!level) return;
+    const docs = liveDocsNow();
+    const me = live.own.role;
+    WHO.forEach(function (who) {
+      const d = docs[who];
+      if (!d || d.level !== level) { delete t.pos[who]; return; }
+      const prev = t.pos[who];
+      t.pos[who] = { x: d.x, y: d.y, seq: d.seq };
+      if (!prev || d.seq <= prev.seq) return;
+      const dx = d.x - prev.x;
+      const dy = d.y - prev.y;
+      if (!dx && !dy) return;
+      const lvl = levelOf(level);
+      const start = lvl && lvl.start[who];
+      if (dx && dy) {
+        if (who !== me && start && d.x === start[0] && d.y === start[1]) pushLiveLog(who, 'zurück zum Start');
+        return;
+      }
+      const n = Math.abs(dx) + Math.abs(dy);
+      t.steps += n;
+      if (who === me) return;
+      const dir = dx > 0 ? 'rechts' : dx < 0 ? 'links' : dy > 0 ? 'runter' : 'hoch';
+      pushLiveLog(who, dir + (n > 1 ? ' ' + n : ''));
+    });
+  }
+
   function pushLiveLog(who, text) {
     live.log.push({ who: who, text: text });
     if (live.log.length > 60) live.log.shift();
@@ -4049,11 +4096,17 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     const lvl = levelOf(live.own.level);
     if (!lvl) { setMessage('Unbekanntes Level.', true); return; }
     const res = Net.liveAct({ applyLocal: applyLocal, reconcile: reconcile }, live.net, lvl, live.own, other, action);
-    if (!res.ok) { setMessage(res.message, true); return; }
+    if (!res.ok) {
+      setMessage(res.message, true);
+      // Abgelehnter Zug (Wand, Rand, Tür, Figur): Rückmeldung auch im Zug-Log.
+      if (action.type === 'move') { pushLiveLog(me, res.message); renderLiveLog(); }
+      return;
+    }
     if (res.said) {
       pushLiveLog(me, 'sagt: ' + res.said);
       chatPush('say', me, res.said, true);
     }
+    if (res.event && res.event.kind !== 'say' && res.event.kind !== 'clue') pushLiveLog(me, res.event.text);
     if (res.message) pushLiveLog(me, res.message);
     setMessage(res.message || '', false);
     renderLive();
@@ -4104,6 +4157,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
       transport = live.p2p.claude;
     }
     live.players = {}; live.own = null; live.presence = {}; live.synced = false; live.frozen = false; live.log = [];
+    live.track = { level: null, pos: {}, steps: 0 };
     chatReset();
     live.linkState = 'verbinde';
     view.mode = 'connecting';
@@ -4167,7 +4221,7 @@ const LEVELS = [{"id":"01-flur","title":"Flur – Der Tatort","author":"Jonathan
     $('level-title').textContent = lvl.title;
     $('level-hint').textContent = lvl.hint;
     $('points').textContent = String(w.points);
-    $('steps').textContent = '–';
+    $('steps').textContent = String(live.track.steps);
     $('story-intro').textContent = lvl.story.intro;
     $('story').hidden = !(view.introOpen && !w.levelComplete);
     renderLiveBoard(lvl, docs, w);
